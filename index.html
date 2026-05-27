@@ -10,12 +10,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
-html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none}
-body{display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif}
+html{height:100%;height:-webkit-fill-available}
+html,body{overflow:hidden;background:#111;overscroll-behavior:none}
+body{
+  min-height:100vh;min-height:100dvh;min-height:-webkit-fill-available;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;
+}
 
 /* ── SHELL ── */
-#app{position:relative;width:440px;height:100vh;max-height:956px;background:#f6f6f6;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 40px 100px rgba(0,0,0,.65)}
-@media(max-width:460px){#app{width:100vw;height:100dvh;max-height:100dvh;box-shadow:none}}
+#app{
+  position:relative;
+  width:100vw;
+  height:100vh;height:100dvh;height:-webkit-fill-available;
+  background:#f6f6f6;
+}
+/* Desktop/iPad: cap width, centre, add shadow frame */
+@media(min-width:600px){
+  #app{
+    width:min(500px,100vw);
+    height:min(900px,100vh);height:min(900px,100dvh);
+    border-radius:40px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.06),0 40px 100px rgba(0,0,0,.65);
+  }
+}
 
 /* ── MAP LAYER ── */
 #map{position:absolute;inset:0;z-index:0;overflow:hidden}
@@ -24,7 +42,7 @@ body{display:flex;align-items:center;justify-content:center;font-family:'Inter',
 /* ── TOP BAR ── */
 #topBar{
   position:absolute;top:0;left:0;right:0;z-index:100;
-  padding:52px 16px 20px;
+  padding:calc(env(safe-area-inset-top, 44px) + 12px) 16px 20px;
   background:linear-gradient(to bottom,rgba(0,0,0,.22) 0%,rgba(0,0,0,.06) 65%,transparent 100%);
   pointer-events:none;
 }
@@ -76,7 +94,7 @@ body{display:flex;align-items:center;justify-content:center;font-family:'Inter',
 #sheetCard{background:rgba(255,255,255,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:32px 32px 40px 40px;box-shadow:0 -2px 40px rgba(0,0,0,.08),0 8px 16px rgba(0,0,0,.06)}
 .sheet-handle-wrap{padding:12px 0 4px;display:flex;justify-content:center;user-select:none;touch-action:none;-webkit-user-select:none}
 .sheet-handle{width:88px;height:5px;background:rgba(0,0,0,.18);border-radius:10px}
-.sheet-body{padding:0 16px 36px;overflow-y:auto;max-height:68vh;overflow-x:hidden;padding-top:4px}
+.sheet-body{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 36px);overflow-y:auto;max-height:72vh;overflow-x:hidden;padding-top:4px}
 .sheet-body::-webkit-scrollbar{display:none}
 .sheet-hdr{display:flex;align-items:center;gap:10px;padding:8px 0 16px}
 .sheet-hdr-icon{width:40px;height:40px;flex-shrink:0;border-radius:50%;background:rgba(0,132,154,.18);display:flex;align-items:center;justify-content:center}
@@ -85,9 +103,21 @@ body{display:flex;align-items:center;justify-content:center;font-family:'Inter',
 .sheet-hdr-sub{font-size:14px;font-weight:500;color:rgba(0,0,0,.45);margin-top:1px}
 .section{margin-bottom:24px}
 .section-title{font-size:18px;font-weight:600;color:#000;margin-bottom:10px}
-.h-scroll-wrap{margin:0 -16px;padding:0 16px}
-.h-scroll{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:12px}
+/* bleed the scroll row to screen edges */
+.h-scroll-wrap{
+  margin-left:-16px;margin-right:-16px;
+}
+.h-scroll{
+  display:flex;gap:8px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding:4px 16px 16px; /* 16px left/right = first/last card breathing room */
+}
 .h-scroll::-webkit-scrollbar{display:none}
+/* wide card on larger screens */
+.ecard{width:200px;flex-shrink:0;background:#fff;border-radius:16px;overflow:hidden;transition:transform .15s;box-shadow:0 2px 14px rgba(0,0,0,.10)}
+@media(min-width:400px){.ecard{width:220px}}
+@media(min-width:600px){.ecard{width:260px}}
 .ecard{width:192px;flex-shrink:0;background:#fff;border-radius:16px;overflow:hidden;transition:transform .15s;box-shadow:0 2px 12px rgba(0,0,0,.09)}
 .ecard:active{transform:scale(.97)}
 .ecard-img{width:100%;height:116px;object-fit:cover;display:block;background:#e8e8e8}
@@ -100,12 +130,14 @@ body{display:flex;align-items:center;justify-content:center;font-family:'Inter',
 
 /* ── ACTIVE EVENT CARD (Kartvy - Aktiv) ── */
 #activeCard{
-  position:absolute;left:16px;right:16px;bottom:16px;z-index:250;
+  position:absolute;left:16px;right:16px;
+  bottom:calc(env(safe-area-inset-bottom, 0px) + 16px);
+  z-index:250;
   background:rgba(255,255,255,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-radius:32px 32px 40px 40px;
   box-shadow:0 8px 16px rgba(0,0,0,.07),0 4px 8px rgba(0,0,0,.07);
   padding:8px;
-  transform:translateY(calc(100% + 20px));
+  transform:translateY(calc(100% + 40px));
   transition:transform .38s cubic-bezier(.32,.94,.6,1);
   touch-action:none;user-select:none;-webkit-user-select:none;
 }
@@ -184,7 +216,7 @@ body{display:flex;align-items:center;justify-content:center;font-family:'Inter',
 #detailScreen.visible{transform:translateX(0)}
 .det-hero{width:100%;height:354px;object-fit:cover;display:block;background:#ddd}
 .det-back{
-  position:fixed;top:62px;left:16px;z-index:10;
+  position:fixed;top:calc(env(safe-area-inset-top,44px) + 12px);left:16px;z-index:10;
   display:flex;align-items:center;gap:6px;
   padding:6px 12px 6px 8px;
   background:rgba(255,255,255,.2);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
@@ -218,13 +250,12 @@ body{display:flex;align-items:center;justify-content:center;font-family:'Inter',
 .det-host-name{font-size:20px;font-weight:600;color:#000}
 .det-host-since{font-size:13px;color:rgba(0,0,0,.7);margin-top:4px}
 .det-bottom{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:440px;
-  padding:16px 16px 24px;
-  background:linear-gradient(to top,rgba(255,255,255,.95) 60%,transparent);
+  position:fixed;bottom:0;left:0;right:0;
+  padding:16px 16px calc(env(safe-area-inset-bottom,0px) + 16px);
+  background:linear-gradient(to top,rgba(255,255,255,.97) 60%,transparent);
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
   display:none;
 }
-@media(max-width:460px){.det-bottom{width:100vw}}
 .det-bottom.visible{display:block}
 .det-bottom-row{display:flex;gap:6px}
 </style>
