@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Huddinge Karta</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none}
+body{display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif}
+
+/* ── SHELL ── */
+#app{position:relative;width:440px;height:100vh;max-height:956px;background:#f6f6f6;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 40px 100px rgba(0,0,0,.65)}
+@media(max-width:460px){#app{width:100vw;height:100dvh;max-height:100dvh;box-shadow:none}}
+
+/* ── MAP LAYER ── */
+#map{position:absolute;inset:0;z-index:0;overflow:hidden}
+.leaflet-control-zoom,.leaflet-control-attribution{display:none!important}
+
+/* ── TOP BAR ── */
+#topBar{
+  position:absolute;top:0;left:0;right:0;z-index:100;
+  padding:52px 16px 20px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.22) 0%,rgba(0,0,0,.06) 65%,transparent 100%);
+  pointer-events:none;
+}
+#topBar>*{pointer-events:auto}
+.search-row{display:flex;gap:8px;margin-bottom:12px}
+.search-pill{
+  flex:1;min-width:0;height:56px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:0 16px;
+  background:rgba(255,255,255,.4);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
+  border-radius:40px;border:none;
+  box-shadow:0 8px 25px rgba(0,0,0,.10);
+  cursor:pointer;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:rgba(0,0,0,.4);
+}
+.search-pill svg{flex-shrink:0;opacity:.32}
+.search-pill span{flex:1;text-align:left;white-space:nowrap;overflow:hidden}
+.filter-btn{
+  width:56px;height:56px;flex-shrink:0;
+  background:rgba(255,255,255,.4);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
+  border-radius:40px;border:none;
+  box-shadow:0 8px 25px rgba(0,0,0,.10);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.chips{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0 4px}
+.chips::-webkit-scrollbar{display:none}
+.chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 8px;border-radius:40px;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;white-space:nowrap;flex-shrink:0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .2s}
+.chip svg{width:18px;height:18px;flex-shrink:0}
+.chip.off{opacity:.45}
+.chip-event{background:rgba(209,96,23,.22);color:#bf5917}
+.chip-konst{background:rgba(71,193,206,.22);color:#068a99}
+.chip-motes{background:rgba(209,66,142,.22);color:#c0136f}
+.chip-musik{background:rgba(248,216,75,.28);color:#c3a523}
+
+/* ── MARKERS ── */
+.mpin{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
+.mpin:hover{transform:scale(1.08)}
+.mpin-tail{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);background:white;border-radius:80px 80px 4px 80px;box-shadow:0 6px 12px rgba(0,0,0,.12),0 16px 32px rgba(0,0,0,.10)}
+.mpin-circle{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.mpin-circle svg{width:24px;height:24px}
+.mpin-sm .mpin-tail{width:44.3px;height:44.3px}
+.mpin-sm .mpin-circle{width:40px;height:40px}
+.mpin-lg .mpin-tail{width:61.9px;height:61.9px}
+.mpin-lg .mpin-circle{width:56px;height:56px}
+.user-dot{width:26px;height:26px;border-radius:50%;background:white;box-shadow:0 4px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
+.user-dot-inner{width:18px;height:18px;border-radius:50%;background:#357af6}
+
+/* ── BOTTOM SHEET ── */
+#sheet{position:absolute;left:0;right:0;bottom:0;z-index:200;transition:transform .38s cubic-bezier(.32,.94,.6,1)}
+#sheetCard{background:rgba(255,255,255,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:32px 32px 40px 40px;box-shadow:0 -2px 40px rgba(0,0,0,.08),0 8px 16px rgba(0,0,0,.06)}
+.sheet-handle-wrap{padding:12px 0 4px;display:flex;justify-content:center;user-select:none;touch-action:none;-webkit-user-select:none}
+.sheet-handle{width:88px;height:5px;background:rgba(0,0,0,.18);border-radius:10px}
+.sheet-body{padding:0 16px 36px;overflow-y:auto;max-height:68vh;overflow-x:hidden;padding-top:4px}
+.sheet-body::-webkit-scrollbar{display:none}
+.sheet-hdr{display:flex;align-items:center;gap:10px;padding:8px 0 16px}
+.sheet-hdr-icon{width:40px;height:40px;flex-shrink:0;border-radius:50%;background:rgba(0,132,154,.18);display:flex;align-items:center;justify-content:center}
+.sheet-hdr-icon svg{width:24px;height:24px}
+.sheet-hdr-title{font-size:18px;font-weight:600;color:#000}
+.sheet-hdr-sub{font-size:14px;font-weight:500;color:rgba(0,0,0,.45);margin-top:1px}
+.section{margin-bottom:24px}
+.section-title{font-size:18px;font-weight:600;color:#000;margin-bottom:10px}
+.h-scroll-wrap{margin:0 -16px;padding:0 16px}
+.h-scroll{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:12px}
+.h-scroll::-webkit-scrollbar{display:none}
+.ecard{width:192px;flex-shrink:0;background:#fff;border-radius:16px;overflow:hidden;transition:transform .15s;box-shadow:0 2px 12px rgba(0,0,0,.09)}
+.ecard:active{transform:scale(.97)}
+.ecard-img{width:100%;height:116px;object-fit:cover;display:block;background:#e8e8e8}
+.ecard-body{padding:10px 10px 12px}
+.ecard-title{font-size:15px;font-weight:600;color:#000;line-height:1.2;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ecard-desc{font-size:13px;color:rgba(0,0,0,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px}
+.ecard-meta{display:flex;gap:5px;flex-direction:column}
+.meta-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,.07);border-radius:8px;padding:4px 7px;font-size:12px;font-weight:500;color:#000;white-space:nowrap;width:fit-content}
+.meta-tag svg{width:13px;height:13px;opacity:.55;flex-shrink:0}
+
+/* ── ACTIVE EVENT CARD (Kartvy - Aktiv) ── */
+#activeCard{
+  position:absolute;left:16px;right:16px;bottom:16px;z-index:250;
+  background:rgba(255,255,255,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:32px 32px 40px 40px;
+  box-shadow:0 8px 16px rgba(0,0,0,.07),0 4px 8px rgba(0,0,0,.07);
+  padding:8px;
+  transform:translateY(calc(100% + 20px));
+  transition:transform .38s cubic-bezier(.32,.94,.6,1);
+  touch-action:none;user-select:none;-webkit-user-select:none;
+}
+#activeCard.visible{transform:translateY(0)}
+.ac-img{width:100%;height:128px;object-fit:cover;border-radius:24px;display:block;background:#ddd;transition:opacity .15s}
+.ac-img:active{opacity:.85}
+.ac-body{padding:12px 8px 8px}
+.ac-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.ac-title{font-size:15px;font-weight:600;color:#000;line-height:1.2}
+.ac-title:active{opacity:.7}
+.ac-desc{font-size:13px;color:rgba(0,0,0,.7);margin-top:2px}
+.ac-logo{width:24px;height:24px;border-radius:50%;background:#e00;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:white;flex-shrink:0;margin-left:8px}
+.ac-meta{display:flex;gap:8px;margin-bottom:14px}
+.ac-btns{display:flex;gap:6px}
+.btn-ghost{flex:1;padding:16px 8px;border-radius:56px;background:rgba(70,70,70,.1);border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#000;cursor:pointer}
+.btn-dark{flex:1;padding:16px 8px;border-radius:56px;background:#000;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer}
+
+/* ── SEARCH SCREEN ── */
+#searchScreen{
+  position:absolute;inset:0;z-index:400;
+  background:#fff;
+  transform:translateY(100%);
+  transition:transform .32s cubic-bezier(.32,.94,.6,1);
+}
+#searchScreen.visible{transform:translateY(0)}
+.srch-top{
+  padding:52px 16px 16px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.18) 0%,rgba(0,0,0,.04) 60%,transparent 100%);
+  position:relative;z-index:2;
+}
+.srch-row{display:flex;gap:10px;align-items:center}
+.srch-input-pill{
+  flex:1;height:56px;display:flex;align-items:center;gap:8px;padding:0 16px;
+  background:rgba(255,255,255,.4);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
+  border-radius:40px;border:none;
+  box-shadow:0 8px 25px rgba(0,0,0,.10);
+}
+.srch-input-pill input{
+  flex:1;border:none;outline:none;background:transparent;
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000;
+}
+.srch-input-pill input::placeholder{color:rgba(0,0,0,.4)}
+.srch-input-pill svg{opacity:.3;flex-shrink:0}
+.srch-cancel{
+  background:none;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;
+  color:#000;cursor:pointer;white-space:nowrap;padding:0 4px;opacity:.7;
+}
+.srch-results{
+  padding:16px 16px 16px;overflow-y:auto;
+  height:calc(100% - 140px);
+  scrollbar-width:none;
+}
+.srch-results::-webkit-scrollbar{display:none}
+.srch-card{
+  background:#fff;border-radius:16px;overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,.09);margin-bottom:10px;
+  display:flex;gap:0;transition:transform .12s;
+}
+.srch-card:active{transform:scale(.98)}
+.srch-card-img{width:96px;height:96px;object-fit:cover;flex-shrink:0;background:#e8e8e8}
+.srch-card-body{padding:12px;flex:1;min-width:0}
+.srch-card-title{font-size:15px;font-weight:600;color:#000;margin-bottom:2px}
+.srch-card-desc{font-size:13px;color:rgba(0,0,0,.6);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srch-card-cat{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600}
+.srch-empty{padding:60px 16px;text-align:center;color:rgba(0,0,0,.4);font-size:15px}
+
+/* ── DETAIL SCREEN ── */
+#detailScreen{
+  position:absolute;inset:0;z-index:500;
+  background:#f6f6f6;
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.32,.94,.6,1);
+  overflow-y:auto;
+}
+#detailScreen::-webkit-scrollbar{display:none}
+#detailScreen.visible{transform:translateX(0)}
+.det-hero{width:100%;height:354px;object-fit:cover;display:block;background:#ddd}
+.det-back{
+  position:fixed;top:62px;left:16px;z-index:10;
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px 6px 8px;
+  background:rgba(255,255,255,.2);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
+  border-radius:40px;border:none;cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.10);
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#fff;
+}
+.det-back svg{width:18px;height:18px}
+.det-card{
+  background:#f6f6f6;border-radius:32px 32px 0 0;
+  margin-top:-40px;position:relative;z-index:1;
+  padding:24px 16px 140px;
+}
+.det-org-logo{width:32px;height:32px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block;background:#e00}
+.det-title{font-size:24px;font-weight:600;color:#000;text-align:center;line-height:1.2;margin-bottom:8px}
+.det-subtitle{font-size:13px;color:rgba(0,0,0,.7);text-align:center;margin-bottom:20px}
+.det-stats{display:flex;border:.5px solid rgba(0,0,0,.1);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.det-stat{flex:1;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;border-right:.5px solid rgba(0,0,0,.1)}
+.det-stat:last-child{border-right:none}
+.det-stat-icon{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center}
+.det-stat-icon svg{width:20px;height:20px}
+.det-stat-val{font-size:12px;font-weight:600;color:#000;text-align:center;line-height:1.3}
+.det-desc{font-size:13px;color:rgba(0,0,0,.8);line-height:1.6;margin-bottom:24px}
+.det-map-label{font-size:13px;color:rgba(0,0,0,.7);font-weight:500;margin-bottom:8px}
+.det-map{width:100%;height:200px;border-radius:16px;overflow:hidden;margin-bottom:12px;background:#e8e8e8}
+.det-addr-name{font-size:20px;font-weight:600;color:#000;margin-bottom:4px}
+.det-addr-street{font-size:13px;color:rgba(0,0,0,.7);display:flex;align-items:center;gap:4px;margin-bottom:24px}
+.det-divider{height:.5px;background:rgba(0,0,0,.1);margin-bottom:16px}
+.det-host{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.det-host-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;background:#e00;flex-shrink:0}
+.det-host-name{font-size:20px;font-weight:600;color:#000}
+.det-host-since{font-size:13px;color:rgba(0,0,0,.7);margin-top:4px}
+.det-bottom{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:440px;
+  padding:16px 16px 24px;
+  background:linear-gradient(to top,rgba(255,255,255,.95) 60%,transparent);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  display:none;
+}
+@media(max-width:460px){.det-bottom{width:100vw}}
+.det-bottom.visible{display:block}
+.det-bottom-row{display:flex;gap:6px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── MAP LAYER ── -->
+  <div id="map"></div>
+
+  <!-- ── TOP BAR ── -->
+  <div id="topBar">
+    <div class="search-row">
+      <button class="search-pill" id="searchPillBtn">
+        <span>Sök efter område eller händelse...</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button class="filter-btn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="chips" id="chips">
+      <button class="chip chip-event" data-cat="event" onclick="toggleCat(this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="#bf5917" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Event
+      </button>
+      <button class="chip chip-konst" data-cat="konst" onclick="toggleCat(this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M16 18H19c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-7M16 18l1 3M16 18H8M8 18H5c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h7M8 18l-1 3M12 18v2M12 5V3" stroke="#068a99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Konst
+      </button>
+      <button class="chip chip-motes" data-cat="motes" onclick="toggleCat(this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14.498 10c0 1.381-1.119 2.5-2.5 2.5s-2.5-1.119-2.5-2.5 1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5Z" stroke="#c0136f" stroke-width="2" stroke-linejoin="round"/><path d="M19 10c0 4.37-3.886 8.335-5.867 10.072a1.984 1.984 0 0 1-2.266 0C8.886 18.335 5 14.37 5 10a7 7 0 1 1 14 0Z" stroke="#c0136f" stroke-width="2" stroke-linejoin="round"/></svg>
+        Mötesplats
+      </button>
+      <button class="chip chip-musik" data-cat="musik" onclick="toggleCat(this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="#c3a523" stroke-width="2" stroke-linejoin="round"/></svg>
+        Musik
+      </button>
+    </div>
+  </div>
+
+  <!-- ── BOTTOM SHEET ── -->
+  <div id="sheet">
+    <div id="sheetCard">
+      <div class="sheet-handle-wrap" id="handleWrap"><div class="sheet-handle"></div></div>
+      <div class="sheet-body">
+        <div class="sheet-hdr">
+          <div class="sheet-hdr-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M16 18H19c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-7M16 18l1 3M16 18H8M8 18H5c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h7M8 18l-1 3M12 18v2M12 5V3" stroke="#068a99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div><div class="sheet-hdr-title">Vad händer idag?</div><div class="sheet-hdr-sub">10 nya events denna vecka!</div></div>
+        </div>
+        <div id="sheetContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACTIVE EVENT CARD (Kartvy - Aktiv) ── -->
+  <div id="activeCard">
+    <img class="ac-img" id="acImg" src="" alt="" onclick="openDetail(activeCardId)">
+    <div class="ac-body">
+      <div class="ac-top">
+        <div>
+          <div class="ac-title" id="acTitle" onclick="openDetail(activeCardId)"></div>
+          <div class="ac-desc" id="acDesc"></div>
+        </div>
+        <div class="ac-logo" id="acLogo">ABF</div>
+      </div>
+      <div class="ac-meta" id="acMeta"></div>
+      <div class="ac-btns">
+        <button class="btn-ghost" id="acFlyBtn">Hitta hit</button>
+        <button class="btn-dark" onclick="openDetail(activeCardId)">Ansök att gå med</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEARCH SCREEN ── -->
+  <div id="searchScreen">
+    <div class="srch-top">
+      <div class="srch-row">
+        <div class="srch-input-pill">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input type="text" id="searchInput" placeholder="Sök efter område eller händelse..." autocomplete="off" oninput="onSearch(this.value)">
+        </div>
+        <button class="srch-cancel" onclick="closeSearch()">Avbryt</button>
+      </div>
+    </div>
+    <div class="srch-results" id="searchResults"></div>
+  </div>
+
+  <!-- ── DETAIL SCREEN ── -->
+  <div id="detailScreen">
+    <img class="det-hero" id="detHero" src="" alt="">
+    <button class="det-back" id="detBackBtn" onclick="closeDetail()">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Tillbaka
+    </button>
+    <div class="det-card" id="detCardBody"></div>
+    <div class="det-bottom" id="detBottom">
+      <div class="det-bottom-row">
+        <button class="btn-ghost" id="detFlyBtn">Hitta hit</button>
+        <button class="btn-dark">Ansök att gå med</button>
+      </div>
+    </div>
+  </div>
+  <!-- ── iOS ACTION SHEET ── -->
+  <div id="actionSheetBg" onclick="closeActionSheet()" style="position:absolute;inset:0;z-index:600;background:rgba(0,0,0,0);transition:background .25s;pointer-events:none"></div>
+  <div id="actionSheet" style="position:absolute;left:8px;right:8px;bottom:8px;z-index:601;transform:translateY(calc(100% + 12px));transition:transform .32s cubic-bezier(.32,.94,.6,1)">
+    <div id="actionSheetOptions" style="background:rgba(242,242,247,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-radius:16px;overflow:hidden;margin-bottom:8px"></div>
+    <button onclick="closeActionSheet()" style="width:100%;padding:18px;background:rgba(242,242,247,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-radius:16px;border:none;font-family:'Inter',sans-serif;font-size:17px;font-weight:600;color:#007aff">Avbryt</button>
+  </div>
+
+</div><!-- #app -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── SVGs ──────────────────────────────────────────────────────────
+const S={
+  whiteboard:`<svg viewBox="0 0 24 24" fill="none"><path d="M16 18H19c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-7M16 18l1 3M16 18H8M8 18H5c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h7M8 18l-1 3M12 18v2M12 5V3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  mappin:`<svg viewBox="0 0 24 24" fill="none"><path d="M14.498 10c0 1.381-1.119 2.5-2.5 2.5s-2.5-1.119-2.5-2.5 1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="M19 10c0 4.37-3.886 8.335-5.867 10.072a1.984 1.984 0 0 1-2.266 0C8.886 18.335 5 14.37 5 10a7 7 0 1 1 14 0Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
+  audio:`<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
+  calendar:`<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  clock:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#000" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  pin:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+};
+
+// ── DATA ──────────────────────────────────────────────────────────
+const CAT_COLOR={event:'#bf5917',konst:'#068a99',motes:'#c0136f',musik:'#c3a523'};
+const CAT_BG   ={event:'rgba(209,96,23,.14)',konst:'rgba(71,193,206,.14)',motes:'rgba(209,66,142,.14)',musik:'rgba(248,216,75,.22)'};
+const CAT_LABEL={event:'Event',konst:'Konst',motes:'Mötesplats',musik:'Musik'};
+const CAT_SVG  ={event:S.calendar,konst:S.whiteboard,motes:S.mappin,musik:S.audio};
+
+const ITEMS=[
+  {id:1,cat:'event',name:'Flemingsberg Tour',desc:'En guideresa genom hela centrum',date:'12 Jun',time:'12:00–14:00',loc:'Flemingsbergs C',img:'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80',lat:59.2178,lng:17.9465,host:'ABF Huddinge',addr:'Sankt Åkes väg 24',url:'https://www.abf.se',longDesc:'Upplev Flemingsberg på ett nytt sätt med denna guidade stadsrunda. Vi besöker historiska platser, modern arkitektur och gömda pärlor i ett av Huddinges mest spännande stadsdelar.'},
+  {id:2,cat:'event',name:'Kulturkvällen',desc:'Konst, mat och musik i parken',date:'14 Jun',time:'17:00–21:00',loc:'Huddinge Centrum',img:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80',lat:59.2358,lng:17.9832,host:'Huddinge Kommun',addr:'Kommunalvägen 28',url:'https://www.huddinge.se',longDesc:'En kväll fylld av konst, lokal mat och livemusik under bar himmel. Ta med hela familjen och upplev det bästa Huddinge har att erbjuda.'},
+  {id:3,cat:'event',name:'Naturvandring',desc:'Guidad tur i Lida naturreservat',date:'15 Jun',time:'09:00–13:00',loc:'Lida',img:'https://images.unsplash.com/photo-1476820865390-c52aeebb9891?w=600&q=80',lat:59.1905,lng:17.8730,host:'Naturskyddsföreningen',addr:'Lida Naturreservat',url:'https://www.naturskyddsforeningen.se',longDesc:'Vandring i ett av södra Stockholms vackraste naturreservat. Guide berättar om flora och fauna längs den 8 km långa leden.'},
+  {id:4,cat:'event',name:'Familjedag',desc:'Aktiviteter för hela familjen',date:'21 Jun',time:'11:00–16:00',loc:'Sjödalen',img:'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80',lat:59.2680,lng:18.0120,host:'Sjödalen Gård',addr:'Sjödalens Gård 1',url:'https://www.huddinge.se',longDesc:'En härlig familjedag med lekar, hantverk och aktiviteter för alla åldrar. Kafé med lokalproducerade råvaror.'},
+  {id:5,cat:'konst',name:'KTH Utställning',desc:'Studentkonst och design',date:'10–30 Jun',time:'10:00–18:00',loc:'KTH Flemingsberg',img:'https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?w=600&q=80',lat:59.2205,lng:17.9388,host:'KTH',addr:'Hälsovägen 11',url:'https://www.kth.se',longDesc:'Studenternas bästa arbeten visas upp i KTHs öppna galleriyta. Allt från skulptur till digital konst och illustration.'},
+  {id:6,cat:'konst',name:'Glömsta Galleri',desc:'Lokal konst och hantverk',date:'Löpande',time:'11:00–17:00',loc:'Glömsta',img:'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=600&q=80',lat:59.2562,lng:17.9124,host:'Glömsta IF',addr:'Glömstavägen 5',url:'https://www.huddinge.se/kultur',longDesc:'En intim gallerupplevelse med lokala konstnärer. Utvalda verk säljs direkt från ateljeerna.'},
+  {id:7,cat:'konst',name:'Outdoor Murals',desc:'Gatukonst i Skogås',date:'Permanent',time:'Dygnet runt',loc:'Skogås',img:'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80',lat:59.1998,lng:18.0352,host:'Skogås Konstnärer',addr:'Skogåsvägen 12',url:'https://www.huddinge.se/kultur',longDesc:'En promenadtur bland stora väggmålningar skapade av lokala konstnärer i Skogåsområdet.'},
+  {id:8,cat:'motes',name:'ABF Huddinge',desc:'Mötesplats för alla åldrar',date:'Mån–Fre',time:'09:00–17:00',loc:'Huddinge Centrum',img:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',lat:59.2389,lng:17.9801,host:'ABF',addr:'Kommunalvägen 32',url:'https://www.abf.se/huddinge',longDesc:'ABF erbjuder kurser, föreläsningar och mötesplatser för alla åldrar. Besök oss för veckans program.'},
+  {id:9,cat:'motes',name:'Flemingsberg Bibliotek',desc:'Böcker, internet och studiero',date:'Löpande',time:'10:00–19:00',loc:'Flemingsbergs C',img:'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80',lat:59.2192,lng:17.9450,host:'Stadsbiblioteket',addr:'Biblioteksvägen 1',url:'https://bibliotek.huddinge.se',longDesc:'Flemingsbergs bibliotek erbjuder böcker, tidningar, internet och en trevlig miljö för läsning och studier.'},
+  {id:10,cat:'motes',name:'Sjödalen Gård',desc:'Historisk gård och mötesplats',date:'Löpande',time:'10:00–16:00',loc:'Sjödalen',img:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',lat:59.2680,lng:18.0050,host:'Huddinge Hembygd',addr:'Sjödalsvägen 3',url:'https://www.huddinge.se/kultur',longDesc:'Historisk gård från 1700-talet, nu mötesplats för hembygdsföreningen. Café öppet på helger.'},
+  {id:11,cat:'musik',name:'Jazz i parken',desc:'Sommarjazz under öppen himmel',date:'20 Jun',time:'18:00–21:00',loc:'Stortorget',img:'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=600&q=80',lat:59.2410,lng:17.9870,host:'Huddinge Jazzfören.',addr:'Stortorget 1',url:'https://www.huddinge.se/kultur',longDesc:'Årets stora utomhuskonsert med lokala jazzmusiker. Ta med picknickkorgen och njut av en varm sommarnatt.'},
+  {id:12,cat:'musik',name:'Sommarkonsert',desc:'Klassisk musik i Vistabergs kyrka',date:'28 Jun',time:'19:00–21:30',loc:'Vistabergs Kyrka',img:'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600&q=80',lat:59.1845,lng:17.9650,host:'Vistabergs Musik',addr:'Kyrkovägen 5',url:'https://www.huddinge.se/kultur',longDesc:'En klassisk konsert med stycken av Mozart, Haydn och Beethoven framförda av det lokala kammarorkestret.'},
+  {id:13,cat:'musik',name:'Trubadur på Torget',desc:'Folkmusik och visor',date:'22 Jun',time:'14:00–16:00',loc:'Huddinge Torg',img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',lat:59.2367,lng:17.9811,host:'Huddinge Musikskola',addr:'Huddinge Torg 2',url:'https://www.huddinge.se/kultur',longDesc:'Elever och lärare framför folkmusik och svenska visor på det öppna torget.'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────
+const activeCats=new Set(['event','konst','motes','musik']);
+let map,leafMarkers={};
+let activeCardId=null;
+let collapsed=false;
+let detailMapInstance=null;
+
+// ── MAP ───────────────────────────────────────────────────────────
+const BOUNDS=L.latLngBounds([59.08,17.73],[59.34,18.24]);
+function initMap(){
+  map=L.map('map',{center:[59.218,17.978],zoom:13,minZoom:11,maxZoom:16,maxBounds:BOUNDS,maxBoundsViscosity:1,zoomControl:false,attributionControl:false});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19}).addTo(map);
+  const ui=L.divIcon({html:`<div class="user-dot"><div class="user-dot-inner"></div></div>`,className:'',iconSize:[26,26],iconAnchor:[13,13]});
+  L.marker([59.2195,17.9490],{icon:ui,interactive:false}).addTo(map);
+  ITEMS.forEach(addMarker);
+  map.on('click',()=>{ dismissActiveCard(); });
+}
+
+function mHtml(cat,big){
+  const sz=big?'mpin-lg':'mpin-sm', wt=big?87.6:62.7;
+  const p=big?'16px':'8px';
+  return `<div class="mpin ${sz}" style="width:${wt}px;height:${wt}px"><div class="mpin-tail"></div><div class="mpin-circle" style="background:${CAT_COLOR[cat]};padding:${p}">${CAT_SVG[cat]}</div></div>`;
+}
+function addMarker(item){
+  const big=activeCardId===item.id, sz=big?87.6:62.7;
+  const icon=L.divIcon({html:mHtml(item.cat,big),className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz]});
+  const m=L.marker([item.lat,item.lng],{icon}).addTo(map);
+  m.on('click',e=>{ L.DomEvent.stopPropagation(e); showActiveCard(item.id); });
+  leafMarkers[item.id]=m;
+}
+function refreshMarker(id){
+  const m=leafMarkers[id]; if(!m) return;
+  const item=ITEMS.find(x=>x.id===id);
+  const big=activeCardId===id, sz=big?87.6:62.7;
+  m.setIcon(L.divIcon({html:mHtml(item.cat,big),className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz]}));
+}
+
+// ── ACTIVE CARD ───────────────────────────────────────────────────
+function hideSheet(){
+  const h=document.getElementById('sheetCard').offsetHeight+40;
+  document.getElementById('sheet').style.transform=`translateY(${h}px)`;
+  collapsed=true;
+}
+function showActiveCard(id){
+  const prev=activeCardId; activeCardId=id;
+  if(prev&&prev!==id) refreshMarker(prev);
+  refreshMarker(id);
+  const item=ITEMS.find(x=>x.id===id);
+  const el=document.getElementById('activeCard');
+  document.getElementById('acImg').src=item.img;
+  document.getElementById('acImg').onerror=function(){this.src='https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80'};
+  document.getElementById('acTitle').textContent=item.name;
+  document.getElementById('acDesc').textContent=item.desc;
+  document.getElementById('acMeta').innerHTML=
+    `<div class="meta-tag">${S.clock}${item.date} · ${item.time.split('–')[0]}</div>
+     <div class="meta-tag">${S.pin}${item.loc}</div>`;
+  document.getElementById('acFlyBtn').onclick=()=>{ openMapsSheet(item); };
+  document.getElementById('detailScreen').querySelector('.det-back').onclick=closeDetail;
+  // wire the "Ansök" button on active card
+  document.querySelector('#activeCard .btn-dark').onclick=()=>{ openEventUrl(item); };
+  hideSheet();
+  el.classList.add('visible');
+  // Fly to pin and shift center up so pin sits above the bottom card
+  flyToItem(item);
+}
+function flyToItem(item){
+  // Step 1: fly to exact pin at zoom 15
+  map.flyTo([item.lat, item.lng], 15, { duration: 0.7, easeLinearity: 0.5 });
+  // Step 2: once animation ends, measure pin position and pan so it sits
+  // centered in the visible strip above the active card
+  map.once('moveend', function(){
+    const pt       = map.latLngToContainerPoint([item.lat, item.lng]);
+    const appH     = document.getElementById('app').offsetHeight;
+    const cardH    = document.getElementById('activeCard').offsetHeight || 360;
+    const topBarH  = 160;
+    const visBottom = appH - cardH - 24;
+    const targetY   = topBarH + (visBottom - topBarH) / 2;
+    const panY = Math.round(pt.y - targetY);
+    if (Math.abs(panY) > 8) map.panBy([0, panY], { animate: true, duration: 0.25 });
+  });
+}
+function dismissActiveCard(){
+  const prev=activeCardId; activeCardId=null;
+  if(prev) refreshMarker(prev);
+  document.getElementById('activeCard').classList.remove('visible');
+  expandSheet();
+}
+
+// ── SHEET ─────────────────────────────────────────────────────────
+const PEEK=230;
+function collapseSheet(){
+  const h=document.getElementById('sheetCard').offsetHeight;
+  document.getElementById('sheet').style.transform=`translateY(${h-PEEK}px)`;
+  collapsed=true;
+}
+function expandSheet(){
+  document.getElementById('sheet').style.transform='translateY(0)';
+  collapsed=false;
+}
+function cardHtml(item){
+  return `<div class="ecard" onclick="showActiveCard(${item.id})">
+    <img class="ecard-img" src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400'">
+    <div class="ecard-body">
+      <div class="ecard-title">${item.name}</div>
+      <div class="ecard-desc">${item.desc}</div>
+      <div class="ecard-meta">
+        <span class="meta-tag">${S.clock}${item.date} · ${item.time.split('–')[0]}</span>
+        <span class="meta-tag">${S.pin}${item.loc}</span>
+      </div>
+    </div>
+  </div>`;
+}
+function sec(title,items){ return items.length?`<div class="section"><div class="section-title">${title}</div><div class="h-scroll-wrap"><div class="h-scroll">${items.map(cardHtml).join('')}</div></div></div>`:''; }
+function renderSheet(){
+  const vis=ITEMS.filter(i=>activeCats.has(i.cat));
+  document.getElementById('sheetContent').innerHTML=
+    sec('Events',vis.filter(i=>i.cat==='event'))+
+    sec('Konst',vis.filter(i=>i.cat==='konst'))+
+    sec('Mötesplatser',vis.filter(i=>i.cat==='motes'))+
+    sec('Musik',vis.filter(i=>i.cat==='musik'));
+}
+function toggleCat(btn){
+  const cat=btn.dataset.cat;
+  activeCats.has(cat)?activeCats.delete(cat):activeCats.add(cat);
+  btn.classList.toggle('off',!activeCats.has(cat));
+  ITEMS.forEach(item=>{
+    const m=leafMarkers[item.id]; if(!m)return;
+    activeCats.has(item.cat)?(!map.hasLayer(m)&&map.addLayer(m)):(map.hasLayer(m)&&map.removeLayer(m));
+  });
+  renderSheet();
+}
+
+// ── SHEET DRAG (touch + pointer, no click-toggle) ─────────────────
+let dY0,dT0,dDrag=false;
+function setupSheetDrag(){
+  // drag zone = the whole top section (handle wrap + header)
+  const hw=document.getElementById('handleWrap');
+  const sh=document.getElementById('sheet');
+
+  function onStart(clientY){
+    dDrag=true; dY0=clientY;
+    dT0=collapsed?document.getElementById('sheetCard').offsetHeight-PEEK:0;
+    sh.style.transition='none';
+  }
+  function onMove(clientY){
+    if(!dDrag)return;
+    sh.style.transform=`translateY(${Math.max(0,dT0+clientY-dY0)}px)`;
+  }
+  function onEnd(clientY){
+    if(!dDrag)return; dDrag=false;
+    sh.style.transition='';
+    const dy=clientY-dY0;
+    if(dy>50) collapseSheet();
+    else if(dy<-50) expandSheet();
+    else collapsed?collapseSheet():expandSheet();
+  }
+
+  // Touch events (iOS primary)
+  hw.addEventListener('touchstart',e=>{ e.preventDefault(); onStart(e.touches[0].clientY); },{passive:false});
+  document.addEventListener('touchmove',e=>{ if(dDrag){ e.preventDefault(); onMove(e.touches[0].clientY); } },{passive:false});
+  document.addEventListener('touchend',e=>{ if(dDrag) onEnd(e.changedTouches[0].clientY); },{passive:true});
+
+  // Pointer events fallback (desktop/hybrid)
+  hw.addEventListener('pointerdown',e=>{ if(e.pointerType==='touch')return; onStart(e.clientY); hw.setPointerCapture(e.pointerId); });
+  hw.addEventListener('pointermove',e=>{ if(e.pointerType==='touch')return; onMove(e.clientY); });
+  hw.addEventListener('pointerup',e=>{ if(e.pointerType==='touch')return; onEnd(e.clientY); });
+}
+
+// ── ACTIVE CARD SWIPE-DOWN TO DISMISS ────────────────────────────
+function setupActiveCardSwipe(){
+  const ac=document.getElementById('activeCard');
+  let acY0,acDrag=false,acBase=0;
+
+  ac.addEventListener('touchstart',e=>{
+    // only on the drag-handle area (top 40px) or if it's a swipe down
+    acDrag=true; acY0=e.touches[0].clientY; acBase=0;
+    ac.style.transition='none';
+  },{passive:true});
+  ac.addEventListener('touchmove',e=>{
+    if(!acDrag)return;
+    const dy=e.touches[0].clientY-acY0;
+    if(dy>0){ e.preventDefault(); ac.style.transform=`translateY(${dy}px)`; }
+  },{passive:false});
+  ac.addEventListener('touchend',e=>{
+    if(!acDrag)return; acDrag=false;
+    ac.style.transition='';
+    const dy=e.changedTouches[0].clientY-acY0;
+    if(dy>80) dismissActiveCard();
+    else ac.style.transform='translateY(0)';
+  },{passive:true});
+}
+
+// ── iOS ACTION SHEET ──────────────────────────────────────────────
+function showActionSheet(options) {
+  const bg   = document.getElementById('actionSheetBg');
+  const el   = document.getElementById('actionSheet');
+  const opts = document.getElementById('actionSheetOptions');
+
+  opts.innerHTML = options.map((o, i) => `
+    <button onclick="actionSheetTap(${i})"
+      style="width:100%;padding:17px 16px;background:none;border:none;border-top:${i>0?'0.5px solid rgba(0,0,0,.15)':'none'};
+             font-family:'Inter',sans-serif;font-size:17px;font-weight:${o.bold?'600':'400'};color:${o.destructive?'#ff3b30':o.bold?'#000':'#007aff'};
+             text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px">
+      ${o.label}
+      ${o.subtitle?`<span style="font-size:13px;font-weight:400;color:rgba(0,0,0,.45);margin-top:1px">${o.subtitle}</span>`:''}
+    </button>`).join('');
+
+  el._options = options;
+  bg.style.pointerEvents = 'auto';
+  bg.style.background = 'rgba(0,0,0,.15)';
+  el.style.transform = 'translateY(0)';
+}
+function closeActionSheet() {
+  const bg = document.getElementById('actionSheetBg');
+  const el = document.getElementById('actionSheet');
+  bg.style.background = 'rgba(0,0,0,0)';
+  bg.style.pointerEvents = 'none';
+  el.style.transform = 'translateY(calc(100% + 12px))';
+}
+function actionSheetTap(i) {
+  const opts = document.getElementById('actionSheet')._options;
+  closeActionSheet();
+  if (opts[i] && opts[i].action) opts[i].action();
+}
+
+// ── EXTERNAL LINKS ────────────────────────────────────────────────
+function openMapsSheet(item) {
+  showActionSheet([
+    {
+      label: '🗺️ Öppna i Apple Kartor',
+      bold: false,
+      action: () => window.open(`https://maps.apple.com/?daddr=${item.lat},${item.lng}&dirflg=d`, '_blank')
+    },
+    {
+      label: '📍 Öppna i Google Maps',
+      bold: false,
+      action: () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank')
+    }
+  ]);
+}
+function openEventUrl(item) {
+  const host = item.url.replace(/https?:\/\//, '').replace(/\/.*/,'');
+  showActionSheet([
+    {
+      label: `Öppna ${host}`,
+      subtitle: `Mer info om ${item.name}`,
+      bold: true,
+      action: () => window.open(item.url, '_blank')
+    }
+  ]);
+}
+function openSearch(){
+  document.getElementById('searchScreen').classList.add('visible');
+  setTimeout(()=>document.getElementById('searchInput').focus(),300);
+  onSearch('');
+}
+function closeSearch(){
+  document.getElementById('searchScreen').classList.remove('visible');
+  document.getElementById('searchInput').value='';
+}
+function onSearch(q){
+  const results=document.getElementById('searchResults');
+  const term=q.trim().toLowerCase();
+  const hits=term?ITEMS.filter(i=>i.name.toLowerCase().includes(term)||i.desc.toLowerCase().includes(term)||i.loc.toLowerCase().includes(term)):ITEMS;
+  if(!hits.length){
+    results.innerHTML=`<div class="srch-empty">Inga resultat för "${q}"</div>`;
+    return;
+  }
+  results.innerHTML=hits.map(item=>`
+    <div class="srch-card" onclick="closeSearch();showActiveCard(${item.id})">
+      <img class="srch-card-img" src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1486325212027-8081e485255e?w=200'">
+      <div class="srch-card-body">
+        <div class="srch-card-title">${item.name}</div>
+        <div class="srch-card-desc">${item.desc}</div>
+        <span class="srch-card-cat" style="background:${CAT_BG[item.cat]};color:${CAT_COLOR[item.cat]}">${CAT_LABEL[item.cat]}</span>
+      </div>
+    </div>`).join('');
+}
+document.getElementById('searchPillBtn').addEventListener('click',openSearch);
+
+// ── DETAIL ────────────────────────────────────────────────────────
+function openDetail(id){
+  const item=ITEMS.find(x=>x.id===id);
+  if(!item)return;
+  const col=CAT_COLOR[item.cat], bg=CAT_BG[item.cat], lbl=CAT_LABEL[item.cat];
+
+  document.getElementById('detHero').src=item.img;
+  document.getElementById('detHero').onerror=function(){this.src='https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600'};
+
+  document.getElementById('detCardBody').innerHTML=`
+    <div style="text-align:center;margin-bottom:4px">
+      <div style="width:32px;height:32px;border-radius:50%;background:#d00;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">ABF</div>
+      <div class="det-title">${item.name}</div>
+      <div class="det-subtitle">${item.desc}</div>
+    </div>
+    <div class="det-stats">
+      <div class="det-stat">
+        <div class="det-stat-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#333" stroke-width="1.8"/><path d="M8 2v4M16 2v4M3 10h18" stroke="#333" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="det-stat-val">${item.date}</div>
+      </div>
+      <div class="det-stat">
+        <div class="det-stat-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="#333" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+        <div class="det-stat-val">${item.loc}</div>
+      </div>
+      <div class="det-stat">
+        <div class="det-stat-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#333" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="#333" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="det-stat-val">${item.time}</div>
+      </div>
+    </div>
+    <p class="det-desc">${item.longDesc}</p>
+    <div class="det-map-label">Var det är</div>
+    <div class="det-map" id="detMapEl"></div>
+    <div class="det-addr-name">${item.loc}</div>
+    <div class="det-addr-street">${item.addr} <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="opacity:.6"><path d="M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3M9 2h5v5M14 2l-7 7" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="det-divider"></div>
+    <div class="det-host">
+      <div class="det-host-logo" style="display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">ABF</div>
+      <div><div class="det-host-name">Hosted av ${item.host}</div><div class="det-host-since">Arrangör i Huddinge Kommun</div></div>
+    </div>`;
+
+  const detBottom=document.getElementById('detBottom');
+  detBottom.classList.add('visible');
+  document.getElementById('detFlyBtn').onclick=()=>{ openMapsSheet(item); };
+  document.getElementById('detBottom').querySelector('.btn-dark').onclick=()=>{ openEventUrl(item); };
+
+  const ds=document.getElementById('detailScreen');
+  ds.classList.add('visible');
+  ds.scrollTop=0;
+
+  // init mini-map after DOM settles
+  if(detailMapInstance){ detailMapInstance.remove(); detailMapInstance=null; }
+  setTimeout(()=>{
+    const el=document.getElementById('detMapEl');
+    if(!el)return;
+    detailMapInstance=L.map(el,{center:[item.lat,item.lng],zoom:15,zoomControl:false,attributionControl:false,interactive:false,dragging:false});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd'}).addTo(detailMapInstance);
+    const pi=L.divIcon({html:`<div style="width:16px;height:16px;border-radius:50%;background:${col};border:2.5px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,className:'',iconSize:[16,16],iconAnchor:[8,8]});
+    L.marker([item.lat,item.lng],{icon:pi}).addTo(detailMapInstance);
+    setTimeout(()=>detailMapInstance.invalidateSize(),50);
+  },100);
+}
+function closeDetail(){
+  document.getElementById('detailScreen').classList.remove('visible');
+  document.getElementById('detBottom').classList.remove('visible');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  initMap(); renderSheet();
+  setupSheetDrag();
+  setupActiveCardSwipe();
+  requestAnimationFrame(()=>{
+    document.getElementById('sheet').style.transition='none';
+    collapseSheet();
+    requestAnimationFrame(()=>{ document.getElementById('sheet').style.transition=''; });
+  });
+});
+</script>
+</body>
+</html>
