@@ -103,6 +103,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   padding:calc(env(safe-area-inset-top,44px) + 12px) 16px 20px;
   background:linear-gradient(to bottom,rgba(0,0,0,.22) 0%,rgba(0,0,0,.06) 65%,transparent 100%);
   pointer-events:none;
+  overflow:hidden;
 }
 #topBar>*{pointer-events:auto}
 @media(min-width:768px){#topBar{display:none}}
@@ -817,26 +818,57 @@ function expandSheet(){ document.getElementById('sheet').style.transform='transl
 
 let dY0,dT0,dDrag=false;
 function setupSheetDrag(){
-  const hw=document.getElementById('handleWrap');
-  const sh=document.getElementById('sheet');
+  const hw  = document.getElementById('handleWrap');
+  const body= document.getElementById('sheetContent').parentElement; // .sheet-body
+  const sh  = document.getElementById('sheet');
+
   function onStart(y){
-    if(document.getElementById('activeCard').classList.contains('visible'))return;
+    if(document.getElementById('activeCard').classList.contains('visible')) return;
     dDrag=true; dY0=y;
-    dT0=collapsed?document.getElementById('sheetCard').offsetHeight-PEEK:0;
+    dT0=collapsed ? document.getElementById('sheetCard').offsetHeight-PEEK : 0;
     sh.style.transition='none';
   }
-  function onMove(y){ if(!dDrag)return; sh.style.transform=`translateY(${Math.max(0,dT0+y-dY0)}px)`; }
+  function onMove(y){ if(!dDrag) return; sh.style.transform=`translateY(${Math.max(0,dT0+y-dY0)}px)`; }
   function onEnd(y){
-    if(!dDrag)return; dDrag=false; sh.style.transition='';
+    if(!dDrag) return; dDrag=false; sh.style.transition='';
     const dy=y-dY0;
     if(dy>50) collapseSheet(); else if(dy<-50) expandSheet(); else collapsed?collapseSheet():expandSheet();
   }
+
+  // ── Handle pip ──────────────────────────────────────────────────
   hw.addEventListener('touchstart',e=>{ e.preventDefault(); onStart(e.touches[0].clientY); },{passive:false});
   document.addEventListener('touchmove',e=>{ if(dDrag){ e.preventDefault(); onMove(e.touches[0].clientY); } },{passive:false});
   document.addEventListener('touchend',e=>{ if(dDrag) onEnd(e.changedTouches[0].clientY); },{passive:true});
+  // desktop pointer
   hw.addEventListener('pointerdown',e=>{ if(e.pointerType==='touch')return; onStart(e.clientY); hw.setPointerCapture(e.pointerId); });
   hw.addEventListener('pointermove',e=>{ if(e.pointerType==='touch')return; onMove(e.clientY); });
-  hw.addEventListener('pointerup',e=>{ if(e.pointerType==='touch')return; onEnd(e.clientY); });
+  hw.addEventListener('pointerup',  e=>{ if(e.pointerType==='touch')return; onEnd(e.clientY); });
+
+  // ── Sheet body: drag-down when already scrolled to top ──────────
+  let bodyY0=0, bodyDrag=false;
+  body.addEventListener('touchstart',e=>{
+    if(document.getElementById('activeCard').classList.contains('visible')) return;
+    bodyY0=e.touches[0].clientY; bodyDrag=false;
+  },{passive:true});
+  body.addEventListener('touchmove',e=>{
+    if(document.getElementById('activeCard').classList.contains('visible')) return;
+    const dy=e.touches[0].clientY-bodyY0;
+    // Only hijack if: not already collapsed, at scroll top, swiping DOWN
+    if(!collapsed && body.scrollTop===0 && dy>6){
+      bodyDrag=true;
+    }
+    if(bodyDrag){
+      e.preventDefault();
+      sh.style.transition='none';
+      sh.style.transform=`translateY(${Math.max(0,dy)}px)`;
+    }
+  },{passive:false});
+  body.addEventListener('touchend',e=>{
+    if(!bodyDrag) return; bodyDrag=false;
+    sh.style.transition='';
+    const dy=e.changedTouches[0].clientY-bodyY0;
+    if(dy>80) collapseSheet(); else expandSheet();
+  },{passive:true});
 }
 
 // ── ACTIVE CARD SWIPE DISMISS ────────────────────────────────────
