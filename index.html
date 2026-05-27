@@ -10,28 +10,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
-html{height:100%;height:-webkit-fill-available}
-html,body{overflow:hidden;background:#111;overscroll-behavior:none}
-body{
-  min-height:100vh;min-height:100dvh;min-height:-webkit-fill-available;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Inter',sans-serif;
-}
+html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none}
+body{font-family:'Inter',sans-serif}
 
 /* ── SHELL ── */
+/* Mobile: fixed inset:0 — the only 100% reliable full-screen on iOS Safari */
 #app{
-  position:relative;
-  width:100vw;
-  height:100vh;height:100dvh;height:-webkit-fill-available;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
   background:#f6f6f6;
+  overflow:hidden;
 }
-/* Desktop/iPad: cap width, centre, add shadow frame */
+
+/* Desktop/iPad ≥600px: centred floating frame */
 @media(min-width:600px){
+  body{display:flex;align-items:center;justify-content:center}
   #app{
+    position:relative;
+    top:auto;left:auto;right:auto;bottom:auto;
     width:min(500px,100vw);
-    height:min(900px,100vh);height:min(900px,100dvh);
+    height:min(900px,100vh);
     border-radius:40px;
     box-shadow:0 0 0 1px rgba(255,255,255,.06),0 40px 100px rgba(0,0,0,.65);
+    overflow:hidden;
   }
 }
 
