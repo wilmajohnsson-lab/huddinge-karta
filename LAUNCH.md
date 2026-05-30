@@ -1,55 +1,55 @@
 # Pre-Launch Checklist
 
 ## Legal & Attribution
-- [ ] Map tile attribution visible on every map view (CARTO + OSM)
-- [ ] Attribution not hidden by CSS
-- [ ] Photo credits documented in CREDITS.md (photographer names filled in)
-- [ ] Tile provider terms of service reviewed
-- [ ] MIT license file present
+- [x] Map tile attribution visible on every map view (CARTO + OSM)
+- [x] Attribution not hidden by CSS
+- [x] Photo credits documented in CREDITS.md (photographer names filled in)
+- [x] Tile provider terms of service reviewed
+- [x] MIT license file present
 
 ## Technical
-- [ ] `npm run build` completes without errors or warnings
-- [ ] `npm run lint` passes with 0 errors
-- [ ] `npm run validate` passes (items.json schema valid)
-- [ ] `dist/` contains: index.html, assets/index.js, assets/index.css, data/items.json, favicon.svg, manifest.json, _headers, robots.txt
-- [ ] No CDN dependencies except Google Fonts (Leaflet fully bundled)
-- [ ] No inline script handlers in HTML (`script-src 'self'` CSP enforced)
-- [ ] `VITE_TILE_URL` documented in `.env.example`
+- [x] `npm run build` completes without errors or warnings
+- [x] `npm run lint` passes with 0 errors
+- [x] `npm run validate` passes (items.json schema valid)
+- [x] `dist/` contains: index.html, assets/index.js, assets/index.css, data/items.json, favicon.svg, manifest.json, _headers, robots.txt
+- [x] No CDN dependencies except Google Fonts (Leaflet fully bundled)
+- [x] No inline script handlers in HTML (`script-src 'self'` CSP enforced)
+- [x] `VITE_TILE_URL` documented in `.env.example`
 
 ## Content
-- [ ] All 13 items have valid lat/lng coordinates
-- [ ] All image URLs are reachable (check Unsplash links)
-- [ ] All event URLs are valid (check host websites)
-- [ ] Photographer credits filled in CREDITS.md
+- [x] All 13 items have valid lat/lng coordinates
+- [x] All image URLs are reachable (check Unsplash links)
+- [x] All event URLs are valid (check host websites)
+- [x] Photographer credits filled in CREDITS.md
 - [ ] Date/time information is current
 
 ## UX & Accessibility
-- [ ] Map loads and tiles appear on desktop and mobile
-- [ ] Search, filter, and category chips work correctly
-- [ ] Detail view opens and mini-map renders
-- [ ] Directions sheet (Apple Maps / Google Maps) opens
-- [ ] Skip link visible on keyboard focus
-- [ ] All icon buttons have aria-labels
-- [ ] Filter panel, search screen, detail screen have `role=dialog` + `aria-modal`
-- [ ] Escape key closes open modals
-- [ ] Focus returns to trigger element after modal closes
+- [x] Map loads and tiles appear on desktop and mobile
+- [x] Search, filter, and category chips work correctly
+- [x] Detail view opens and mini-map renders
+- [x] Directions sheet (Apple Maps / Google Maps) opens
+- [x] Skip link visible on keyboard focus
+- [x] All icon buttons have aria-labels
+- [x] Filter panel, search screen, detail screen have `role=dialog` + `aria-modal`
+- [x] Escape key closes open modals
+- [x] Focus returns to trigger element after modal closes
 - [ ] Mobile bottom sheet drag works
 - [ ] Swipe-to-dismiss active card works
-- [ ] Pinch-to-zoom enabled (no `user-scalable=no`)
+- [x] Pinch-to-zoom enabled (no `user-scalable=no`)
 - [ ] Responsive: test at 375px, 768px, 1280px
 
 ## Security
-- [ ] Content-Security-Policy header deployed (`script-src 'self'`)
-- [ ] X-Frame-Options: DENY
-- [ ] X-Content-Type-Options: nosniff
-- [ ] Strict-Transport-Security (HSTS with preload)
-- [ ] HTTPS enforced (HTTP → HTTPS redirect)
-- [ ] `window.open()` uses `noopener,noreferrer`
-- [ ] No secrets in git history
+- [x] Content-Security-Policy header deployed (`script-src 'self'`)
+- [x] X-Frame-Options: DENY
+- [x] X-Content-Type-Options: nosniff
+- [x] Strict-Transport-Security (HSTS with preload)
+- [x] HTTPS enforced (HTTP → HTTPS redirect)
+- [x] `window.open()` uses `noopener,noreferrer`
+- [x] No secrets in git history
 
 ## CI/CD
-- [ ] GitHub Actions CI passes on `dev/prepare-deploy` branch
-- [ ] `deploy.yml` configured for correct branch (`main`)
+- [x] GitHub Actions CI passes on `dev/prepare-deploy` branch
+- [x] `deploy.yml` configured for correct branch (`main`)
 - [ ] GitHub Secrets set: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_PATH`, `DEPLOY_SSH_KEY`
 - [ ] Manual deploy tested: `DEPLOY_HOST=... ./scripts/deploy.sh --dry-run`
 
