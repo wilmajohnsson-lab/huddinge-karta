@@ -42,19 +42,19 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          cat >> ~/.ssh/config << 'EOF'
-          Host ssh-deploy.example.com
-            ProxyCommand cloudflared access ssh --hostname %h
-            StrictHostKeyChecking no
-            IdentityFile ~/.ssh/deploy_key
-            User deploy
-          EOF
+          printf '%s\n' \
+            'Host ssh-deploy.example.com' \
+            '  ProxyCommand cloudflared access ssh --hostname %h' \
+            '  StrictHostKeyChecking no' \
+            '  IdentityFile ~/.ssh/deploy_key' \
+            '  User deploy' > ~/.ssh/config
+          chmod 600 ~/.ssh/config
 
       - name: Deploy via rsync
         run: |
           rsync -avz --delete --checksum \
             --exclude='.DS_Store' \
-            -e "ssh -F ~/.ssh/config" \
+            -e 'ssh -F ~/.ssh/config' \
             dist/ \
             "deploy@ssh-deploy.example.com:${{ secrets.DEPLOY_PATH }}/"
 
