@@ -3,6 +3,14 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../css/styles.css';
 
+// ── Tile provider (override via VITE_TILE_URL env var) ────────────
+const TILE_URL =
+  import.meta.env.VITE_TILE_URL ||
+  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+const TILE_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
+  '&copy; <a href="https://carto.com/attributions">CARTO</a>';
+
 // ── SVGs ──────────────────────────────────────────────────────────
 const S = {
   whiteboard: `<svg viewBox="0 0 24 24" fill="none"><path d="M16 18H19c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-7M16 18l1 3M16 18H8M8 18H5c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h7M8 18l-1 3M12 18v2M12 5V3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -42,8 +50,21 @@ let map,
 let selectedCat = null;
 const filterState = { free: false, orgs: new Set(), areas: new Set() };
 
+// ── HELPERS ───────────────────────────────────────────────────────
 function isDesktop() {
   return window.innerWidth >= 768;
+}
+
+/**
+ * Lightweight event delegation.
+ * Listens on `root`, fires `handler(event, matchedEl)` when a click
+ * target matches `selector` inside root.
+ */
+function delegate(root, selector, handler) {
+  root.addEventListener('click', (e) => {
+    const target = e.target.closest(selector);
+    if (target && root.contains(target)) handler(e, target);
+  });
 }
 
 // ── MAP ───────────────────────────────────────────────────────────
@@ -59,11 +80,10 @@ function initMap() {
     maxBoundsViscosity: 1,
     zoomControl: false,
   });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer(TILE_URL, {
     subdomains: 'abcd',
     maxZoom: 19,
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    attribution: TILE_ATTRIBUTION,
   }).addTo(map);
   const ui = L.divIcon({
     html: `<div class="user-dot"><div class="user-dot-inner"></div></div>`,
@@ -112,7 +132,12 @@ function refreshMarker(id) {
   const big = activeCardId === id,
     sz = big ? 87.6 : 62.7;
   m.setIcon(
-    L.divIcon({ html: mHtml(item.cat, big), className: '', iconSize: [sz, sz], iconAnchor: [sz / 2, sz] })
+    L.divIcon({
+      html: mHtml(item.cat, big),
+      className: '',
+      iconSize: [sz, sz],
+      iconAnchor: [sz / 2, sz],
+    })
   );
 }
 
@@ -172,7 +197,7 @@ function initFilterChips() {
     const b = document.createElement('button');
     b.className = 'fp-chip';
     b.textContent = o;
-    b.onclick = () => toggleFpChip(b, filterState.orgs, o);
+    b.addEventListener('click', () => toggleFpChip(b, filterState.orgs, o));
     orgsEl.appendChild(b);
   });
   const areasEl = document.getElementById('fpAreas');
@@ -180,7 +205,7 @@ function initFilterChips() {
     const b = document.createElement('button');
     b.className = 'fp-chip';
     b.textContent = a.name;
-    b.onclick = () => toggleFpChip(b, filterState.areas, a.id);
+    b.addEventListener('click', () => toggleFpChip(b, filterState.areas, a.id));
     areasEl.appendChild(b);
   });
 }
@@ -215,9 +240,9 @@ function selectCat(cat) {
 function chipHtml(cat) {
   const isOn = selectedCat === cat,
     isDim = selectedCat !== null && !isOn;
-  return `<button class="chip chip-${cat}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" onclick="selectCat('${cat}')">
+  return `<button class="chip chip-${cat}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${cat}">
     ${CHIP_SVGS[cat]}${CAT_LABEL[cat]}
-    ${isOn ? `<span class="chip-x" onclick="event.stopPropagation();selectCat('${cat}')">×</span>` : ''}
+    ${isOn ? '<span class="chip-x">×</span>' : ''}
   </button>`;
 }
 
@@ -237,8 +262,8 @@ function metaHtml(item) {
 }
 
 function eCardHtml(item) {
-  return `<div class="ecard" onclick="showActiveCard(${item.id})">
-    <img class="ecard-img" src="${item.img}" alt="${item.name}" loading="lazy">
+  return `<div class="ecard" data-item-id="${item.id}">
+    <img class="ecard-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
     <div class="ecard-body">
       <div class="ecard-title">${item.name}</div>
       <div class="ecard-desc">${item.desc}</div>
@@ -248,8 +273,8 @@ function eCardHtml(item) {
 }
 
 function spCardHtml(item) {
-  return `<div class="sp-card" onclick="showActiveCard(${item.id})">
-    <img class="sp-card-img" src="${item.img}" alt="${item.name}" loading="lazy">
+  return `<div class="sp-card" data-item-id="${item.id}">
+    <img class="sp-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
     <div class="sp-card-body">
       <div>
         <div class="sp-card-title">${item.name}</div>
@@ -292,14 +317,21 @@ function renderContent() {
 function showActiveCard(id) {
   const prev = activeCardId;
   activeCardId = id;
-  window.activeCardId = id; // keep window in sync for inline handlers
   if (prev && prev !== id) refreshMarker(prev);
   refreshMarker(id);
   const item = ITEMS.find((x) => x.id === id);
-  const meta = `<div class="meta-tag">${S.clock}${item.date} · ${item.time.split('–')[0]}</div><div class="meta-tag">${S.pin}${item.loc}</div>${item.free ? '<span class="free-badge">Gratis</span>' : ''}`;
+  const meta =
+    `<div class="meta-tag">${S.clock}${item.date} · ${item.time.split('–')[0]}</div>` +
+    `<div class="meta-tag">${S.pin}${item.loc}</div>` +
+    (item.free ? '<span class="free-badge">Gratis</span>' : '');
   if (isDesktop()) {
-    document.getElementById('sacImg').src = item.img;
-    document.getElementById('sacTitle').textContent = item.name;
+    const sacImg = document.getElementById('sacImg');
+    sacImg.src = item.img;
+    sacImg.alt = item.name;
+    sacImg.onclick = () => openDetail(id);
+    const sacTitle = document.getElementById('sacTitle');
+    sacTitle.textContent = item.name;
+    sacTitle.onclick = () => openDetail(id);
     document.getElementById('sacDesc').textContent = item.desc;
     document.getElementById('sacMeta').innerHTML = meta;
     document.getElementById('sacFlyBtn').onclick = () => openMapsSheet(item);
@@ -307,13 +339,18 @@ function showActiveCard(id) {
     document.getElementById('spBody').style.display = 'none';
     document.getElementById('spActiveCard').style.display = 'flex';
   } else {
-    document.getElementById('acImg').src = item.img;
-    document.getElementById('acTitle').textContent = item.name;
+    const acImg = document.getElementById('acImg');
+    acImg.src = item.img;
+    acImg.alt = item.name;
+    acImg.onclick = () => openDetail(id);
+    const acTitle = document.getElementById('acTitle');
+    acTitle.textContent = item.name;
+    acTitle.onclick = () => openDetail(id);
     document.getElementById('acDesc').textContent = item.desc;
     document.getElementById('acMeta').innerHTML = meta;
     document.getElementById('acFlyBtn').onclick = () => openMapsSheet(item);
     document.getElementById('acJoinBtn').onclick = () => openEventUrl(item);
-    document.getElementById('detailScreen').querySelector('.det-back').onclick = closeDetail;
+    document.getElementById('detBackBtn').onclick = closeDetail;
     hideSheet();
     document.getElementById('activeCard').classList.add('visible');
   }
@@ -323,7 +360,6 @@ function showActiveCard(id) {
 function dismissActiveCard() {
   const prev = activeCardId;
   activeCardId = null;
-  window.activeCardId = null;
   if (prev) refreshMarker(prev);
   if (isDesktop()) {
     document.getElementById('spActiveCard').style.display = 'none';
@@ -381,7 +417,9 @@ function expandSheet() {
   collapsed = false;
 }
 
-let dY0, dT0, dDrag = false;
+let dY0,
+  dT0,
+  dDrag = false;
 
 function setupSheetDrag() {
   const hw = document.getElementById('handleWrap');
@@ -416,7 +454,8 @@ function setupSheetDrag() {
   hw.addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; onMove(e.clientY); });
   hw.addEventListener('pointerup', (e) => { if (e.pointerType === 'touch') return; onEnd(e.clientY); });
 
-  let bodyY0 = 0, bodyDrag = false;
+  let bodyY0 = 0,
+    bodyDrag = false;
   body.addEventListener('touchstart', (e) => {
     if (document.getElementById('activeCard').classList.contains('visible')) return;
     bodyY0 = e.touches[0].clientY;
@@ -445,7 +484,8 @@ function setupSheetDrag() {
 // ── ACTIVE CARD SWIPE DISMISS ────────────────────────────────────
 function setupActiveCardSwipe() {
   const ac = document.getElementById('activeCard');
-  let acY0 = 0, acDrag = false;
+  let acY0 = 0,
+    acDrag = false;
   ac.addEventListener('touchstart', (e) => {
     if (!ac.classList.contains('visible')) return;
     acDrag = true;
@@ -472,7 +512,6 @@ function setupActiveCardSwipe() {
         ac.style.transform = '';
         const prev = activeCardId;
         activeCardId = null;
-        window.activeCardId = null;
         if (prev) refreshMarker(prev);
         expandSheet();
       }, { once: true });
@@ -508,8 +547,8 @@ function onSearch(q) {
   res.innerHTML = hits
     .map(
       (item) => `
-    <div class="srch-card" onclick="closeSearch();showActiveCard(${item.id})">
-      <img class="srch-card-img" src="${item.img}" alt="${item.name}" loading="lazy">
+    <div class="srch-card" data-item-id="${item.id}">
+      <img class="srch-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
       <div class="srch-card-body">
         <div class="srch-card-title">${item.name}</div>
         <div class="srch-card-desc">${item.desc}</div>
@@ -532,7 +571,7 @@ function openDetail(id) {
     lbl = CAT_LABEL[item.cat];
   const icoFn = (c) => CAT_SVG_W[item.cat].replace(/stroke="white"/g, `stroke="${c}"`);
   document.getElementById('detInner').innerHTML = `
-    <img class="det-hero" src="${item.img}" alt="${item.name}">
+    <img class="det-hero" src="${item.img}" alt="${item.name}" decoding="async">
     <div class="det-card">
       <div style="text-align:center">
         <div style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:40px;background:${bg};color:${col};font-size:13px;font-weight:600;margin:0 0 10px">${icoFn(col)}${lbl}</div>
@@ -573,11 +612,7 @@ function openDetail(id) {
       interactive: false,
       dragging: false,
     });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    }).addTo(detailMapInstance);
+    L.tileLayer(TILE_URL, { subdomains: 'abcd', attribution: TILE_ATTRIBUTION }).addTo(detailMapInstance);
     const pi = L.divIcon({
       html: `<div style="width:14px;height:14px;border-radius:50%;background:${col};border:2.5px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
       className: '',
@@ -601,7 +636,7 @@ function showActionSheet(opts) {
   document.getElementById('actionSheetOptions').innerHTML = opts
     .map(
       (o, i) => `
-    <button onclick="actionSheetTap(${i})" style="width:100%;padding:17px 16px;background:none;border:none;border-top:${i > 0 ? '0.5px solid rgba(0,0,0,.15)' : 'none'};font-family:'Inter',sans-serif;font-size:17px;font-weight:${o.bold ? '600' : '400'};color:${o.bold ? '#000' : '#007aff'};text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px">
+    <button data-opt-index="${i}" style="width:100%;padding:17px 16px;background:none;border:none;border-top:${i > 0 ? '0.5px solid rgba(0,0,0,.15)' : 'none'};font-family:'Inter',sans-serif;font-size:17px;font-weight:${o.bold ? '600' : '400'};color:${o.bold ? '#000' : '#007aff'};text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px">
       ${o.label}${o.subtitle ? `<span style="font-size:13px;font-weight:400;color:rgba(0,0,0,.45)">${o.subtitle}</span>` : ''}
     </button>`
     )
@@ -631,7 +666,8 @@ function openMapsSheet(item) {
     },
     {
       label: '📍 Öppna i Google Maps',
-      action: () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank'),
+      action: () =>
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank'),
     },
   ]);
 }
@@ -648,29 +684,54 @@ function openEventUrl(item) {
   ]);
 }
 
-// ── EXPOSE to window for inline HTML event handlers ───────────────
-// (inline onclick attributes run in global scope; modules don't pollute it)
-Object.assign(window, {
-  openSearch,
-  closeSearch,
-  onSearch,
-  toggleFilter,
-  closeFilter,
-  resetFilters,
-  applyFilters,
-  selectCat,
-  showActiveCard,
-  openDetail,
-  dismissActiveCard,
-  closeActionSheet,
-  actionSheetTap,
-  closeDetail,
-});
-// activeCardId is read by inline onclick="openDetail(activeCardId)" — expose as getter
-Object.defineProperty(window, 'activeCardId', {
-  get: () => activeCardId,
-  configurable: true,
-});
+// ── DOM WIRING — all event listeners in one place ─────────────────
+function initDom() {
+  // Search
+  document.getElementById('spSearchBtn').addEventListener('click', openSearch);
+  document.getElementById('searchPillBtn').addEventListener('click', openSearch);
+  document.getElementById('searchCancelBtn').addEventListener('click', closeSearch);
+  document.getElementById('searchInput').addEventListener('input', (e) => onSearch(e.target.value));
+
+  // Filter panel
+  document.getElementById('spFilterBtn').addEventListener('click', toggleFilter);
+  document.getElementById('mFilterBtn').addEventListener('click', toggleFilter);
+  document.getElementById('filterBg').addEventListener('click', closeFilter);
+  document.getElementById('filterCloseBtn').addEventListener('click', closeFilter);
+  document.getElementById('freeToggle').addEventListener('change', applyFilters);
+  document.getElementById('filterResetBtn').addEventListener('click', resetFilters);
+  document.getElementById('filterApplyBtn').addEventListener('click', closeFilter);
+
+  // Active card back button (desktop side panel)
+  document.getElementById('sacBackBtn').addEventListener('click', dismissActiveCard);
+
+  // Action sheet dismiss
+  document.getElementById('actionSheetBg').addEventListener('click', closeActionSheet);
+  document.getElementById('actionSheetCancelBtn').addEventListener('click', closeActionSheet);
+
+  // Category chips — event delegation on both chip containers
+  const chipHandler = (_e, el) => selectCat(el.dataset.cat);
+  delegate(document.getElementById('chips'), '[data-cat]', chipHandler);
+  delegate(document.getElementById('spChips'), '[data-cat]', chipHandler);
+
+  // Content cards — event delegation on each scroll container
+  delegate(document.getElementById('sheetContent'), '[data-item-id]', (_e, el) =>
+    showActiveCard(Number(el.dataset.itemId))
+  );
+  delegate(document.getElementById('spBody'), '[data-item-id]', (_e, el) =>
+    showActiveCard(Number(el.dataset.itemId))
+  );
+
+  // Search results — close search then show card
+  delegate(document.getElementById('searchResults'), '[data-item-id]', (_e, el) => {
+    closeSearch();
+    showActiveCard(Number(el.dataset.itemId));
+  });
+
+  // Action sheet options
+  delegate(document.getElementById('actionSheetOptions'), '[data-opt-index]', (_e, el) =>
+    actionSheetTap(Number(el.dataset.optIndex))
+  );
+}
 
 // ── BOOT ─────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
@@ -683,6 +744,7 @@ window.addEventListener('load', () => {
       ITEMS = data.items;
       ORGS_LIST = data.orgs;
       AREAS_LIST = data.areas;
+      initDom();
       initMap();
       initFilterChips();
       renderChips();

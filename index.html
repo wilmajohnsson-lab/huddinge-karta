@@ -5,8 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.">
+<meta name="theme-color" content="#068a99">
+<meta property="og:title" content="Huddinge Karta">
+<meta property="og:description" content="Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.">
+<meta property="og:type" content="website">
 <title>Huddinge Karta</title>
-<!-- Inter font — keep as CDN; Leaflet CSS + app styles bundled via src/js/app.js -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.json">
+<!-- Inter font — only external CDN dependency; all other assets bundled via Vite -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -16,11 +23,11 @@
   <div id="sidePanel">
     <div class="sp-head">
       <div class="sp-search-row">
-        <button class="sp-search" onclick="openSearch()">
+        <button class="sp-search" id="spSearchBtn">
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span>Sök efter område eller händelse...</span>
         </button>
-        <button class="sp-filter-btn" id="spFilterBtn" onclick="toggleFilter()">
+        <button class="sp-filter-btn" id="spFilterBtn">
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -30,10 +37,10 @@
     <div class="sp-body" id="spBody"></div>
     <!-- active card view (shown on marker click) -->
     <div id="spActiveCard">
-      <img class="sac-img" id="sacImg" src="" alt="" onclick="openDetail(activeCardId)">
+      <img class="sac-img" id="sacImg" src="" alt="" decoding="async">
       <div class="sac-body">
         <div style="margin-bottom:12px">
-          <div class="sac-title" id="sacTitle" onclick="openDetail(activeCardId)"></div>
+          <div class="sac-title" id="sacTitle"></div>
           <div class="sac-desc" id="sacDesc"></div>
         </div>
         <div class="sac-meta" id="sacMeta"></div>
@@ -42,7 +49,7 @@
           <button class="btn-dark" id="sacJoinBtn">Ansök att gå med</button>
         </div>
         <div style="margin-top:16px;padding-top:16px;border-top:.5px solid rgba(0,0,0,.08)">
-          <button onclick="dismissActiveCard()" style="width:100%;padding:12px;border-radius:12px;background:none;border:none;font-family:'Inter',sans-serif;font-size:14px;color:rgba(0,0,0,.45);cursor:pointer">← Tillbaka till listan</button>
+          <button id="sacBackBtn" style="width:100%;padding:12px;border-radius:12px;background:none;border:none;font-family:'Inter',sans-serif;font-size:14px;color:rgba(0,0,0,.45);cursor:pointer">← Tillbaka till listan</button>
         </div>
       </div>
     </div>
@@ -55,11 +62,11 @@
     <!-- Mobile top bar -->
     <div id="topBar">
       <div class="search-row">
-        <button class="search-pill" onclick="openSearch()">
+        <button class="search-pill" id="searchPillBtn">
           <span>Sök efter område eller händelse...</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
-        <button class="filter-btn" id="mFilterBtn" onclick="toggleFilter()">
+        <button class="filter-btn" id="mFilterBtn">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -84,10 +91,10 @@
 
     <!-- Mobile active card -->
     <div id="activeCard">
-      <img class="ac-img" id="acImg" src="" alt="" onclick="openDetail(activeCardId)">
+      <img class="ac-img" id="acImg" src="" alt="" decoding="async">
       <div class="ac-body">
         <div class="ac-top">
-          <div><div class="ac-title" id="acTitle" onclick="openDetail(activeCardId)"></div><div class="ac-desc" id="acDesc"></div></div>
+          <div><div class="ac-title" id="acTitle"></div><div class="ac-desc" id="acDesc"></div></div>
           <div class="ac-logo">ABF</div>
         </div>
         <div class="ac-meta" id="acMeta"></div>
@@ -104,9 +111,9 @@
         <div class="srch-row">
           <div class="srch-input-pill">
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <input type="text" id="searchInput" placeholder="Sök efter område eller händelse..." autocomplete="off" oninput="onSearch(this.value)">
+            <input type="text" id="searchInput" placeholder="Sök efter område eller händelse..." autocomplete="off">
           </div>
-          <button class="srch-cancel" onclick="closeSearch()">Avbryt</button>
+          <button class="srch-cancel" id="searchCancelBtn">Avbryt</button>
         </div>
       </div>
       <div class="srch-results" id="searchResults"></div>
@@ -130,11 +137,11 @@
     </div>
 
     <!-- Filter panel -->
-    <div id="filterBg" onclick="closeFilter()"></div>
+    <div id="filterBg"></div>
     <div id="filterPanel">
       <div class="fp-head">
         <span class="fp-title">Filter</span>
-        <button class="fp-close" onclick="closeFilter()">
+        <button class="fp-close" id="filterCloseBtn">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M1 1l12 12M13 1L1 13"/></svg>
         </button>
       </div>
@@ -148,7 +155,7 @@
               <span>Visa endast gratis evenemang</span>
             </div>
             <label class="toggle-sw">
-              <input type="checkbox" id="freeToggle" onchange="applyFilters()">
+              <input type="checkbox" id="freeToggle">
               <span class="toggle-track"></span>
             </label>
           </div>
@@ -165,16 +172,16 @@
         </div>
       </div>
       <div class="fp-footer">
-        <button class="fp-reset" onclick="resetFilters()">Rensa</button>
-        <button class="fp-apply" onclick="closeFilter()">Visa resultat</button>
+        <button class="fp-reset" id="filterResetBtn">Rensa</button>
+        <button class="fp-apply" id="filterApplyBtn">Visa resultat</button>
       </div>
     </div>
 
     <!-- Action sheet -->
-    <div id="actionSheetBg" onclick="closeActionSheet()"></div>
+    <div id="actionSheetBg"></div>
     <div id="actionSheet">
       <div id="actionSheetOptions"></div>
-      <button class="as-cancel" onclick="closeActionSheet()">Avbryt</button>
+      <button class="as-cancel" id="actionSheetCancelBtn">Avbryt</button>
     </div>
   </div><!-- #mapWrap -->
 
