@@ -6,11 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Huddinge Karta</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<!-- Inter font — keep as CDN; Leaflet CSS + app styles bundled via src/js/app.js -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="src/css/styles.css">
-<!-- NOTE: app.js lives in public/js/ so Vite copies it verbatim to dist/. -->
-<!-- Move to type="module" + npm Leaflet in Phase C for full bundling. -->
 </head>
 <body>
 <div id="app">
@@ -183,7 +180,7 @@
 
 </div><!-- #app -->
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="/js/app.js"></script>
+<!-- Entry point: ESM module — bundles Leaflet + all CSS via Vite -->
+<script type="module" src="src/js/app.js"></script>
 </body>
 </html>
