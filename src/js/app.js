@@ -693,12 +693,12 @@ function openMapsSheet(item) {
   showActionSheet([
     {
       label: '🗺️ Öppna i Apple Kartor',
-      action: () => window.open(`https://maps.apple.com/?daddr=${item.lat},${item.lng}&dirflg=d`, '_blank'),
+      action: () => window.open(`https://maps.apple.com/?daddr=${item.lat},${item.lng}&dirflg=d`, '_blank', 'noopener,noreferrer'),
     },
     {
       label: '📍 Öppna i Google Maps',
       action: () =>
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank'),
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank', 'noopener,noreferrer'),
     },
   ]);
 }
@@ -710,7 +710,7 @@ function openEventUrl(item) {
       label: `Öppna ${host}`,
       subtitle: `Mer info om ${item.name}`,
       bold: true,
-      action: () => window.open(item.url, '_blank'),
+      action: () => window.open(item.url, '_blank', 'noopener,noreferrer'),
     },
   ]);
 }
