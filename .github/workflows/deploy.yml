@@ -39,22 +39,24 @@ jobs:
 
       - name: Configure SSH
         run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          printf '%s\n' \
-            'Host ssh-deploy.example.com' \
-            '  ProxyCommand cloudflared access ssh --hostname %h' \
-            '  StrictHostKeyChecking no' \
-            '  IdentityFile ~/.ssh/deploy_key' \
-            '  User deploy' > ~/.ssh/config
-          chmod 600 ~/.ssh/config
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > "$HOME/.ssh/deploy_key"
+          chmod 600 "$HOME/.ssh/deploy_key"
+          {
+            echo 'Host ssh-deploy.example.com'
+            echo '  ProxyCommand cloudflared access ssh --hostname %h'
+            echo '  StrictHostKeyChecking no'
+            echo "  IdentityFile $HOME/.ssh/deploy_key"
+            echo '  User deploy'
+          } > "$HOME/.ssh/config"
+          chmod 600 "$HOME/.ssh/config"
+          echo "--- ssh config ---" && cat "$HOME/.ssh/config"
 
       - name: Deploy via rsync
         run: |
           rsync -avz --delete --checksum \
             --exclude='.DS_Store' \
-            -e 'ssh -F ~/.ssh/config' \
+            -e "ssh -F $HOME/.ssh/config" \
             dist/ \
             "deploy@ssh-deploy.example.com:${{ secrets.DEPLOY_PATH }}/"
 
