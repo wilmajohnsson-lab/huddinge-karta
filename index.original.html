@@ -95,8 +95,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 
 /* ══ MAP AREA ══ */
 #map{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0}
-.leaflet-control-zoom{display:none!important}
-.leaflet-control-attribution{font-size:11px;background:rgba(255,255,255,.7)!important;backdrop-filter:blur(4px)}
+.leaflet-control-zoom,.leaflet-control-attribution{display:none!important}
 
 /* ══ MOBILE TOP BAR ══ */
 #topBar{
@@ -586,8 +585,8 @@ function isDesktop(){ return window.innerWidth>=768; }
 // ── MAP ───────────────────────────────────────────────────────────
 const BOUNDS=L.latLngBounds([59.08,17.73],[59.34,18.24]);
 function initMap(){
-  map=L.map('map',{center:[59.218,17.978],zoom:13,minZoom:11,maxZoom:16,maxBounds:BOUNDS,maxBoundsViscosity:1,zoomControl:false});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+  map=L.map('map',{center:[59.218,17.978],zoom:13,minZoom:11,maxZoom:16,maxBounds:BOUNDS,maxBoundsViscosity:1,zoomControl:false,attributionControl:false});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19}).addTo(map);
   const ui=L.divIcon({html:`<div class="user-dot"><div class="user-dot-inner"></div></div>`,className:'',iconSize:[26,26],iconAnchor:[13,13]});
   L.marker([59.2195,17.9490],{icon:ui,interactive:false}).addTo(map);
   ITEMS.forEach(addMarker);
@@ -954,8 +953,8 @@ function openDetail(id){
   if(detailMapInstance){detailMapInstance.remove();detailMapInstance=null;}
   setTimeout(()=>{
     const el=document.getElementById('detMapEl'); if(!el)return;
-    detailMapInstance=L.map(el,{center:[item.lat,item.lng],zoom:15,zoomControl:false,interactive:false,dragging:false});
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(detailMapInstance);
+    detailMapInstance=L.map(el,{center:[item.lat,item.lng],zoom:15,zoomControl:false,attributionControl:false,interactive:false,dragging:false});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd'}).addTo(detailMapInstance);
     const pi=L.divIcon({html:`<div style="width:14px;height:14px;border-radius:50%;background:${col};border:2.5px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,className:'',iconSize:[14,14],iconAnchor:[7,7]});
     L.marker([item.lat,item.lng],{icon:pi}).addTo(detailMapInstance);
     setTimeout(()=>detailMapInstance.invalidateSize(),50);
