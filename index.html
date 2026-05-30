@@ -17,17 +17,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+<a class="skip-link" href="#map">Hoppa till kartan</a>
 <div id="app">
 
   <!-- ══ SIDE PANEL (desktop) ══ -->
   <div id="sidePanel">
     <div class="sp-head">
       <div class="sp-search-row">
-        <button class="sp-search" id="spSearchBtn">
+        <button class="sp-search" id="spSearchBtn" aria-label="Sök">
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span>Sök efter område eller händelse...</span>
         </button>
-        <button class="sp-filter-btn" id="spFilterBtn">
+        <button class="sp-filter-btn" id="spFilterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -49,7 +50,7 @@
           <button class="btn-dark" id="sacJoinBtn">Ansök att gå med</button>
         </div>
         <div style="margin-top:16px;padding-top:16px;border-top:.5px solid rgba(0,0,0,.08)">
-          <button id="sacBackBtn" style="width:100%;padding:12px;border-radius:12px;background:none;border:none;font-family:'Inter',sans-serif;font-size:14px;color:rgba(0,0,0,.45);cursor:pointer">← Tillbaka till listan</button>
+          <button id="sacBackBtn" aria-label="Tillbaka till listan" style="width:100%;padding:12px;border-radius:12px;background:none;border:none;font-family:'Inter',sans-serif;font-size:14px;color:rgba(0,0,0,.45);cursor:pointer">← Tillbaka till listan</button>
         </div>
       </div>
     </div>
@@ -57,16 +58,16 @@
 
   <!-- ══ MAP AREA ══ -->
   <div id="mapWrap">
-    <div id="map"></div>
+    <div id="map" role="application" aria-label="Interaktiv karta över Huddinge"></div>
 
     <!-- Mobile top bar -->
     <div id="topBar">
       <div class="search-row">
-        <button class="search-pill" id="searchPillBtn">
+        <button class="search-pill" id="searchPillBtn" aria-label="Sök">
           <span>Sök efter område eller händelse...</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
-        <button class="filter-btn" id="mFilterBtn">
+        <button class="filter-btn" id="mFilterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -106,23 +107,23 @@
     </div>
 
     <!-- Search screen -->
-    <div id="searchScreen">
+    <div id="searchScreen" role="dialog" aria-modal="true" aria-label="Sök">
       <div class="srch-top">
         <div class="srch-row">
           <div class="srch-input-pill">
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <input type="text" id="searchInput" placeholder="Sök efter område eller händelse..." autocomplete="off">
+            <input type="text" id="searchInput" aria-label="Sök efter område eller händelse" placeholder="Sök efter område eller händelse..." autocomplete="off">
           </div>
-          <button class="srch-cancel" id="searchCancelBtn">Avbryt</button>
+          <button class="srch-cancel" id="searchCancelBtn" aria-label="Avbryt sökning">Avbryt</button>
         </div>
       </div>
-      <div class="srch-results" id="searchResults"></div>
+      <div class="srch-results" id="searchResults" aria-live="polite" aria-atomic="false"></div>
     </div>
 
     <!-- Detail screen -->
-    <div id="detailScreen">
+    <div id="detailScreen" role="dialog" aria-modal="true" aria-label="Platsdetaljer">
       <div id="detailCard" style="position:relative">
-        <button class="det-back" id="detBackBtn">
+        <button class="det-back" id="detBackBtn" aria-label="Tillbaka">
           <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Tillbaka
         </button>
@@ -138,10 +139,10 @@
 
     <!-- Filter panel -->
     <div id="filterBg"></div>
-    <div id="filterPanel">
+    <div id="filterPanel" role="dialog" aria-modal="true" aria-labelledby="filterPanelTitle">
       <div class="fp-head">
-        <span class="fp-title">Filter</span>
-        <button class="fp-close" id="filterCloseBtn">
+        <span class="fp-title" id="filterPanelTitle">Filter</span>
+        <button class="fp-close" id="filterCloseBtn" aria-label="Stäng filter">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M1 1l12 12M13 1L1 13"/></svg>
         </button>
       </div>
@@ -172,16 +173,16 @@
         </div>
       </div>
       <div class="fp-footer">
-        <button class="fp-reset" id="filterResetBtn">Rensa</button>
+        <button class="fp-reset" id="filterResetBtn" aria-label="Rensa alla filter">Rensa</button>
         <button class="fp-apply" id="filterApplyBtn">Visa resultat</button>
       </div>
     </div>
 
     <!-- Action sheet -->
-    <div id="actionSheetBg"></div>
+    <div id="actionSheetBg" aria-hidden="true"></div>
     <div id="actionSheet">
       <div id="actionSheetOptions"></div>
-      <button class="as-cancel" id="actionSheetCancelBtn">Avbryt</button>
+      <button class="as-cancel" id="actionSheetCancelBtn" aria-label="Avbryt">Avbryt</button>
     </div>
   </div><!-- #mapWrap -->
 

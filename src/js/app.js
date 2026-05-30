@@ -67,6 +67,26 @@ function delegate(root, selector, handler) {
   });
 }
 
+// ── FOCUS MANAGEMENT ─────────────────────────────────────────────
+let _lastFocus = null;
+
+/** Move focus to the first focusable element inside el. */
+function trapFocus(el) {
+  const sel = 'button:not([disabled]),input:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])';
+  const first = el.querySelector(sel);
+  if (first) first.focus();
+}
+
+/** Remember the currently focused element before opening a modal. */
+function saveFocus() {
+  _lastFocus = document.activeElement;
+}
+
+/** Return focus to the element that was active before the modal opened. */
+function restoreFocus() {
+  if (_lastFocus) { _lastFocus.focus(); _lastFocus = null; }
+}
+
 // ── MAP ───────────────────────────────────────────────────────────
 const BOUNDS = L.latLngBounds([59.08, 17.73], [59.34, 18.24]);
 
@@ -216,11 +236,15 @@ function toggleFilter() {
 }
 
 function openFilter() {
+  saveFocus();
   const fp = document.getElementById('filterPanel');
   const bg = document.getElementById('filterBg');
   fp.classList.add('open');
   bg.style.pointerEvents = 'auto';
   bg.style.background = 'rgba(0,0,0,.15)';
+  document.getElementById('mFilterBtn').setAttribute('aria-expanded', 'true');
+  document.getElementById('spFilterBtn').setAttribute('aria-expanded', 'true');
+  trapFocus(fp);
 }
 
 function closeFilter() {
@@ -228,6 +252,9 @@ function closeFilter() {
   const bg = document.getElementById('filterBg');
   bg.style.background = 'rgba(0,0,0,0)';
   bg.style.pointerEvents = 'none';
+  document.getElementById('mFilterBtn').setAttribute('aria-expanded', 'false');
+  document.getElementById('spFilterBtn').setAttribute('aria-expanded', 'false');
+  restoreFocus();
 }
 
 // ── CATEGORY CHIPS ────────────────────────────────────────────────
@@ -524,6 +551,7 @@ function setupActiveCardSwipe() {
 
 // ── SEARCH ────────────────────────────────────────────────────────
 function openSearch() {
+  saveFocus();
   document.getElementById('searchScreen').classList.add('visible');
   setTimeout(() => document.getElementById('searchInput').focus(), 300);
   onSearch('');
@@ -532,6 +560,7 @@ function openSearch() {
 function closeSearch() {
   document.getElementById('searchScreen').classList.remove('visible');
   document.getElementById('searchInput').value = '';
+  restoreFocus();
 }
 
 function onSearch(q) {
@@ -601,6 +630,7 @@ function openDetail(id) {
   const ds = document.getElementById('detailScreen');
   ds.classList.add('visible');
   ds.scrollTop = 0;
+  setTimeout(() => document.getElementById('detBackBtn')?.focus(), 80);
   if (detailMapInstance) { detailMapInstance.remove(); detailMapInstance = null; }
   setTimeout(() => {
     const el = document.getElementById('detMapEl');
@@ -627,6 +657,7 @@ function openDetail(id) {
 function closeDetail() {
   document.getElementById('detailScreen').classList.remove('visible');
   document.getElementById('detBottom').classList.remove('visible');
+  restoreFocus();
 }
 
 // ── ACTION SHEET ─────────────────────────────────────────────────
@@ -731,6 +762,15 @@ function initDom() {
   delegate(document.getElementById('actionSheetOptions'), '[data-opt-index]', (_e, el) =>
     actionSheetTap(Number(el.dataset.optIndex))
   );
+
+  // Escape key closes any open modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('filterPanel').classList.contains('open')) { closeFilter(); return; }
+    if (document.getElementById('searchScreen').classList.contains('visible')) { closeSearch(); return; }
+    if (document.getElementById('detailScreen').classList.contains('visible')) { closeDetail(); return; }
+    if (document.getElementById('actionSheet').style.transform === 'translateY(0)') closeActionSheet();
+  });
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────
