@@ -82,19 +82,38 @@ Valid `area` ids: `flemingsberg` · `huddinge` · `skogas` · `sjodalen` · `glo
 
 ## Deployment
 
-### Netlify (recommended)
+The site builds to `dist/` — copy that directory to any web server.
 
-1. Push this repo to GitHub.
-2. Connect the repo in the [Netlify dashboard](https://app.netlify.com).
-3. Set **Build command**: `npm run build` and **Publish directory**: `dist`.
-4. Deploy — Netlify handles HTTPS and CDN automatically.
+### Self-hosted: nginx or Caddy (primary)
 
-### GitHub Pages
+See **[`deploy/README.md`](deploy/README.md)** for the full server setup guide.
+Ready-to-use configs are in `deploy/`:
+
+```
+deploy/
+  nginx.conf   # nginx server block (TLS, headers, caching, SPA routing)
+  Caddyfile    # Caddy equivalent (auto-HTTPS, same policy)
+  README.md    # Step-by-step server setup + Proxmox LXC notes
+```
+
+Manual deploy from your machine:
 
 ```bash
-npm run build
-# Push dist/ to gh-pages branch, or configure a GitHub Actions workflow
+DEPLOY_HOST=your-server.se ./scripts/deploy.sh
+# or with a specific user / SSH key:
+DEPLOY_HOST=your-server.se DEPLOY_USER=www-data DEPLOY_SSH_KEY=~/.ssh/deploy_key ./scripts/deploy.sh
 ```
+
+Automated deploy via GitHub Actions (push to `main`):
+Set four GitHub secrets → `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_PATH`, `DEPLOY_SSH_KEY`.
+See `deploy/README.md` for how to generate the deploy keypair.
+
+### Netlify (optional staging / preview)
+
+`netlify.toml` is kept as a convenience for quick preview environments.
+Connect the repo in the Netlify dashboard — build command and publish directory
+are already configured. Note: Netlify's `_headers` file delivers the CSP;
+for production use the nginx/Caddy configs instead.
 
 ## Map Tile Attribution
 

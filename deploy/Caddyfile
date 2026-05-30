@@ -1,0 +1,62 @@
+# Caddyfile for Huddinge Karta
+# Place at /etc/caddy/Caddyfile (Caddy will obtain and renew TLS automatically)
+
+YOUR-DOMAIN.se {
+    # Root directory where the built Vite `dist/` has been copied
+    root * /var/www/huddinge-karta
+
+    # Serve static files from disk
+    file_server
+
+    # Enable gzip compression
+    encode gzip
+
+    # --- Security headers applied to all responses ---
+    header {
+        # Content Security Policy: restrict resource origins
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.basemaps.cartocdn.com https://images.unsplash.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+        X-Frame-Options "DENY"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "geolocation=(), camera=(), microphone=()"
+        # HSTS - instruct browsers to only use HTTPS for the domain
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    }
+
+    # --- Cache headers ---
+    # Long-lived immutable cache for Vite hashed assets
+    @assets {
+        path /assets/*
+    }
+    header @assets Cache-Control "public, max-age=31536000, immutable"
+
+    # Short cache for JSON data that may change
+    @data {
+        path /data/*
+    }
+    header @data Cache-Control "public, max-age=300"
+
+    # index.html should always be requested fresh (no cache)
+    @index {
+        path /index.html
+    }
+    header @index Cache-Control "no-store"
+
+    # Favicon and manifest
+    @favicon {
+        path /favicon.svg
+    }
+    header @favicon Cache-Control "public, max-age=86400"
+
+    @manifest {
+        path /manifest.json
+    }
+    header @manifest Cache-Control "public, max-age=86400"
+
+    # SPA fallback: try the requested path, otherwise serve index.html
+    try_files {path} /index.html
+
+    # Comments: Caddy will handle HTTP->HTTPS redirection and certificate issuance for the
+    # site name used at the top of this block (YOUR-DOMAIN.se). Replace the placeholder with
+    # your real domain before starting Caddy.
+}

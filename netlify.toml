@@ -1,3 +1,7 @@
+# netlify.toml — OPTIONAL fallback for Netlify deployment
+# Primary deployment is self-hosted nginx/Caddy — see deploy/ directory.
+# Use this only if you want a quick Netlify preview/staging environment.
+
 [build]
   command   = "npm run build"
   publish   = "dist"
