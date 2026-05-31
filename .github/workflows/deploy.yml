@@ -43,7 +43,7 @@ jobs:
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > "$HOME/.ssh/deploy_key"
           chmod 600 "$HOME/.ssh/deploy_key"
           {
-            echo 'Host ssh-deploy.example.com'
+            echo "Host ${{ vars.DEPLOY_TUNNEL_HOST }}"
             echo '  ProxyCommand cloudflared access ssh --hostname %h'
             echo '  StrictHostKeyChecking no'
             echo "  IdentityFile $HOME/.ssh/deploy_key"
@@ -58,7 +58,7 @@ jobs:
             --exclude='.DS_Store' \
             -e "ssh -F $HOME/.ssh/config" \
             dist/ \
-            "deploy@ssh-deploy.example.com:${{ secrets.DEPLOY_PATH }}/"
+            "deploy@${{ vars.DEPLOY_TUNNEL_HOST }}:${{ secrets.DEPLOY_PATH }}/"
 
       - name: Clean up SSH key
         if: always()
