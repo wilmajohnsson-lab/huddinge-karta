@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.">
@@ -21,91 +21,58 @@
 <body>
 <a class="skip-link" href="#map">Hoppa till kartan</a>
 <div id="app">
-
-  <!-- ══ SIDE PANEL (desktop) ══ -->
-  <div id="sidePanel">
-    <div class="sp-head">
-      <div class="sp-search-row">
-        <button class="sp-search" id="spSearchBtn" aria-label="Sök">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span>Sök efter område eller händelse...</span>
-        </button>
-        <button class="sp-filter-btn" id="spFilterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <div class="sp-chips chips" id="spChips"></div>
-    </div>
-    <!-- normal list view -->
-    <div class="sp-body" id="spBody"></div>
-    <!-- active card view (shown on marker click) -->
-    <div id="spActiveCard">
-      <img class="sac-img" id="sacImg" src="" alt="" decoding="async">
-      <div class="sac-body">
-        <div style="margin-bottom:12px">
-          <div class="sac-title" id="sacTitle"></div>
-          <div class="sac-desc" id="sacDesc"></div>
-        </div>
-        <div class="sac-meta" id="sacMeta"></div>
-        <div style="display:flex;gap:6px;margin-top:16px">
-          <button class="btn-ghost" id="sacFlyBtn">Hitta hit</button>
-          <button class="btn-dark" id="sacJoinBtn">Ansök att gå med</button>
-        </div>
-        <div style="margin-top:16px;padding-top:16px;border-top:.5px solid rgba(0,0,0,.08)">
-          <button id="sacBackBtn" aria-label="Tillbaka till listan" style="width:100%;padding:12px;border-radius:12px;background:none;border:none;font-family:'Inter',sans-serif;font-size:14px;color:rgba(0,0,0,.45);cursor:pointer">← Tillbaka till listan</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ MAP AREA ══ -->
   <div id="mapWrap">
     <div id="map" role="application" aria-label="Interaktiv karta över Huddinge"></div>
 
-    <!-- Mobile top bar -->
+    <!-- Top bar: chips + filter pill -->
     <div id="topBar">
-      <div class="search-row">
-        <button class="search-pill" id="searchPillBtn" aria-label="Sök">
-          <span>Sök efter område eller händelse...</span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
-        <button class="filter-btn" id="mFilterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <div class="chips" id="chips"></div>
+      <div id="topChips" aria-label="Kategorier"></div>
+      <button class="filter-pill" id="filterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h14M6 10h8M9 15h2"/></svg>
+        Filter
+      </button>
     </div>
 
-    <!-- Mobile bottom sheet -->
-    <div id="sheet">
-      <div id="sheetCard">
-        <div class="sheet-handle-wrap" id="handleWrap"><div class="sheet-handle"></div></div>
-        <div class="sheet-body">
-          <div class="sheet-hdr">
-            <div class="sheet-hdr-icon">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M16 18H19c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-7M16 18l1 3M16 18H8M8 18H5c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h7M8 18l-1 3M12 18v2M12 5V3" stroke="#068a99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div><div class="sheet-hdr-title">Vad händer idag?</div><div class="sheet-hdr-sub">10 nya events denna vecka!</div></div>
+    <!-- Back button (shown when card panel open) -->
+    <button id="backBtn" aria-label="Tillbaka till listan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Tillbaka
+    </button>
+
+    <!-- Card panel (shown when marker clicked) -->
+    <div id="cardPanel" aria-label="Händelsekort" aria-live="polite">
+      <button id="closeCardBtn" aria-label="Stäng korten">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Stäng
+      </button>
+      <div id="cardScroll" role="list"></div>
+    </div>
+
+    <!-- Calendar view -->
+    <div id="calendarView" role="region" aria-label="Kalendervy">
+      <div class="cal-header">
+        <div class="cal-header-top">
+          <button class="filter-pill" id="calFilterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h14M6 10h8M9 15h2"/></svg>
+            Filter
+          </button>
+          <button class="filter-pill" id="calDatumBtn" aria-label="Välj datum">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Datum
+          </button>
+        </div>
+        <div class="cal-header-main">
+          <div class="cal-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><rect x="8" y="14" width="2" height="2" rx=".5" fill="#000" stroke="none"/><rect x="11" y="14" width="2" height="2" rx=".5" fill="#000" stroke="none"/><rect x="14" y="14" width="2" height="2" rx=".5" fill="#000" stroke="none"/></svg>
           </div>
-          <div id="sheetContent"></div>
+          <div>
+            <div class="cal-title">Kalender</div>
+            <div class="cal-sub">Se alla händelser som händer nu</div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Mobile active card -->
-    <div id="activeCard">
-      <img class="ac-img" id="acImg" src="" alt="" decoding="async">
-      <div class="ac-body">
-        <div class="ac-top">
-          <div><div class="ac-title" id="acTitle"></div><div class="ac-desc" id="acDesc"></div></div>
-          <div class="ac-logo">ABF</div>
-        </div>
-        <div class="ac-meta" id="acMeta"></div>
-        <div class="ac-btns">
-          <button class="btn-ghost" id="acFlyBtn">Hitta hit</button>
-          <button class="btn-dark" id="acJoinBtn">Ansök att gå med</button>
-        </div>
-      </div>
+      <div class="cal-chips" id="calChips" aria-label="Kategorier"></div>
+      <div id="calContent" aria-live="polite"></div>
     </div>
 
     <!-- Search screen -->
@@ -114,7 +81,7 @@
         <div class="srch-row">
           <div class="srch-input-pill">
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="#000" stroke-width="1.8"/><path d="M17 17l-3.5-3.5" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <input type="text" id="searchInput" aria-label="Sök efter område eller händelse" placeholder="Sök efter område eller händelse..." autocomplete="off">
+            <input type="text" id="searchInput" aria-label="Sök efter händelse eller plats" placeholder="Sök efter händelse eller plats..." autocomplete="off">
           </div>
           <button class="srch-cancel" id="searchCancelBtn" aria-label="Avbryt sökning">Avbryt</button>
         </div>
@@ -126,7 +93,7 @@
     <div id="detailScreen" role="dialog" aria-modal="true" aria-label="Platsdetaljer">
       <div id="detailCard" style="position:relative">
         <button class="det-back" id="detBackBtn" aria-label="Tillbaka">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           Tillbaka
         </button>
         <div id="detInner"></div>
@@ -140,7 +107,7 @@
     </div>
 
     <!-- Filter panel -->
-    <div id="filterBg"></div>
+    <div id="filterBg" aria-hidden="true"></div>
     <div id="filterPanel" role="dialog" aria-modal="true" aria-labelledby="filterPanelTitle">
       <div class="fp-head">
         <span class="fp-title" id="filterPanelTitle">Filter</span>
@@ -149,7 +116,6 @@
         </button>
       </div>
       <div class="fp-body">
-        <!-- Gratis toggle -->
         <div class="fp-section">
           <div class="fp-section-title">Pris</div>
           <div class="fp-toggle-row">
@@ -163,12 +129,10 @@
             </label>
           </div>
         </div>
-        <!-- Organisatör -->
         <div class="fp-section">
           <div class="fp-section-title">Organisatör</div>
           <div class="fp-chips" id="fpOrgs"></div>
         </div>
-        <!-- Område -->
         <div class="fp-section">
           <div class="fp-section-title">Område</div>
           <div class="fp-chips" id="fpAreas"></div>
@@ -180,14 +144,63 @@
       </div>
     </div>
 
+    <!-- Date picker sheet -->
+    <div id="dateBg" aria-hidden="true"></div>
+    <div id="dateSheet" role="dialog" aria-modal="true" aria-labelledby="dpTitle">
+      <div class="dp-head">
+        <span class="dp-title" id="dpTitle">Välj datum</span>
+        <button class="dp-close" id="dpCloseBtn" aria-label="Stäng datumväljare">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M1 1l12 12M13 1L1 13"/></svg>
+        </button>
+      </div>
+      <div class="dp-nav">
+        <button class="dp-arrow" id="dpPrevBtn" aria-label="Föregående månad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="dp-month-label" id="dpMonthLabel"></span>
+        <button class="dp-arrow" id="dpNextBtn" aria-label="Nästa månad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="dp-weekdays" aria-hidden="true">
+        <div class="dp-weekday">Mån</div><div class="dp-weekday">Tis</div>
+        <div class="dp-weekday">Ons</div><div class="dp-weekday">Tor</div>
+        <div class="dp-weekday">Fre</div><div class="dp-weekday">Lör</div>
+        <div class="dp-weekday">Sön</div>
+      </div>
+      <div class="dp-days" id="dpDays"></div>
+      <button class="dp-clear" id="dpClearBtn" style="display:none">Rensa datumfilter</button>
+    </div>
+
     <!-- Action sheet -->
     <div id="actionSheetBg" aria-hidden="true"></div>
-    <div id="actionSheet">
+    <div id="actionSheet" role="dialog" aria-modal="true">
       <div id="actionSheetOptions"></div>
       <button class="as-cancel" id="actionSheetCancelBtn" aria-label="Avbryt">Avbryt</button>
     </div>
-  </div><!-- #mapWrap -->
 
+    <!-- Floating tab bar -->
+    <div id="tabBar" role="tablist" aria-label="Vyer">
+      <div id="tabPill">
+        <button class="tab-btn active" data-tab="event" role="tab" aria-selected="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.909 4H5C3.343 4 2 5.343 2 7v10c0 1.657 1.343 3 3 3h3c.545 0 .99-.437 1-.982V18h6v.018c.01.545.455.982 1 .982h3c1.657 0 3-1.343 3-3V7c0-1.657-1.343-3-3-3h-3.883C15.108 4 15.1 4 15.091 4H8.91zm7.115 2C15.913 7.909 16.189 9.286 16.839 10.317 17.432 11.257 18.415 12.03 20 12.63V7c0-.552-.448-1-1-1h-2.976zM20 14.993V17c0 .552-.448 1-1 1h-1.921c.15-.806.5-1.51.987-2.029.49-.521 1.139-.882 1.934-.978zM6.921 18H5c-.552 0-1-.448-1-1v-2.007c.795.096 1.444.457 1.934.978.487.52.837 1.223.987 2.029zM4 12.63V7c0-.552.448-1 1-1h2.976C8.087 7.909 7.811 9.286 7.161 10.317 6.568 11.257 5.585 12.03 4 12.63z" fill="currentColor"/></svg>
+          Event
+        </button>
+        <button class="tab-btn" data-tab="platser" role="tab" aria-selected="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5.5 3C3.567 3 2 4.567 2 6.5v11C2 19.433 3.567 21 5.5 21H18c1.657 0 3-1.343 3-3v-4c0-.552-.448-1-1-1s-1 .448-1 1v4c0 .552-.448 1-1 1H5.5C4.672 19 4 18.328 4 17.5S4.672 16 5.5 16H7c.552 0 1-.448 1-1V8h2c.552 0 1-.448 1-1s-.448-1-1-1H8V4c0-.552-.448-1-1-1H5.5z" fill="currentColor"/><path d="M17 12.01c-.16 0-.31-.04-.45-.11-.14-.07-3.55-1.81-3.55-4.89 0-2.21 1.79-4 4-4s4 1.79 4 4c0 3.08-3.41 4.82-3.55 4.89-.14.07-.29.11-.45.11z" fill="currentColor"/></svg>
+          Platser
+        </button>
+        <button class="tab-btn" data-tab="kalender" role="tab" aria-selected="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 2c.552 0 1 .448 1 1v1h6V3c0-.552.448-1 1-1s1 .448 1 1v1h1c1.657 0 3 1.343 3 3v3c0 .552-.448 1-1 1s-1-.448-1-1H5v8c0 .552.448 1 1 1h4c.552 0 1 .448 1 1s-.448 1-1 1H6c-1.657 0-3-1.343-3-3V7c0-1.657 1.343-3 3-3h1V3c0-.552.448-1 1-1z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18.414 15.586c-.781-.781-2.047-.781-2.828 0-.781.78-.781 2.046 0 2.828.781.781 2.047.781 2.828 0 .781-.782.781-2.048 0-2.828zm-4.243-1.414c1.562-1.562 4.094-1.562 5.656 0 1.318 1.318 1.524 3.327.618 4.861l1.261 1.26c.39.391.39 1.024 0 1.414-.39.39-1.023.39-1.414 0l-1.26-1.26c-1.534.905-3.543.699-4.861-.619-1.562-1.562-1.562-4.094 0-5.656z" fill="currentColor"/></svg>
+          Kalender
+        </button>
+      </div>
+      <button id="searchTabBtn" aria-label="Sök">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-opacity="0.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+    </div>
+
+  </div><!-- #mapWrap -->
 </div><!-- #app -->
 
 <!-- Entry point: ESM module — bundles Leaflet + all CSS via Vite -->
