@@ -33,9 +33,12 @@ export function mHtml(cat, big) {
 }
 
 export function chipHtml(cat, selectedCat = null) {
-  const isOn = selectedCat === cat,
-    isDim = selectedCat !== null && selectedCat !== undefined && selectedCat !== cat;
-  return `<button class="chip chip-${cat}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${cat}">${CAT_SVG_W[cat]}${CAT_LABEL[cat]}${isOn ? '<span class="chip-x">×</span>' : ''}</button>`;
+  const isOn = selectedCat === cat;
+  const isDim = selectedCat !== null && selectedCat !== undefined && selectedCat !== cat;
+  const col = CAT_COLOR[cat];
+  const bg = isOn ? col : CAT_BG[cat];
+  const textCol = isOn ? '#fff' : col;
+  return `<button class="chip${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${cat}" style="background:${bg};color:${textCol}" aria-pressed="${isOn}">${CAT_SVG_W[cat]}${CAT_LABEL[cat]}</button>`;
 }
 
 export function metaHtml(item) {

@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../css/styles.css';
 
-// ── Tile provider (override via VITE_TILE_URL env var) ────────────
+// ── Tile provider ─────────────────────────────────────────────────
 const TILE_URL =
   import.meta.env.VITE_TILE_URL ||
   'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
@@ -11,21 +11,22 @@ const TILE_ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
   '&copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-// ── SVGs ──────────────────────────────────────────────────────────
-const S = {
-  whiteboard: `<svg viewBox="0 0 24 24" fill="none"><path d="M16 18H19c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-7M16 18l1 3M16 18H8M8 18H5c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h7M8 18l-1 3M12 18v2M12 5V3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  mappin: `<svg viewBox="0 0 24 24" fill="none"><path d="M14.498 10c0 1.381-1.119 2.5-2.5 2.5s-2.5-1.119-2.5-2.5 1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="M19 10c0 4.37-3.886 8.335-5.867 10.072a1.984 1.984 0 0 1-2.266 0C8.886 18.335 5 14.37 5 10a7 7 0 1 1 14 0Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
-  audio: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
-  calendar: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  clock: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#000" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>`,
-  pin: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="#000" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+// ── SVGs (white stroke for map pins) ─────────────────────────────
+const CAT_SVG_W = {
+  event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  konst: `<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke="white" stroke-width="2"/><path d="M21 15l-5-5L5 21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
+  motes: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
+  musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
 };
+
+// SVGs with currentColor stroke (for chips)
 const CHIP_SVGS = {
   event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  konst: `<svg viewBox="0 0 24 24" fill="none"><path d="M16 18H19c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-7M16 18l1 3M16 18H8M8 18H5c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h7M8 18l-1 3M12 18v2M12 5V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  motes: `<svg viewBox="0 0 24 24" fill="none"><path d="M14.498 10c0 1.381-1.119 2.5-2.5 2.5s-2.5-1.119-2.5-2.5 1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M19 10c0 4.37-3.886 8.335-5.867 10.072a1.984 1.984 0 0 1-2.266 0C8.886 18.335 5 14.37 5 10a7 7 0 1 1 14 0Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
+  konst: `<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="2"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  motes: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
   musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
 };
+
 const CAT_COLOR = { event: '#bf5917', konst: '#068a99', motes: '#c0136f', musik: '#c3a523' };
 const CAT_BG = {
   event: 'rgba(209,96,23,.14)',
@@ -34,21 +35,26 @@ const CAT_BG = {
   musik: 'rgba(248,216,75,.22)',
 };
 const CAT_LABEL = { event: 'Event', konst: 'Konst', motes: 'Mötesplats', musik: 'Musik' };
-const CAT_SVG_W = { event: S.calendar, konst: S.whiteboard, motes: S.mappin, musik: S.audio };
 
-// ── DATA (populated by fetch) ─────────────────────────────────────
-let ITEMS = [],
-  ORGS_LIST = [],
-  AREAS_LIST = [];
+// Tab-based category lists
+const EVENT_CATS = ['event', 'musik'];
+const PLATS_CATS = ['konst', 'motes'];
+const PLATS_SET = new Set(PLATS_CATS);
+
+/** Derive item type from category */
+function itemType(item) {
+  return PLATS_SET.has(item.cat) ? 'plats' : 'event';
+}
+
+// ── DATA ──────────────────────────────────────────────────────────
+let ITEMS = [], ORGS_LIST = [], AREAS_LIST = [];
 
 // ── STATE ─────────────────────────────────────────────────────────
-let map,
-  leafMarkers = {},
-  activeCardId = null,
-  collapsed = false,
-  detailMapInstance = null;
-let selectedCat = null;
+let map, leafMarkers = {}, clusters = [], activeIds = [];
+let selectedCat = null, activeTab = 'event', detailMapInstance = null;
 const filterState = { free: false, orgs: new Set(), areas: new Set() };
+let selectedDate = null;
+let dpYear = new Date().getFullYear(), dpMonth = new Date().getMonth();
 
 // ── HELPERS ───────────────────────────────────────────────────────
 function isDesktop() {
@@ -70,21 +76,35 @@ function delegate(root, selector, handler) {
 // ── FOCUS MANAGEMENT ─────────────────────────────────────────────
 let _lastFocus = null;
 
-/** Move focus to the first focusable element inside el. */
 function trapFocus(el) {
   const sel = 'button:not([disabled]),input:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])';
   const first = el.querySelector(sel);
   if (first) first.focus();
 }
 
-/** Remember the currently focused element before opening a modal. */
 function saveFocus() {
   _lastFocus = document.activeElement;
 }
 
-/** Return focus to the element that was active before the modal opened. */
 function restoreFocus() {
   if (_lastFocus) { _lastFocus.focus(); _lastFocus = null; }
+}
+
+// ── CLUSTER HELPERS ───────────────────────────────────────────────
+function clusterKey(lat, lng) {
+  return `${lat.toFixed(4)}_${lng.toFixed(4)}`;
+}
+
+function buildClusters(items) {
+  const result = [];
+  items.forEach((item) => {
+    const c = result.find(
+      (c) => Math.abs(c.lat - item.lat) < 0.0002 && Math.abs(c.lng - item.lng) < 0.0002
+    );
+    if (c) c.items.push(item);
+    else result.push({ lat: item.lat, lng: item.lng, items: [item], key: clusterKey(item.lat, item.lng) });
+  });
+  return result;
 }
 
 // ── MAP ───────────────────────────────────────────────────────────
@@ -95,10 +115,11 @@ function initMap() {
     center: [59.218, 17.978],
     zoom: 13,
     minZoom: 11,
-    maxZoom: 16,
+    maxZoom: 19,
     maxBounds: BOUNDS,
     maxBoundsViscosity: 1,
     zoomControl: false,
+    attributionControl: false,
   });
   L.tileLayer(TILE_URL, {
     subdomains: 'abcd',
@@ -112,58 +133,188 @@ function initMap() {
     iconAnchor: [13, 13],
   });
   L.marker([59.2195, 17.949], { icon: ui, interactive: false }).addTo(map);
-  ITEMS.forEach(addMarker);
+
+  rebuildClusterMarkers();
+
   map.on('click', () => {
-    dismissActiveCard();
+    if (activeIds.length) dismissCards();
   });
-  window.addEventListener('resize', () => {
-    map.invalidateSize();
-  });
+  window.addEventListener('resize', () => map.invalidateSize());
+
+  // Show place name labels at zoom >= 15
+  function updateLabelVisibility() {
+    document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 15);
+  }
+  map.on('zoomend', updateLabelVisibility);
+  updateLabelVisibility();
 }
 
-function mHtml(cat, big) {
+function mHtml(cat, big, label = null) {
+  const sz = big ? 'mpin-lg' : 'mpin-sm',
+    wt = big ? 87.6 : 62.7;
+  const icon = CAT_SVG_W[cat] || CAT_SVG_W['event'];
+  const lbl = label ? `<div class="pin-label">${label}</div>` : '';
+  return `<div class="mpin ${sz}" style="width:${wt}px;height:${wt}px">
+    <div class="mpin-tail"></div>
+    <div class="mpin-circle" style="background:${CAT_COLOR[cat] || '#555'}">${icon}</div>
+    ${lbl}
+  </div>`;
+}
+
+function mClusterHtml(cluster, big) {
   const sz = big ? 'mpin-lg' : 'mpin-sm',
     wt = big ? 87.6 : 62.7,
-    p = big ? '16px' : '8px';
-  return `<div class="mpin ${sz}" style="width:${wt}px;height:${wt}px"><div class="mpin-tail"></div><div class="mpin-circle" style="background:${CAT_COLOR[cat]};padding:${p}">${CAT_SVG_W[cat]}</div></div>`;
+    fs = big ? '20px' : '15px';
+  const cats = [...new Set(cluster.items.map((i) => i.cat))];
+  const color = cats.length === 1 ? CAT_COLOR[cats[0]] : '#1c1c1e';
+  return `<div class="mpin ${sz}" style="width:${wt}px;height:${wt}px">
+    <div class="mpin-tail"></div>
+    <div class="mpin-circle" style="background:${color};display:flex;align-items:center;justify-content:center">
+      <span style="color:#fff;font-family:'Inter',sans-serif;font-size:${fs};font-weight:700;line-height:1;letter-spacing:-.5px">${cluster.items.length}</span>
+    </div>
+  </div>`;
 }
 
-function addMarker(item) {
-  const big = activeCardId === item.id,
-    sz = big ? 87.6 : 62.7;
-  const icon = L.divIcon({
-    html: mHtml(item.cat, big),
-    className: '',
-    iconSize: [sz, sz],
-    iconAnchor: [sz / 2, sz],
-  });
-  const m = L.marker([item.lat, item.lng], { icon }).addTo(map);
+function addClusterMarker(cluster) {
+  const isActive = cluster.items.some((i) => activeIds.includes(i.id));
+  const single = cluster.items.length === 1;
+  const item = cluster.items[0];
+  const label = single && itemType(item) === 'plats' ? item.name : null;
+  const html = single
+    ? mHtml(item.cat, isActive, label)
+    : mClusterHtml(cluster, isActive);
+  const sz = isActive ? 87.6 : 62.7;
+  const icon = L.divIcon({ html, className: '', iconSize: [sz, sz], iconAnchor: [sz / 2, sz] });
+  const m = L.marker([cluster.lat, cluster.lng], { icon }).addTo(map);
   m.on('click', (e) => {
     L.DomEvent.stopPropagation(e);
-    showActiveCard(item.id);
+    showCards(cluster.items.map((i) => i.id));
   });
-  leafMarkers[item.id] = m;
+  leafMarkers[cluster.key] = m;
 }
 
-function refreshMarker(id) {
-  const m = leafMarkers[id];
+function refreshClusterByItemId(id) {
+  const cluster = clusters.find((c) => c.items.some((i) => i.id === id));
+  if (!cluster) return;
+  const m = leafMarkers[cluster.key];
   if (!m) return;
-  const item = ITEMS.find((x) => x.id === id);
-  const big = activeCardId === id,
-    sz = big ? 87.6 : 62.7;
-  m.setIcon(
-    L.divIcon({
-      html: mHtml(item.cat, big),
-      className: '',
-      iconSize: [sz, sz],
-      iconAnchor: [sz / 2, sz],
-    })
-  );
+  const isActive = cluster.items.some((i) => activeIds.includes(i.id));
+  const single = cluster.items.length === 1;
+  const item0 = cluster.items[0];
+  const label = single && itemType(item0) === 'plats' ? item0.name : null;
+  const html = single
+    ? mHtml(item0.cat, isActive, label)
+    : mClusterHtml(cluster, isActive);
+  const sz = isActive ? 87.6 : 62.7;
+  m.setIcon(L.divIcon({ html, className: '', iconSize: [sz, sz], iconAnchor: [sz / 2, sz] }));
 }
 
-// ── FILTER LOGIC ─────────────────────────────────────────────────
+function rebuildClusterMarkers() {
+  Object.values(leafMarkers).forEach((m) => { try { map.removeLayer(m); } catch (_) {} });
+  leafMarkers = {};
+  clusters = buildClusters(getVisible());
+  clusters.forEach(addClusterMarker);
+}
+
+// ── CARD PANEL ────────────────────────────────────────────────────
+function showCards(ids) {
+  const prevIds = [...activeIds];
+  activeIds = ids;
+  prevIds.forEach((id) => { if (!activeIds.includes(id)) refreshClusterByItemId(id); });
+  activeIds.forEach(refreshClusterByItemId);
+
+  const scroll = document.getElementById('cardScroll');
+  scroll.innerHTML = activeIds
+    .map((id) => {
+      const item = ITEMS.find((x) => x.id === id);
+      return item ? evCardHtml(item) : '';
+    })
+    .join('');
+
+  scroll.classList.toggle('single-card', activeIds.length === 1);
+  document.getElementById('cardPanel').classList.add('visible');
+  document.getElementById('tabBar').classList.add('hidden');
+  document.getElementById('backBtn').classList.add('visible');
+  document.getElementById('topBar').style.opacity = '0';
+  document.getElementById('topBar').style.pointerEvents = 'none';
+
+  const first = ITEMS.find((x) => x.id === ids[0]);
+  if (first) map.flyTo([first.lat, first.lng], 15, { duration: 0.7, easeLinearity: 0.5 });
+}
+
+function dismissCards() {
+  const prevIds = [...activeIds];
+  activeIds = [];
+  prevIds.forEach(refreshClusterByItemId);
+  document.getElementById('cardPanel').classList.remove('visible');
+  document.getElementById('cardScroll').classList.remove('single-card');
+  document.getElementById('tabBar').classList.remove('hidden');
+  document.getElementById('backBtn').classList.remove('visible');
+  document.getElementById('topBar').style.opacity = '';
+  document.getElementById('topBar').style.pointerEvents = '';
+}
+
+// ── CARD HTML ─────────────────────────────────────────────────────
+const S_CLOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+const S_PIN = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`;
+
+function evCardHtml(item) {
+  const col = CAT_COLOR[item.cat];
+  const isPlats = itemType(item) === 'plats';
+  const dateLine = !isPlats
+    ? `<span class="ev-tag">${S_CLOCK}${item.date} · ${item.time.split('–')[0].split('-')[0]}</span>`
+    : '';
+  return `<div class="ev-card" data-item-id="${item.id}" role="listitem">
+    <img class="ev-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
+    <div class="ev-card-body">
+      <div class="ev-card-top">
+        <div>
+          <div class="ev-card-name">${item.name}</div>
+          <div class="ev-card-desc">${item.desc}</div>
+        </div>
+      </div>
+      <div class="ev-card-tags">
+        ${dateLine}
+        <span class="ev-tag">${S_PIN}${item.loc}</span>
+        <span class="ev-tag" style="background:${CAT_BG[item.cat]};color:${col}">${CAT_LABEL[item.cat]}</span>
+        ${item.free ? '<span class="free-badge">Gratis</span>' : ''}
+      </div>
+      <div class="ev-card-btns">
+        <button class="btn-ghost" data-action="detail" data-item-id="${item.id}">Mer info</button>
+        <button class="btn-dark" data-action="join" data-item-id="${item.id}">Ansök</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── TAB NAVIGATION ────────────────────────────────────────────────
+function setTab(tab) {
+  activeTab = tab;
+  selectedCat = null;
+  document.querySelectorAll('.tab-btn').forEach((b) => {
+    const active = b.dataset.tab === tab;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  const calView = document.getElementById('calendarView');
+  if (tab === 'kalender') {
+    calView.classList.add('visible');
+    renderCalendarChips();
+    renderCalendar();
+  } else {
+    calView.classList.remove('visible');
+    renderChips();
+    applyFilters();
+  }
+}
+
+// ── FILTER LOGIC ──────────────────────────────────────────────────
 function getVisible() {
   return ITEMS.filter((i) => {
+    const type = itemType(i);
+    if (activeTab === 'event' && type !== 'event') return false;
+    if (activeTab === 'platser' && type !== 'plats') return false;
+    if (activeTab === 'kalender' && type !== 'event') return false;
     if (selectedCat && i.cat !== selectedCat) return false;
     if (filterState.free && !i.free) return false;
     if (filterState.orgs.size > 0 && !filterState.orgs.has(i.host)) return false;
@@ -174,21 +325,14 @@ function getVisible() {
 
 function applyFilters() {
   filterState.free = document.getElementById('freeToggle').checked;
-  const vis = getVisible();
-  ITEMS.forEach((item) => {
-    const m = leafMarkers[item.id];
-    if (!m) return;
-    const show = vis.some((v) => v.id === item.id);
-    show ? !map.hasLayer(m) && map.addLayer(m) : map.hasLayer(m) && map.removeLayer(m);
-  });
-  renderContent();
+  rebuildClusterMarkers();
   updateFilterBtnState();
 }
 
 function updateFilterBtnState() {
   const active = filterState.free || filterState.orgs.size > 0 || filterState.areas.size > 0;
-  document.getElementById('mFilterBtn')?.classList.toggle('active', active);
-  document.getElementById('spFilterBtn')?.classList.toggle('active', active);
+  document.getElementById('filterBtn')?.classList.toggle('active', active);
+  document.getElementById('calFilterBtn')?.classList.toggle('active', active);
 }
 
 function resetFilters() {
@@ -242,8 +386,8 @@ function openFilter() {
   fp.classList.add('open');
   bg.style.pointerEvents = 'auto';
   bg.style.background = 'rgba(0,0,0,.15)';
-  document.getElementById('mFilterBtn').setAttribute('aria-expanded', 'true');
-  document.getElementById('spFilterBtn').setAttribute('aria-expanded', 'true');
+  document.getElementById('filterBtn')?.setAttribute('aria-expanded', 'true');
+  document.getElementById('calFilterBtn')?.setAttribute('aria-expanded', 'true');
   trapFocus(fp);
 }
 
@@ -252,8 +396,8 @@ function closeFilter() {
   const bg = document.getElementById('filterBg');
   bg.style.background = 'rgba(0,0,0,0)';
   bg.style.pointerEvents = 'none';
-  document.getElementById('mFilterBtn').setAttribute('aria-expanded', 'false');
-  document.getElementById('spFilterBtn').setAttribute('aria-expanded', 'false');
+  document.getElementById('filterBtn')?.setAttribute('aria-expanded', 'false');
+  document.getElementById('calFilterBtn')?.setAttribute('aria-expanded', 'false');
   restoreFocus();
 }
 
@@ -265,288 +409,188 @@ function selectCat(cat) {
 }
 
 function chipHtml(cat) {
-  const isOn = selectedCat === cat,
-    isDim = selectedCat !== null && !isOn;
-  return `<button class="chip chip-${cat}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${cat}">
-    ${CHIP_SVGS[cat]}${CAT_LABEL[cat]}
-    ${isOn ? '<span class="chip-x">×</span>' : ''}
+  const isOn = selectedCat === cat;
+  const isDim = selectedCat !== null && !isOn;
+  const col = CAT_COLOR[cat];
+  const bg = isOn ? col : CAT_BG[cat];
+  const textCol = isOn ? '#fff' : col;
+  return `<button class="chip${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${cat}" style="background:${bg};color:${textCol}" aria-pressed="${isOn}">
+    ${CHIP_SVGS[cat] || ''}${CAT_LABEL[cat]}
   </button>`;
 }
 
 function renderChips() {
-  const html = ['event', 'konst', 'motes', 'musik'].map((c) => chipHtml(c)).join('');
-  const m = document.getElementById('chips');
-  if (m) m.innerHTML = html;
-  const s = document.getElementById('spChips');
-  if (s) s.innerHTML = html;
+  const cats = activeTab === 'platser' ? PLATS_CATS : EVENT_CATS;
+  const html = cats.map(chipHtml).join('');
+  const tc = document.getElementById('topChips');
+  if (tc) tc.innerHTML = html;
 }
 
-// ── CONTENT RENDERING ─────────────────────────────────────────────
-function metaHtml(item) {
-  return `<div class="meta-tag">${S.clock}${item.date} · ${item.time.split('–')[0]}</div>
-          <div class="meta-tag">${S.pin}${item.loc}</div>
-          ${item.free ? '<span class="free-badge">Gratis</span>' : ''}`;
+function renderCalendarChips() {
+  const cats = EVENT_CATS;
+  const html = cats.map(chipHtml).join('');
+  const cc = document.getElementById('calChips');
+  if (cc) cc.innerHTML = html;
 }
 
-function eCardHtml(item) {
-  return `<div class="ecard" data-item-id="${item.id}">
-    <img class="ecard-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
-    <div class="ecard-body">
-      <div class="ecard-title">${item.name}</div>
-      <div class="ecard-desc">${item.desc}</div>
-      <div class="ecard-meta">${metaHtml(item)}</div>
-    </div>
-  </div>`;
-}
+// ── DATE PICKER ───────────────────────────────────────────────────
+const SMONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, maj: 5, jun: 6, jul: 7, aug: 8, sep: 9, okt: 10, nov: 11, dec: 12 };
+const SMONTH_NAMES = ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December'];
 
-function spCardHtml(item) {
-  return `<div class="sp-card" data-item-id="${item.id}">
-    <img class="sp-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
-    <div class="sp-card-body">
-      <div>
-        <div class="sp-card-title">${item.name}</div>
-        <div class="sp-card-desc">${item.desc}</div>
-      </div>
-      <div class="sp-card-meta">${metaHtml(item)}</div>
-    </div>
-  </div>`;
-}
-
-function renderContent() {
-  const vis = getVisible();
-  const byCat = (cat) => vis.filter((i) => i.cat === cat);
-  const secHtml = (title, items) =>
-    items.length
-      ? `<div class="section"><div class="section-title">${title}</div><div class="h-scroll-wrap"><div class="h-scroll">${items.map(eCardHtml).join('')}</div></div></div>`
-      : '';
-  const shEl = document.getElementById('sheetContent');
-  if (shEl)
-    shEl.innerHTML =
-      secHtml('Events', byCat('event')) +
-      secHtml('Konst', byCat('konst')) +
-      secHtml('Mötesplatser', byCat('motes')) +
-      secHtml('Musik', byCat('musik'));
-  const spEl = document.getElementById('spBody');
-  if (spEl) {
-    const spSecHtml = (title, items) =>
-      items.length
-        ? `<div class="sp-section"><div class="sp-section-title">${title}</div>${items.map(spCardHtml).join('')}</div>`
-        : '';
-    spEl.innerHTML =
-      spSecHtml('Events', byCat('event')) +
-      spSecHtml('Konst', byCat('konst')) +
-      spSecHtml('Mötesplatser', byCat('motes')) +
-      spSecHtml('Musik', byCat('musik'));
+function parseEventDate(str) {
+  const s = str.toLowerCase().trim();
+  // Cross-month range: "30 maj–10 jun"
+  let m = s.match(/^(\d+)\s+([a-zåäö]+)–(\d+)\s+([a-zåäö]+)$/);
+  if (m) {
+    const mo1 = (SMONTHS[m[2].substring(0, 3)] || 1) - 1;
+    const mo2 = (SMONTHS[m[4].substring(0, 3)] || 1) - 1;
+    const yr = new Date().getFullYear();
+    return { start: new Date(yr, mo1, +m[1]), end: new Date(yr, mo2, +m[3]) };
   }
-}
-
-// ── ACTIVE CARD ───────────────────────────────────────────────────
-function showActiveCard(id) {
-  const prev = activeCardId;
-  activeCardId = id;
-  if (prev && prev !== id) refreshMarker(prev);
-  refreshMarker(id);
-  const item = ITEMS.find((x) => x.id === id);
-  const meta =
-    `<div class="meta-tag">${S.clock}${item.date} · ${item.time.split('–')[0]}</div>` +
-    `<div class="meta-tag">${S.pin}${item.loc}</div>` +
-    (item.free ? '<span class="free-badge">Gratis</span>' : '');
-  if (isDesktop()) {
-    const sacImg = document.getElementById('sacImg');
-    sacImg.src = item.img;
-    sacImg.alt = item.name;
-    sacImg.onclick = () => openDetail(id);
-    const sacTitle = document.getElementById('sacTitle');
-    sacTitle.textContent = item.name;
-    sacTitle.onclick = () => openDetail(id);
-    document.getElementById('sacDesc').textContent = item.desc;
-    document.getElementById('sacMeta').innerHTML = meta;
-    document.getElementById('sacFlyBtn').onclick = () => openMapsSheet(item);
-    document.getElementById('sacJoinBtn').onclick = () => openEventUrl(item);
-    document.getElementById('spBody').style.display = 'none';
-    document.getElementById('spActiveCard').style.display = 'flex';
-  } else {
-    const acImg = document.getElementById('acImg');
-    acImg.src = item.img;
-    acImg.alt = item.name;
-    acImg.onclick = () => openDetail(id);
-    const acTitle = document.getElementById('acTitle');
-    acTitle.textContent = item.name;
-    acTitle.onclick = () => openDetail(id);
-    document.getElementById('acDesc').textContent = item.desc;
-    document.getElementById('acMeta').innerHTML = meta;
-    document.getElementById('acFlyBtn').onclick = () => openMapsSheet(item);
-    document.getElementById('acJoinBtn').onclick = () => openEventUrl(item);
-    document.getElementById('detBackBtn').onclick = closeDetail;
-    hideSheet();
-    document.getElementById('activeCard').classList.add('visible');
+  // Same-month range: "10–30 jun"
+  m = s.match(/^(\d+)–(\d+)\s+([a-zåäö]+)$/);
+  if (m) {
+    const mo = (SMONTHS[m[3].substring(0, 3)] || 1) - 1;
+    const yr = new Date().getFullYear();
+    return { start: new Date(yr, mo, +m[1]), end: new Date(yr, mo, +m[2]) };
   }
-  flyToItem(item);
-}
-
-function dismissActiveCard() {
-  const prev = activeCardId;
-  activeCardId = null;
-  if (prev) refreshMarker(prev);
-  if (isDesktop()) {
-    document.getElementById('spActiveCard').style.display = 'none';
-    document.getElementById('spBody').style.display = '';
-  } else {
-    const ac = document.getElementById('activeCard');
-    const offY = ac.offsetHeight + 40;
-    ac.style.transition = 'transform .32s cubic-bezier(.4,0,.6,1)';
-    ac.style.transform = `translateY(${offY}px)`;
-    ac.addEventListener(
-      'transitionend',
-      function done() {
-        ac.removeEventListener('transitionend', done);
-        ac.classList.remove('visible');
-        ac.style.transition = '';
-        ac.style.transform = '';
-        expandSheet();
-      },
-      { once: true }
-    );
+  // Single date: "12 jun"
+  m = s.match(/^(\d+)\s+([a-zåäö]+)$/);
+  if (m) {
+    const mo = (SMONTHS[m[2].substring(0, 3)] || 1) - 1;
+    const yr = new Date().getFullYear();
+    const d = new Date(yr, mo, +m[1]);
+    return { start: d, end: d };
   }
+  return null;
 }
 
-// ── FLY TO ────────────────────────────────────────────────────────
-function flyToItem(item) {
-  map.flyTo([item.lat, item.lng], 15, { duration: 0.7, easeLinearity: 0.5 });
-  map.once('moveend', function () {
-    const pt = map.latLngToContainerPoint([item.lat, item.lng]);
-    const mapH = document.getElementById('mapWrap').offsetHeight;
-    const topBarH = 160,
-      bottomH = isDesktop() ? 40 : 380;
-    const targetY = topBarH + (mapH - topBarH - bottomH) / 2;
-    const panY = Math.round(pt.y - targetY);
-    if (Math.abs(panY) > 8) map.panBy([0, panY], { animate: true, duration: 0.25 });
+function eventMatchesDate(item, date) {
+  const p = parseEventDate(item.date);
+  if (!p) return true; // ongoing/permanent — always show
+  return date >= p.start && date <= p.end;
+}
+
+function openDatePicker() {
+  saveFocus();
+  const bg = document.getElementById('dateBg');
+  bg.style.pointerEvents = 'auto';
+  bg.style.background = 'rgba(0,0,0,.4)';
+  document.getElementById('dateSheet').classList.add('open');
+  renderDpCalendar();
+  trapFocus(document.getElementById('dateSheet'));
+}
+
+function closeDatePicker() {
+  document.getElementById('dateSheet').classList.remove('open');
+  const bg = document.getElementById('dateBg');
+  bg.style.background = 'rgba(0,0,0,0)';
+  bg.style.pointerEvents = 'none';
+  restoreFocus();
+}
+
+function dpPrevMonth() {
+  dpMonth--;
+  if (dpMonth < 0) { dpMonth = 11; dpYear--; }
+  renderDpCalendar();
+}
+
+function dpNextMonth() {
+  dpMonth++;
+  if (dpMonth > 11) { dpMonth = 0; dpYear++; }
+  renderDpCalendar();
+}
+
+function clearDateFilter() {
+  selectedDate = null;
+  document.getElementById('dpClearBtn').style.display = 'none';
+  document.getElementById('calDatumBtn').classList.remove('active');
+  renderDpCalendar();
+  renderCalendar();
+}
+
+function selectDay(year, month, day) {
+  selectedDate = new Date(year, month, day);
+  document.getElementById('dpClearBtn').style.display = 'block';
+  document.getElementById('calDatumBtn').classList.add('active');
+  renderDpCalendar();
+  renderCalendar();
+  setTimeout(closeDatePicker, 180);
+}
+
+function renderDpCalendar() {
+  document.getElementById('dpMonthLabel').textContent = SMONTH_NAMES[dpMonth] + ' ' + dpYear;
+  const firstDay = new Date(dpYear, dpMonth, 1).getDay();
+  const offset = (firstDay + 6) % 7; // Mon=0
+  const daysInMonth = new Date(dpYear, dpMonth + 1, 0).getDate();
+
+  // Count events per day
+  const eventCount = {};
+  ITEMS.filter((i) => itemType(i) === 'event').forEach((item) => {
+    const p = parseEventDate(item.date);
+    if (!p) return;
+    for (let d = new Date(p.start); d <= p.end; d.setDate(d.getDate() + 1)) {
+      if (d.getFullYear() === dpYear && d.getMonth() === dpMonth) {
+        const day = d.getDate();
+        eventCount[day] = (eventCount[day] || 0) + 1;
+      }
+    }
   });
-}
 
-// ── SHEET (mobile) ────────────────────────────────────────────────
-const PEEK = 230;
-
-function hideSheet() {
-  const h = document.getElementById('sheetCard').offsetHeight + 40;
-  document.getElementById('sheet').style.transform = `translateY(${h}px)`;
-  collapsed = true;
-}
-
-function collapseSheet() {
-  const h = document.getElementById('sheetCard').offsetHeight;
-  document.getElementById('sheet').style.transform = `translateY(${h - PEEK}px)`;
-  collapsed = true;
-}
-
-function expandSheet() {
-  document.getElementById('sheet').style.transform = 'translateY(0)';
-  collapsed = false;
-}
-
-let dY0,
-  dT0,
-  dDrag = false;
-
-function setupSheetDrag() {
-  const hw = document.getElementById('handleWrap');
-  const body = document.getElementById('sheetContent').parentElement;
-  const sh = document.getElementById('sheet');
-
-  function onStart(y) {
-    if (document.getElementById('activeCard').classList.contains('visible')) return;
-    dDrag = true;
-    dY0 = y;
-    dT0 = collapsed ? document.getElementById('sheetCard').offsetHeight - PEEK : 0;
-    sh.style.transition = 'none';
+  const today = new Date();
+  const isThisMonth = today.getFullYear() === dpYear && today.getMonth() === dpMonth;
+  let html = '';
+  for (let i = 0; i < offset; i++) html += `<div class="dp-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isSel = selectedDate && selectedDate.getFullYear() === dpYear && selectedDate.getMonth() === dpMonth && selectedDate.getDate() === d;
+    const cnt = eventCount[d] || 0;
+    const isToday = isThisMonth && today.getDate() === d;
+    const badge = cnt > 0 ? `<span class="dp-day-count">${cnt}</span>` : '';
+    html += `<button class="dp-day${isSel ? ' selected' : ''}${isToday ? ' today' : ''}" data-dp-day="${d}" data-dp-year="${dpYear}" data-dp-month="${dpMonth}">${d}${badge}</button>`;
   }
-  function onMove(y) {
-    if (!dDrag) return;
-    sh.style.transform = `translateY(${Math.max(0, dT0 + y - dY0)}px)`;
-  }
-  function onEnd(y) {
-    if (!dDrag) return;
-    dDrag = false;
-    sh.style.transition = '';
-    const dy = y - dY0;
-    if (dy > 50) collapseSheet();
-    else if (dy < -50) expandSheet();
-    else collapsed ? collapseSheet() : expandSheet();
-  }
-
-  hw.addEventListener('touchstart', (e) => { e.preventDefault(); onStart(e.touches[0].clientY); }, { passive: false });
-  document.addEventListener('touchmove', (e) => { if (dDrag) { e.preventDefault(); onMove(e.touches[0].clientY); } }, { passive: false });
-  document.addEventListener('touchend', (e) => { if (dDrag) onEnd(e.changedTouches[0].clientY); }, { passive: true });
-  hw.addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') return; onStart(e.clientY); hw.setPointerCapture(e.pointerId); });
-  hw.addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; onMove(e.clientY); });
-  hw.addEventListener('pointerup', (e) => { if (e.pointerType === 'touch') return; onEnd(e.clientY); });
-
-  let bodyY0 = 0,
-    bodyDrag = false;
-  body.addEventListener('touchstart', (e) => {
-    if (document.getElementById('activeCard').classList.contains('visible')) return;
-    bodyY0 = e.touches[0].clientY;
-    bodyDrag = false;
-  }, { passive: true });
-  body.addEventListener('touchmove', (e) => {
-    if (document.getElementById('activeCard').classList.contains('visible')) return;
-    const dy = e.touches[0].clientY - bodyY0;
-    if (!collapsed && body.scrollTop === 0 && dy > 6) bodyDrag = true;
-    if (bodyDrag) {
-      e.preventDefault();
-      sh.style.transition = 'none';
-      sh.style.transform = `translateY(${Math.max(0, dy)}px)`;
-    }
-  }, { passive: false });
-  body.addEventListener('touchend', (e) => {
-    if (!bodyDrag) return;
-    bodyDrag = false;
-    sh.style.transition = '';
-    const dy = e.changedTouches[0].clientY - bodyY0;
-    if (dy > 80) collapseSheet();
-    else expandSheet();
-  }, { passive: true });
+  document.getElementById('dpDays').innerHTML = html;
+  document.getElementById('dpClearBtn').style.display = selectedDate ? 'block' : 'none';
 }
 
-// ── ACTIVE CARD SWIPE DISMISS ────────────────────────────────────
-function setupActiveCardSwipe() {
-  const ac = document.getElementById('activeCard');
-  let acY0 = 0,
-    acDrag = false;
-  ac.addEventListener('touchstart', (e) => {
-    if (!ac.classList.contains('visible')) return;
-    acDrag = true;
-    acY0 = e.touches[0].clientY;
-    ac.style.transition = 'none';
-  }, { passive: true });
-  ac.addEventListener('touchmove', (e) => {
-    if (!acDrag) return;
-    const dy = e.touches[0].clientY - acY0;
-    if (dy > 0) { e.preventDefault(); ac.style.transform = `translateY(${dy}px)`; }
-  }, { passive: false });
-  ac.addEventListener('touchend', (e) => {
-    if (!acDrag) return;
-    acDrag = false;
-    const dy = e.changedTouches[0].clientY - acY0;
-    if (dy > 60) {
-      const offY = ac.offsetHeight + 40;
-      ac.style.transition = 'transform .32s cubic-bezier(.4,0,.6,1)';
-      ac.style.transform = `translateY(${offY}px)`;
-      ac.addEventListener('transitionend', function done() {
-        ac.removeEventListener('transitionend', done);
-        ac.classList.remove('visible');
-        ac.style.transition = '';
-        ac.style.transform = '';
-        const prev = activeCardId;
-        activeCardId = null;
-        if (prev) refreshMarker(prev);
-        expandSheet();
-      }, { once: true });
-    } else {
-      ac.style.transition = 'transform .3s cubic-bezier(.32,.94,.6,1)';
-      ac.style.transform = 'translateY(0)';
-    }
-  }, { passive: true });
+// ── CALENDAR VIEW ─────────────────────────────────────────────────
+function calCardHtml(item) {
+  return `<div class="cal-card" data-item-id="${item.id}">
+    <img class="cal-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
+    <div class="cal-card-body">
+      <div class="cal-card-name">${item.name}</div>
+      <div class="cal-card-desc">${item.desc}</div>
+      <div class="cal-card-tags">
+        <span class="cal-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          ${item.date}
+        </span>
+        <span class="cal-tag" style="background:${CAT_BG[item.cat]};color:${CAT_COLOR[item.cat]}">${CAT_LABEL[item.cat]}</span>
+        ${item.free ? '<span class="cal-tag" style="background:rgba(52,199,89,.12);color:#1a7a38">Gratis</span>' : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCalendar() {
+  let vis = getVisible();
+  if (selectedDate) vis = vis.filter((i) => eventMatchesDate(i, selectedDate));
+
+  // Group by month keyword in date string
+  const groups = [
+    { label: 'Juni', items: vis.filter((i) => i.date.toLowerCase().includes('jun')) },
+    { label: 'Juli', items: vis.filter((i) => i.date.toLowerCase().includes('jul')) },
+    { label: 'Maj', items: vis.filter((i) => i.date.toLowerCase().includes('maj')) },
+    { label: 'Övrigt', items: vis.filter((i) => !['jun', 'jul', 'maj'].some((m) => i.date.toLowerCase().includes(m))) },
+  ].filter((g) => g.items.length);
+
+  const el = document.getElementById('calContent');
+  el.innerHTML = groups.length
+    ? groups.map((g) => `
+      <div class="cal-section">
+        <div class="cal-section-title">${g.label}</div>
+        <div class="cal-h-scroll">${g.items.map(calCardHtml).join('')}</div>
+      </div>`).join('')
+    : '<div style="padding:40px 16px;text-align:center;color:rgba(0,0,0,.4);font-size:15px">Inga events på valt datum</div>';
 }
 
 // ── SEARCH ────────────────────────────────────────────────────────
@@ -567,7 +611,11 @@ function onSearch(q) {
   const res = document.getElementById('searchResults');
   const term = q.trim().toLowerCase();
   const hits = term
-    ? ITEMS.filter((i) => i.name.toLowerCase().includes(term) || i.loc.toLowerCase().includes(term))
+    ? ITEMS.filter((i) =>
+        i.name.toLowerCase().includes(term) ||
+        i.loc.toLowerCase().includes(term) ||
+        i.host.toLowerCase().includes(term)
+      )
     : ITEMS;
   if (!hits.length) {
     res.innerHTML = `<div class="srch-empty">Inga resultat för "${q}"</div>`;
@@ -595,22 +643,34 @@ function onSearch(q) {
 function openDetail(id) {
   const item = ITEMS.find((x) => x.id === id);
   if (!item) return;
-  const col = CAT_COLOR[item.cat],
-    bg = CAT_BG[item.cat],
-    lbl = CAT_LABEL[item.cat];
-  const icoFn = (c) => CAT_SVG_W[item.cat].replace(/stroke="white"/g, `stroke="${c}"`);
+  const col = CAT_COLOR[item.cat];
+  const bg = CAT_BG[item.cat];
+  const lbl = CAT_LABEL[item.cat];
+  const icoForColor = (c) => (CAT_SVG_W[item.cat] || '').replace(/stroke="white"/g, `stroke="${c}"`);
+  const initials = item.host.split(' ').map((w) => w[0]).slice(0, 3).join('');
+  const isPlats = itemType(item) === 'plats';
+
   document.getElementById('detInner').innerHTML = `
     <img class="det-hero" src="${item.img}" alt="${item.name}" decoding="async">
     <div class="det-card">
       <div style="text-align:center">
-        <div style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:40px;background:${bg};color:${col};font-size:13px;font-weight:600;margin:0 0 10px">${icoFn(col)}${lbl}</div>
+        <div class="det-cat-badge" style="background:${bg};color:${col}">${icoForColor(col)}${lbl}</div>
         <div class="det-title">${item.name}</div>
         <div class="det-subtitle">${item.desc}</div>
       </div>
       <div class="det-stats">
-        <div class="det-stat"><div class="det-stat-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#333" stroke-width="1.8"/><path d="M8 2v4M16 2v4M3 10h18" stroke="#333" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="det-stat-val">${item.date}</div></div>
-        <div class="det-stat"><div class="det-stat-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="#333" stroke-width="1.8" stroke-linejoin="round"/></svg></div><div class="det-stat-val">${item.loc}</div></div>
-        <div class="det-stat"><div class="det-stat-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#333" stroke-width="1.8"/><path d="M12 7v5l3 2" stroke="#333" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="det-stat-val">${item.time}</div></div>
+        <div class="det-stat">
+          <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M12 3c.828 0 1.5.672 1.5 1.5V6h9V4.5C22.5 3.672 23.172 3 24 3s1.5.672 1.5 1.5V6H27c2.485 0 4.5 2.015 4.5 4.5V13.5H4.5V10.5C4.5 8.015 6.515 6 9 6h1.5V4.5C10.5 3.672 11.172 3 12 3z" fill="#068A99"/><path d="M4.5 27V16.5h27V27c0 2.485-2.015 4.5-4.5 4.5H9C6.515 31.5 4.5 29.485 4.5 27z" fill="#47C1CE" fill-opacity="0.4"/></svg></div>
+          <div class="det-stat-val">${item.date}</div>
+        </div>
+        <div class="det-stat">
+          <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 15C6 8.373 11.373 3 18 3s12 5.373 12 12c0 3.711-1.641 7.138-3.554 9.891C24.522 27.66 22.224 29.889 20.688 31.236A1.984 1.984 0 0 1 18 31.236C16.464 29.889 14.165 27.66 12.554 24.891 10.641 22.138 9 18.711 9 15zM17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#47C1CE" fill-opacity="0.4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#068A99"/></svg></div>
+          <div class="det-stat-val">${item.loc}</div>
+        </div>
+        <div class="det-stat">
+          <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 33c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15C9.716 3 3 9.716 3 18c0 8.284 6.716 15 15 15zm1.5-21a1.5 1.5 0 0 0-3 0v6c0 .398.158.779.44 1.06l3.75 3.75a1.5 1.5 0 1 0 2.12-2.12L19.5 17.378V12z" fill="#47C1CE" fill-opacity="0.4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18 10.5c.828 0 1.5.672 1.5 1.5v5.379l3.31 3.31a1.5 1.5 0 1 1-2.12 2.122l-3.75-3.75A1.5 1.5 0 0 1 16.5 18v-6c0-.828.672-1.5 1.5-1.5z" fill="#068A99"/></svg></div>
+          <div class="det-stat-val">${isPlats ? item.date : item.time}</div>
+        </div>
       </div>
       <p class="det-desc">${item.longDesc}</p>
       <div class="det-map-label">Var det är</div>
@@ -619,10 +679,14 @@ function openDetail(id) {
       <div class="det-addr-street">${item.addr}</div>
       <div class="det-divider"></div>
       <div class="det-host">
-        <div class="det-host-logo">ABF</div>
-        <div><div class="det-host-name">Hosted av ${item.host}</div><div class="det-host-since">Arrangör i Huddinge Kommun</div></div>
+        <div class="det-host-logo" style="background:${col}">${initials}</div>
+        <div>
+          <div class="det-host-name">Hosted av ${item.host}</div>
+          <div class="det-host-since">Arrangör i Huddinge</div>
+        </div>
       </div>
     </div>`;
+
   document.getElementById('detFlyBtn').onclick = () => openMapsSheet(item);
   document.getElementById('detJoinBtn').onclick = () => openEventUrl(item);
   document.getElementById('detBackBtn').onclick = closeDetail;
@@ -631,6 +695,7 @@ function openDetail(id) {
   ds.classList.add('visible');
   ds.scrollTop = 0;
   setTimeout(() => document.getElementById('detBackBtn')?.focus(), 80);
+
   if (detailMapInstance) { detailMapInstance.remove(); detailMapInstance = null; }
   setTimeout(() => {
     const el = document.getElementById('detMapEl');
@@ -639,10 +704,11 @@ function openDetail(id) {
       center: [item.lat, item.lng],
       zoom: 15,
       zoomControl: false,
+      attributionControl: false,
       interactive: false,
       dragging: false,
     });
-    L.tileLayer(TILE_URL, { subdomains: 'abcd', attribution: TILE_ATTRIBUTION }).addTo(detailMapInstance);
+    L.tileLayer(TILE_URL, { subdomains: 'abcd' }).addTo(detailMapInstance);
     const pi = L.divIcon({
       html: `<div style="width:14px;height:14px;border-radius:50%;background:${col};border:2.5px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
       className: '',
@@ -657,10 +723,11 @@ function openDetail(id) {
 function closeDetail() {
   document.getElementById('detailScreen').classList.remove('visible');
   document.getElementById('detBottom').classList.remove('visible');
+  if (detailMapInstance) { detailMapInstance.remove(); detailMapInstance = null; }
   restoreFocus();
 }
 
-// ── ACTION SHEET ─────────────────────────────────────────────────
+// ── ACTION SHEET ──────────────────────────────────────────────────
 function showActionSheet(opts) {
   const bg = document.getElementById('actionSheetBg');
   const el = document.getElementById('actionSheet');
@@ -697,13 +764,16 @@ function openMapsSheet(item) {
     },
     {
       label: '📍 Öppna i Google Maps',
-      action: () =>
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank', 'noopener,noreferrer'),
+      action: () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank', 'noopener,noreferrer'),
     },
   ]);
 }
 
 function openEventUrl(item) {
+  if (!item.url) {
+    showActionSheet([{ label: `Kontakta ${item.host}`, subtitle: `Arrangör av ${item.name}`, bold: true, action: () => {} }]);
+    return;
+  }
   const host = item.url.replace(/https?:\/\//, '').replace(/\/.*/, '');
   showActionSheet([
     {
@@ -715,61 +785,83 @@ function openEventUrl(item) {
   ]);
 }
 
-// ── DOM WIRING — all event listeners in one place ─────────────────
+// ── DOM WIRING ────────────────────────────────────────────────────
 function initDom() {
-  // Search
-  document.getElementById('spSearchBtn').addEventListener('click', openSearch);
-  document.getElementById('searchPillBtn').addEventListener('click', openSearch);
-  document.getElementById('searchCancelBtn').addEventListener('click', closeSearch);
-  document.getElementById('searchInput').addEventListener('input', (e) => onSearch(e.target.value));
+  // Tab bar
+  delegate(document.getElementById('tabBar'), '[data-tab]', (_e, el) => setTab(el.dataset.tab));
+  document.getElementById('searchTabBtn').addEventListener('click', openSearch);
 
-  // Filter panel
-  document.getElementById('spFilterBtn').addEventListener('click', toggleFilter);
-  document.getElementById('mFilterBtn').addEventListener('click', toggleFilter);
+  // Filter
+  document.getElementById('filterBtn').addEventListener('click', toggleFilter);
+  document.getElementById('calFilterBtn').addEventListener('click', toggleFilter);
   document.getElementById('filterBg').addEventListener('click', closeFilter);
   document.getElementById('filterCloseBtn').addEventListener('click', closeFilter);
   document.getElementById('freeToggle').addEventListener('change', applyFilters);
   document.getElementById('filterResetBtn').addEventListener('click', resetFilters);
   document.getElementById('filterApplyBtn').addEventListener('click', closeFilter);
 
-  // Active card back button (desktop side panel)
-  document.getElementById('sacBackBtn').addEventListener('click', dismissActiveCard);
+  // Card panel
+  document.getElementById('backBtn').addEventListener('click', dismissCards);
+  document.getElementById('closeCardBtn').addEventListener('click', dismissCards);
 
-  // Action sheet dismiss
-  document.getElementById('actionSheetBg').addEventListener('click', closeActionSheet);
-  document.getElementById('actionSheetCancelBtn').addEventListener('click', closeActionSheet);
-
-  // Category chips — event delegation on both chip containers
-  const chipHandler = (_e, el) => selectCat(el.dataset.cat);
-  delegate(document.getElementById('chips'), '[data-cat]', chipHandler);
-  delegate(document.getElementById('spChips'), '[data-cat]', chipHandler);
-
-  // Content cards — event delegation on each scroll container
-  delegate(document.getElementById('sheetContent'), '[data-item-id]', (_e, el) =>
-    showActiveCard(Number(el.dataset.itemId))
+  // Card scroll — detail and join buttons
+  delegate(document.getElementById('cardScroll'), '[data-action="detail"]', (_e, el) =>
+    openDetail(Number(el.dataset.itemId))
   );
-  delegate(document.getElementById('spBody'), '[data-item-id]', (_e, el) =>
-    showActiveCard(Number(el.dataset.itemId))
-  );
-
-  // Search results — close search then show card
-  delegate(document.getElementById('searchResults'), '[data-item-id]', (_e, el) => {
-    closeSearch();
-    showActiveCard(Number(el.dataset.itemId));
+  delegate(document.getElementById('cardScroll'), '[data-action="join"]', (_e, el) => {
+    const item = ITEMS.find((x) => x.id === Number(el.dataset.itemId));
+    if (item) openEventUrl(item);
   });
 
-  // Action sheet options
+  // Calendar chips
+  delegate(document.getElementById('calChips'), '[data-cat]', (_e, el) => selectCat(el.dataset.cat));
+
+  // Top chips
+  delegate(document.getElementById('topChips'), '[data-cat]', (_e, el) => selectCat(el.dataset.cat));
+
+  // Calendar cards
+  delegate(document.getElementById('calContent'), '[data-item-id]', (_e, el) => {
+    setTab('event');
+    setTimeout(() => showCards([Number(el.dataset.itemId)]), 400);
+  });
+
+  // Search
+  document.getElementById('searchCancelBtn').addEventListener('click', closeSearch);
+  document.getElementById('searchInput').addEventListener('input', (e) => onSearch(e.target.value));
+
+  // Search results
+  delegate(document.getElementById('searchResults'), '[data-item-id]', (_e, el) => {
+    closeSearch();
+    showCards([Number(el.dataset.itemId)]);
+  });
+
+  // Date picker
+  document.getElementById('calDatumBtn').addEventListener('click', openDatePicker);
+  document.getElementById('dpCloseBtn').addEventListener('click', closeDatePicker);
+  document.getElementById('dateBg').addEventListener('click', closeDatePicker);
+  document.getElementById('dpPrevBtn').addEventListener('click', dpPrevMonth);
+  document.getElementById('dpNextBtn').addEventListener('click', dpNextMonth);
+  document.getElementById('dpClearBtn').addEventListener('click', clearDateFilter);
+  delegate(document.getElementById('dpDays'), '[data-dp-day]', (_e, el) =>
+    selectDay(Number(el.dataset.dpYear), Number(el.dataset.dpMonth), Number(el.dataset.dpDay))
+  );
+
+  // Action sheet
+  document.getElementById('actionSheetBg').addEventListener('click', closeActionSheet);
+  document.getElementById('actionSheetCancelBtn').addEventListener('click', closeActionSheet);
   delegate(document.getElementById('actionSheetOptions'), '[data-opt-index]', (_e, el) =>
     actionSheetTap(Number(el.dataset.optIndex))
   );
 
-  // Escape key closes any open modal
+  // Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (document.getElementById('filterPanel').classList.contains('open')) { closeFilter(); return; }
+    if (document.getElementById('dateSheet').classList.contains('open')) { closeDatePicker(); return; }
     if (document.getElementById('searchScreen').classList.contains('visible')) { closeSearch(); return; }
     if (document.getElementById('detailScreen').classList.contains('visible')) { closeDetail(); return; }
-    if (document.getElementById('actionSheet').style.transform === 'translateY(0)') closeActionSheet();
+    if (document.getElementById('actionSheet').style.transform === 'translateY(0)') { closeActionSheet(); return; }
+    if (activeIds.length) dismissCards();
   });
 }
 
@@ -788,16 +880,7 @@ window.addEventListener('load', () => {
       initMap();
       initFilterChips();
       renderChips();
-      renderContent();
-      setupSheetDrag();
-      setupActiveCardSwipe();
-      requestAnimationFrame(() => {
-        document.getElementById('sheet').style.transition = 'none';
-        collapseSheet();
-        requestAnimationFrame(() => {
-          document.getElementById('sheet').style.transition = '';
-        });
-      });
+      renderCalendar();
     })
     .catch((err) => console.error('Failed to load /data/items.json:', err));
 });
