@@ -28,12 +28,6 @@ const CHIP_SVGS = {
 };
 
 const CAT_COLOR = { event: '#bf5917', konst: '#068a99', motes: '#c0136f', musik: '#c3a523' };
-const CAT_BG = {
-  event: 'rgba(209,96,23,.14)',
-  konst: 'rgba(71,193,206,.14)',
-  motes: 'rgba(209,66,142,.14)',
-  musik: 'rgba(248,216,75,.22)',
-};
 const CAT_LABEL = { event: 'Event', konst: 'Konst', motes: 'Mötesplats', musik: 'Musik' };
 
 // Tab-based category lists
@@ -169,27 +163,26 @@ function initMap() {
 }
 
 function mHtml(cat, big, label = null) {
-  const sz = big ? 'mpin-lg' : 'mpin-sm',
-    wt = big ? 87.6 : 62.7;
+  const sz = big ? 'mpin-lg' : 'mpin-sm';
+  const catClass = CAT_COLOR[cat] ? `cat-${cat}` : '';
   const icon = CAT_SVG_W[cat] || CAT_SVG_W['event'];
   const lbl = label ? `<div class="pin-label">${esc(label)}</div>` : '';
-  return `<div class="mpin ${sz}" style="width:${wt}px;height:${wt}px">
+  return `<div class="mpin ${sz} ${catClass}">
     <div class="mpin-tail"></div>
-    <div class="mpin-circle" style="background:${CAT_COLOR[cat] || '#555'}">${icon}</div>
+    <div class="mpin-circle">${icon}</div>
     ${lbl}
   </div>`;
 }
 
 function mClusterHtml(cluster, big) {
-  const sz = big ? 'mpin-lg' : 'mpin-sm',
-    wt = big ? 87.6 : 62.7,
-    fs = big ? '20px' : '15px';
+  const sz = big ? 'mpin-lg' : 'mpin-sm';
   const cats = [...new Set(cluster.items.map((i) => i.cat))];
-  const color = cats.length === 1 ? CAT_COLOR[cats[0]] : '#1c1c1e';
-  return `<div class="mpin ${sz}" style="width:${wt}px;height:${wt}px">
+  const isMulti = cats.length > 1;
+  const catClass = isMulti ? 'mpin-multi' : (CAT_COLOR[cats[0]] ? `cat-${cats[0]}` : '');
+  return `<div class="mpin ${sz} ${catClass}">
     <div class="mpin-tail"></div>
-    <div class="mpin-circle" style="background:${color};display:flex;align-items:center;justify-content:center">
-      <span style="color:#fff;font-family:'Inter',sans-serif;font-size:${fs};font-weight:700;line-height:1;letter-spacing:-.5px">${cluster.items.length}</span>
+    <div class="mpin-circle flex-center">
+      <span class="mpin-cluster-num">${cluster.items.length}</span>
     </div>
   </div>`;
 }
@@ -278,7 +271,6 @@ const S_CLOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width
 const S_PIN = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`;
 
 function evCardHtml(item) {
-  const col = CAT_COLOR[item.cat];
   const isPlats = itemType(item) === 'plats';
   const dateLine = !isPlats
     ? `<span class="ev-tag">${S_CLOCK}${esc(item.date)} · ${esc(item.time.split('–')[0].split('-')[0])}</span>`
@@ -295,7 +287,7 @@ function evCardHtml(item) {
       <div class="ev-card-tags">
         ${dateLine}
         <span class="ev-tag">${S_PIN}${esc(item.loc)}</span>
-        <span class="ev-tag" style="background:${CAT_BG[item.cat]};color:${col}">${CAT_LABEL[item.cat]}</span>
+        <span class="ev-tag ev-tag-cat cat-${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
         ${item.free ? '<span class="free-badge">Gratis</span>' : ''}
       </div>
       <div class="ev-card-btns">
@@ -430,10 +422,7 @@ function selectCat(cat) {
 function chipHtml(cat) {
   const isOn = selectedCat === cat;
   const isDim = selectedCat !== null && !isOn;
-  const col = CAT_COLOR[cat];
-  const bg = isOn ? col : CAT_BG[cat];
-  const textCol = isOn ? '#fff' : col;
-  return `<button class="chip${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${cat}" style="background:${bg};color:${textCol}" aria-pressed="${isOn}">
+  return `<button class="chip cat-${esc(cat)}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${esc(cat)}" aria-pressed="${isOn}">
     ${CHIP_SVGS[cat] || ''}${CAT_LABEL[cat]}
   </button>`;
 }
@@ -583,8 +572,8 @@ function calCardHtml(item) {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           ${esc(item.date)}
         </span>
-        <span class="cal-tag" style="background:${CAT_BG[item.cat]};color:${CAT_COLOR[item.cat]}">${CAT_LABEL[item.cat]}</span>
-        ${item.free ? '<span class="cal-tag" style="background:rgba(52,199,89,.12);color:#1a7a38">Gratis</span>' : ''}
+        <span class="cal-tag cal-tag-cat cat-${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
+        ${item.free ? '<span class="cal-tag cal-tag-free">Gratis</span>' : ''}
       </div>
     </div>
   </div>`;
@@ -609,7 +598,7 @@ function renderCalendar() {
         <div class="cal-section-title">${g.label}</div>
         <div class="cal-h-scroll">${g.items.map(calCardHtml).join('')}</div>
       </div>`).join('')
-    : '<div style="padding:40px 16px;text-align:center;color:rgba(0,0,0,.4);font-size:15px">Inga events på valt datum</div>';
+    : '<div class="cal-empty">Inga events på valt datum</div>';
 }
 
 // ── SEARCH ────────────────────────────────────────────────────────
@@ -648,8 +637,8 @@ function onSearch(q) {
       <div class="srch-card-body">
         <div class="srch-card-title">${esc(item.name)}</div>
         <div class="srch-card-desc">${esc(item.desc)}</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <span class="srch-card-cat" style="background:${CAT_BG[item.cat]};color:${CAT_COLOR[item.cat]}">${CAT_LABEL[item.cat]}</span>
+        <div class="srch-card-tags">
+          <span class="srch-card-cat cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
           ${item.free ? '<span class="free-badge">Gratis</span>' : ''}
         </div>
       </div>
@@ -663,7 +652,6 @@ function openDetail(id) {
   const item = ITEMS.find((x) => x.id === id);
   if (!item) return;
   const col = CAT_COLOR[item.cat];
-  const bg = CAT_BG[item.cat];
   const lbl = CAT_LABEL[item.cat];
   const icoForColor = (c) => (CAT_SVG_W[item.cat] || '').replace(/stroke="white"/g, `stroke="${c}"`);
   const initials = esc(item.host.split(' ').map((w) => w[0] || '').slice(0, 3).join(''));
@@ -672,8 +660,8 @@ function openDetail(id) {
   document.getElementById('detInner').innerHTML = `
     <img class="det-hero" src="${attrUrl(item.img)}" alt="${esc(item.name)}" decoding="async">
     <div class="det-card">
-      <div style="text-align:center">
-        <div class="det-cat-badge" style="background:${bg};color:${col}">${icoForColor(col)}${lbl}</div>
+      <div class="det-center-text">
+        <div class="det-cat-badge cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${icoForColor(col)}${lbl}</div>
         <div class="det-title">${esc(item.name)}</div>
         <div class="det-subtitle">${esc(item.desc)}</div>
       </div>
@@ -698,7 +686,7 @@ function openDetail(id) {
       <div class="det-addr-street">${esc(item.addr)}</div>
       <div class="det-divider"></div>
       <div class="det-host">
-        <div class="det-host-logo" style="background:${col}">${initials}</div>
+        <div class="det-host-logo cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${initials}</div>
         <div>
           <div class="det-host-name">Hosted av ${esc(item.host)}</div>
           <div class="det-host-since">Arrangör i Huddinge</div>
@@ -729,7 +717,7 @@ function openDetail(id) {
     });
     L.tileLayer(TILE_URL, { subdomains: 'abcd' }).addTo(detailMapInstance);
     const pi = L.divIcon({
-      html: `<div style="width:14px;height:14px;border-radius:50%;background:${col};border:2.5px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
+      html: `<div class="det-pin-dot cat-${esc(item.cat)}"></div>`,
       className: '',
       iconSize: [14, 14],
       iconAnchor: [7, 7],
@@ -753,8 +741,8 @@ function showActionSheet(opts) {
   document.getElementById('actionSheetOptions').innerHTML = opts
     .map(
       (o, i) => `
-    <button data-opt-index="${i}" style="width:100%;padding:17px 16px;background:none;border:none;border-top:${i > 0 ? '0.5px solid rgba(0,0,0,.15)' : 'none'};font-family:'Inter',sans-serif;font-size:17px;font-weight:${o.bold ? '600' : '400'};color:${o.bold ? '#000' : '#007aff'};text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px">
-      ${esc(o.label)}${o.subtitle ? `<span style="font-size:13px;font-weight:400;color:rgba(0,0,0,.45)">${esc(o.subtitle)}</span>` : ''}
+    <button class="as-btn${o.bold ? ' as-btn-bold' : ''}" data-opt-index="${i}">
+      ${esc(o.label)}${o.subtitle ? `<span class="as-btn-sub">${esc(o.subtitle)}</span>` : ''}
     </button>`
     )
     .join('');
