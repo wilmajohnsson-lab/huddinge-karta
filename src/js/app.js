@@ -37,9 +37,11 @@ const CAT_LABEL = { event: 'Event', konst: 'Konst', motes: 'Mötesplats', musik:
 const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' };
 const ALL_CAT = '__all__';
 
-/** Fire a Plausible custom event if the analytics snippet has loaded. */
+/** Fire an Umami custom event if the tracker has loaded. */
 function track(event, props) {
-  if (typeof window.plausible === 'function') window.plausible(event, props ? { props } : undefined);
+  if (typeof window.umami === 'object' && typeof window.umami.track === 'function') {
+    window.umami.track(event, props);
+  }
 }
 
 let _searchTrackTimer = null;
@@ -705,7 +707,7 @@ function closeSearch() {
 function onSearch(q) {
   const res = document.getElementById('searchResults');
   const term = q.trim().toLowerCase();
-  // Debounced Plausible event (fires 600 ms after user stops typing)
+  // Debounced Umami event (fires 600 ms after user stops typing)
   clearTimeout(_searchTrackTimer);
   if (term) _searchTrackTimer = setTimeout(() => track('Search', { query: term }), 600);
   const hits = term
