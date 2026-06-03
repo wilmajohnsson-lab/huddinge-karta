@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Pre-commit hook for huddinge-karta. Enabled by `npm run prepare`
+# (which runs `git config core.hooksPath .githooks`).
+#
+# Skip with: git commit --no-verify
+set -e
+
+# Only run gates that touch staged files relevant to each check.
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+
+run_lint=0
+run_validate=0
+run_tests=0
+
+if echo "$staged" | grep -qE '^src/js/.*\.js$'; then run_lint=1; run_tests=1; fi
+if echo "$staged" | grep -qE '^test/.*\.js$|^src/js/.*\.js$'; then run_tests=1; fi
+if echo "$staged" | grep -qE '^public/data/items\.json$|^scripts/validate-items\.mjs$'; then run_validate=1; fi
+
+if [ "$run_lint" = "1" ]; then
+  echo "[pre-commit] npm run lint"
+  npm run lint --silent
+fi
+
+if [ "$run_validate" = "1" ]; then
+  echo "[pre-commit] npm run validate"
+  npm run validate --silent
+fi
+
+if [ "$run_tests" = "1" ]; then
+  echo "[pre-commit] npm test"
+  npm test --silent
+fi
+
+exit 0

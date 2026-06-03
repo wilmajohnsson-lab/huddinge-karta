@@ -58,6 +58,28 @@ let dpYear = new Date().getFullYear(), dpMonth = new Date().getMonth();
 
 // ── HELPERS ───────────────────────────────────────────────────────
 
+/** Escape a value for safe inclusion in HTML text or attribute contexts. */
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
+
+/** Return true only for http(s) URLs — used to gate window.open and href/src. */
+function isSafeHttpUrl(u) {
+  try {
+    const url = new URL(u, window.location.origin);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+/** Return an HTML-attribute-safe URL or '' if the URL is not safe. */
+function attrUrl(u) {
+  return isSafeHttpUrl(u) ? esc(u) : '';
+}
+
 /**
  * Lightweight event delegation.
  * Listens on `root`, fires `handler(event, matchedEl)` when a click
@@ -150,7 +172,7 @@ function mHtml(cat, big, label = null) {
   const sz = big ? 'mpin-lg' : 'mpin-sm',
     wt = big ? 87.6 : 62.7;
   const icon = CAT_SVG_W[cat] || CAT_SVG_W['event'];
-  const lbl = label ? `<div class="pin-label">${label}</div>` : '';
+  const lbl = label ? `<div class="pin-label">${esc(label)}</div>` : '';
   return `<div class="mpin ${sz}" style="width:${wt}px;height:${wt}px">
     <div class="mpin-tail"></div>
     <div class="mpin-circle" style="background:${CAT_COLOR[cat] || '#555'}">${icon}</div>
@@ -259,26 +281,26 @@ function evCardHtml(item) {
   const col = CAT_COLOR[item.cat];
   const isPlats = itemType(item) === 'plats';
   const dateLine = !isPlats
-    ? `<span class="ev-tag">${S_CLOCK}${item.date} · ${item.time.split('–')[0].split('-')[0]}</span>`
+    ? `<span class="ev-tag">${S_CLOCK}${esc(item.date)} · ${esc(item.time.split('–')[0].split('-')[0])}</span>`
     : '';
-  return `<div class="ev-card" data-item-id="${item.id}" role="listitem">
-    <img class="ev-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
+  return `<div class="ev-card" data-item-id="${Number(item.id)}" role="listitem">
+    <img class="ev-card-img" src="${attrUrl(item.img)}" alt="${esc(item.name)}" loading="lazy" decoding="async">
     <div class="ev-card-body">
       <div class="ev-card-top">
         <div>
-          <div class="ev-card-name">${item.name}</div>
-          <div class="ev-card-desc">${item.desc}</div>
+          <div class="ev-card-name">${esc(item.name)}</div>
+          <div class="ev-card-desc">${esc(item.desc)}</div>
         </div>
       </div>
       <div class="ev-card-tags">
         ${dateLine}
-        <span class="ev-tag">${S_PIN}${item.loc}</span>
+        <span class="ev-tag">${S_PIN}${esc(item.loc)}</span>
         <span class="ev-tag" style="background:${CAT_BG[item.cat]};color:${col}">${CAT_LABEL[item.cat]}</span>
         ${item.free ? '<span class="free-badge">Gratis</span>' : ''}
       </div>
       <div class="ev-card-btns">
-        <button class="btn-ghost" data-action="detail" data-item-id="${item.id}">Mer info</button>
-        <button class="btn-dark" data-action="join" data-item-id="${item.id}">Ansök</button>
+        <button class="btn-ghost" data-action="detail" data-item-id="${Number(item.id)}">Mer info</button>
+        <button class="btn-dark" data-action="join" data-item-id="${Number(item.id)}">Ansök</button>
       </div>
     </div>
   </div>`;
@@ -551,15 +573,15 @@ function renderDpCalendar() {
 
 // ── CALENDAR VIEW ─────────────────────────────────────────────────
 function calCardHtml(item) {
-  return `<div class="cal-card" data-item-id="${item.id}">
-    <img class="cal-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
+  return `<div class="cal-card" data-item-id="${Number(item.id)}">
+    <img class="cal-card-img" src="${attrUrl(item.img)}" alt="${esc(item.name)}" loading="lazy" decoding="async">
     <div class="cal-card-body">
-      <div class="cal-card-name">${item.name}</div>
-      <div class="cal-card-desc">${item.desc}</div>
+      <div class="cal-card-name">${esc(item.name)}</div>
+      <div class="cal-card-desc">${esc(item.desc)}</div>
       <div class="cal-card-tags">
         <span class="cal-tag">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          ${item.date}
+          ${esc(item.date)}
         </span>
         <span class="cal-tag" style="background:${CAT_BG[item.cat]};color:${CAT_COLOR[item.cat]}">${CAT_LABEL[item.cat]}</span>
         ${item.free ? '<span class="cal-tag" style="background:rgba(52,199,89,.12);color:#1a7a38">Gratis</span>' : ''}
@@ -615,17 +637,17 @@ function onSearch(q) {
       )
     : ITEMS;
   if (!hits.length) {
-    res.innerHTML = `<div class="srch-empty">Inga resultat för "${q}"</div>`;
+    res.innerHTML = `<div class="srch-empty">Inga resultat för "${esc(q)}"</div>`;
     return;
   }
   res.innerHTML = hits
     .map(
       (item) => `
-    <div class="srch-card" data-item-id="${item.id}">
-      <img class="srch-card-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">
+    <div class="srch-card" data-item-id="${Number(item.id)}">
+      <img class="srch-card-img" src="${attrUrl(item.img)}" alt="${esc(item.name)}" loading="lazy" decoding="async">
       <div class="srch-card-body">
-        <div class="srch-card-title">${item.name}</div>
-        <div class="srch-card-desc">${item.desc}</div>
+        <div class="srch-card-title">${esc(item.name)}</div>
+        <div class="srch-card-desc">${esc(item.desc)}</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <span class="srch-card-cat" style="background:${CAT_BG[item.cat]};color:${CAT_COLOR[item.cat]}">${CAT_LABEL[item.cat]}</span>
           ${item.free ? '<span class="free-badge">Gratis</span>' : ''}
@@ -644,41 +666,41 @@ function openDetail(id) {
   const bg = CAT_BG[item.cat];
   const lbl = CAT_LABEL[item.cat];
   const icoForColor = (c) => (CAT_SVG_W[item.cat] || '').replace(/stroke="white"/g, `stroke="${c}"`);
-  const initials = item.host.split(' ').map((w) => w[0]).slice(0, 3).join('');
+  const initials = esc(item.host.split(' ').map((w) => w[0] || '').slice(0, 3).join(''));
   const isPlats = itemType(item) === 'plats';
 
   document.getElementById('detInner').innerHTML = `
-    <img class="det-hero" src="${item.img}" alt="${item.name}" decoding="async">
+    <img class="det-hero" src="${attrUrl(item.img)}" alt="${esc(item.name)}" decoding="async">
     <div class="det-card">
       <div style="text-align:center">
         <div class="det-cat-badge" style="background:${bg};color:${col}">${icoForColor(col)}${lbl}</div>
-        <div class="det-title">${item.name}</div>
-        <div class="det-subtitle">${item.desc}</div>
+        <div class="det-title">${esc(item.name)}</div>
+        <div class="det-subtitle">${esc(item.desc)}</div>
       </div>
       <div class="det-stats">
         <div class="det-stat">
           <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M12 3c.828 0 1.5.672 1.5 1.5V6h9V4.5C22.5 3.672 23.172 3 24 3s1.5.672 1.5 1.5V6H27c2.485 0 4.5 2.015 4.5 4.5V13.5H4.5V10.5C4.5 8.015 6.515 6 9 6h1.5V4.5C10.5 3.672 11.172 3 12 3z" fill="#068A99"/><path d="M4.5 27V16.5h27V27c0 2.485-2.015 4.5-4.5 4.5H9C6.515 31.5 4.5 29.485 4.5 27z" fill="#47C1CE" fill-opacity="0.4"/></svg></div>
-          <div class="det-stat-val">${item.date}</div>
+          <div class="det-stat-val">${esc(item.date)}</div>
         </div>
         <div class="det-stat">
           <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 15C6 8.373 11.373 3 18 3s12 5.373 12 12c0 3.711-1.641 7.138-3.554 9.891C24.522 27.66 22.224 29.889 20.688 31.236A1.984 1.984 0 0 1 18 31.236C16.464 29.889 14.165 27.66 12.554 24.891 10.641 22.138 9 18.711 9 15zM17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#47C1CE" fill-opacity="0.4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#068A99"/></svg></div>
-          <div class="det-stat-val">${item.loc}</div>
+          <div class="det-stat-val">${esc(item.loc)}</div>
         </div>
         <div class="det-stat">
           <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 33c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15C9.716 3 3 9.716 3 18c0 8.284 6.716 15 15 15zm1.5-21a1.5 1.5 0 0 0-3 0v6c0 .398.158.779.44 1.06l3.75 3.75a1.5 1.5 0 1 0 2.12-2.12L19.5 17.378V12z" fill="#47C1CE" fill-opacity="0.4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18 10.5c.828 0 1.5.672 1.5 1.5v5.379l3.31 3.31a1.5 1.5 0 1 1-2.12 2.122l-3.75-3.75A1.5 1.5 0 0 1 16.5 18v-6c0-.828.672-1.5 1.5-1.5z" fill="#068A99"/></svg></div>
-          <div class="det-stat-val">${isPlats ? item.date : item.time}</div>
+          <div class="det-stat-val">${esc(isPlats ? item.date : item.time)}</div>
         </div>
       </div>
-      <p class="det-desc">${item.longDesc}</p>
+      <p class="det-desc">${esc(item.longDesc)}</p>
       <div class="det-map-label">Var det är</div>
       <div class="det-map" id="detMapEl"></div>
-      <div class="det-addr-name">${item.loc}</div>
-      <div class="det-addr-street">${item.addr}</div>
+      <div class="det-addr-name">${esc(item.loc)}</div>
+      <div class="det-addr-street">${esc(item.addr)}</div>
       <div class="det-divider"></div>
       <div class="det-host">
         <div class="det-host-logo" style="background:${col}">${initials}</div>
         <div>
-          <div class="det-host-name">Hosted av ${item.host}</div>
+          <div class="det-host-name">Hosted av ${esc(item.host)}</div>
           <div class="det-host-since">Arrangör i Huddinge</div>
         </div>
       </div>
@@ -732,7 +754,7 @@ function showActionSheet(opts) {
     .map(
       (o, i) => `
     <button data-opt-index="${i}" style="width:100%;padding:17px 16px;background:none;border:none;border-top:${i > 0 ? '0.5px solid rgba(0,0,0,.15)' : 'none'};font-family:'Inter',sans-serif;font-size:17px;font-weight:${o.bold ? '600' : '400'};color:${o.bold ? '#000' : '#007aff'};text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px">
-      ${o.label}${o.subtitle ? `<span style="font-size:13px;font-weight:400;color:rgba(0,0,0,.45)">${o.subtitle}</span>` : ''}
+      ${esc(o.label)}${o.subtitle ? `<span style="font-size:13px;font-weight:400;color:rgba(0,0,0,.45)">${esc(o.subtitle)}</span>` : ''}
     </button>`
     )
     .join('');
@@ -754,30 +776,34 @@ function actionSheetTap(i) {
 }
 
 function openMapsSheet(item) {
+  const lat = Number(item.lat), lng = Number(item.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
   showActionSheet([
     {
       label: '🗺️ Öppna i Apple Kartor',
-      action: () => window.open(`https://maps.apple.com/?daddr=${item.lat},${item.lng}&dirflg=d`, '_blank', 'noopener,noreferrer'),
+      action: () => window.open(`https://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`, '_blank', 'noopener,noreferrer'),
     },
     {
       label: '📍 Öppna i Google Maps',
-      action: () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}`, '_blank', 'noopener,noreferrer'),
+      action: () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank', 'noopener,noreferrer'),
     },
   ]);
 }
 
 function openEventUrl(item) {
-  if (!item.url) {
+  if (!item.url || !isSafeHttpUrl(item.url)) {
     showActionSheet([{ label: `Kontakta ${item.host}`, subtitle: `Arrangör av ${item.name}`, bold: true, action: () => {} }]);
     return;
   }
-  const host = item.url.replace(/https?:\/\//, '').replace(/\/.*/, '');
+  let host = '';
+  try { host = new URL(item.url).host; } catch { /* fall through */ }
+  const url = item.url;
   showActionSheet([
     {
       label: `Öppna ${host}`,
       subtitle: `Mer info om ${item.name}`,
       bold: true,
-      action: () => window.open(item.url, '_blank', 'noopener,noreferrer'),
+      action: () => window.open(url, '_blank', 'noopener,noreferrer'),
     },
   ]);
 }
@@ -863,21 +889,62 @@ function initDom() {
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
-  fetch('/data/items.json')
+function showLoadError(message) {
+  let el = document.getElementById('loadErrorBanner');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'loadErrorBanner';
+    el.setAttribute('role', 'alert');
+    el.innerHTML = `
+      <div class="load-err-inner">
+        <div class="load-err-text">
+          <strong>Kunde inte ladda kartdata.</strong>
+          <span id="loadErrorDetail"></span>
+          <span>Kontrollera din anslutning och försök igen.</span>
+        </div>
+        <button type="button" id="loadErrorRetry" class="load-err-btn">Försök igen</button>
+      </div>`;
+    document.body.appendChild(el);
+    document.getElementById('loadErrorRetry').addEventListener('click', () => {
+      el.remove();
+      loadAndBoot();
+    });
+  }
+  document.getElementById('loadErrorDetail').textContent = message ? ' (' + message + ')' : '';
+}
+
+let _booted = false;
+function loadAndBoot() {
+  return fetch('/data/items.json', { cache: 'no-cache' })
     .then((r) => {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
     .then((data) => {
+      if (!data || !Array.isArray(data.items)) throw new Error('Invalid data shape');
       ITEMS = data.items;
-      ORGS_LIST = data.orgs;
-      AREAS_LIST = data.areas;
-      initDom();
-      initMap();
-      initFilterChips();
+      ORGS_LIST = data.orgs || [];
+      AREAS_LIST = data.areas || [];
+      if (!_booted) {
+        initDom();
+        initMap();
+        initFilterChips();
+        _booted = true;
+      } else {
+        rebuildClusterMarkers();
+        initFilterChips();
+      }
       renderChips();
       renderCalendar();
     })
-    .catch((err) => console.error('Failed to load /data/items.json:', err));
-});
+    .catch((err) => {
+      console.error('Failed to load /data/items.json:', err);
+      showLoadError(err && err.message ? err.message : 'okänt fel');
+    });
+}
+
+window.addEventListener('load', loadAndBoot);
+
+// Surface uncaught errors to console for ops; never throw past the boundary.
+window.addEventListener('error', (e) => console.error('[uncaught]', e.message, e.error));
+window.addEventListener('unhandledrejection', (e) => console.error('[unhandled-rejection]', e.reason));

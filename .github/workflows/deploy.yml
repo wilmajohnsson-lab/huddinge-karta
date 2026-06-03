@@ -52,13 +52,33 @@ jobs:
           chmod 600 "$HOME/.ssh/config"
           echo "--- ssh config ---" && cat "$HOME/.ssh/config"
 
-      - name: Deploy via rsync
+      - name: Deploy via rsync (atomic releases dir)
+        env:
+          RELEASE_ID: ${{ github.sha }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_TUNNEL_HOST }}
         run: |
+          set -euo pipefail
+          REMOTE="deploy@${DEPLOY_HOST}"
+          RELEASES_DIR="${DEPLOY_PATH}/releases"
+          NEW_RELEASE="${RELEASES_DIR}/${RELEASE_ID}"
+
+          ssh -F "$HOME/.ssh/config" "${DEPLOY_HOST}" "mkdir -p '${NEW_RELEASE}'"
+
           rsync -avz --delete --checksum \
             --exclude='.DS_Store' \
             -e "ssh -F $HOME/.ssh/config" \
             dist/ \
-            "deploy@${{ vars.DEPLOY_TUNNEL_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+            "${REMOTE}:${NEW_RELEASE}/"
+
+          # Atomic swap of the 'current' symlink, then prune old releases (keep last 5).
+          ssh -F "$HOME/.ssh/config" "${DEPLOY_HOST}" bash -s <<EOF
+          set -euo pipefail
+          ln -sfn '${NEW_RELEASE}' '${DEPLOY_PATH}/current.new'
+          mv -Tf '${DEPLOY_PATH}/current.new' '${DEPLOY_PATH}/current'
+          ls -1dt '${RELEASES_DIR}'/*/ 2>/dev/null | tail -n +6 | xargs -r rm -rf
+          echo "Active release: \$(readlink '${DEPLOY_PATH}/current')"
+          EOF
 
       - name: Clean up SSH key
         if: always()

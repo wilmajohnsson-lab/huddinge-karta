@@ -18,9 +18,13 @@ apt install nginx certbot python3-certbot-nginx -y
 2. Copy your built `dist/` folder to the web root:
 
 ```bash
-cp -r dist/* /var/www/huddinge-karta/
+# Atomic-deploy layout: nginx/Caddy serve from `current` (a symlink) which is
+# swapped atomically to releases/<sha> on every deploy.
+mkdir -p /var/www/huddinge-karta/releases/initial
+cp -r dist/* /var/www/huddinge-karta/releases/initial/
+ln -sfn /var/www/huddinge-karta/releases/initial /var/www/huddinge-karta/current
 # ensure correct ownership (optional)
-chown -R www-data:www-data /var/www/huddinge-karta
+chown -RH www-data:www-data /var/www/huddinge-karta
 ```
 
 3. Copy this repository's nginx config to nginx sites-available:
@@ -50,8 +54,11 @@ nginx -t && systemctl reload nginx
 2. Copy the built site to the web root:
 
 ```bash
-cp -r dist/* /var/www/huddinge-karta/
-chown -R caddy:caddy /var/www/huddinge-karta
+# Atomic-deploy layout (see Option A above)
+mkdir -p /var/www/huddinge-karta/releases/initial
+cp -r dist/* /var/www/huddinge-karta/releases/initial/
+ln -sfn /var/www/huddinge-karta/releases/initial /var/www/huddinge-karta/current
+chown -RH caddy:caddy /var/www/huddinge-karta
 ```
 
 3. Copy this Caddyfile to `/etc/caddy/Caddyfile` and replace `YOUR-DOMAIN.se` with your domain:

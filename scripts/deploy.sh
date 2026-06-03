@@ -148,8 +148,14 @@ if ! find dist -mindepth 1 -print -quit >/dev/null 2>&1; then
   exit 6
 fi
 
-# Prepare rsync command
-info "Preparing rsync to ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}"
+# Prepare rsync command — deploy to a per-release directory and atomically
+# swap the 'current' symlink. Web servers must be configured to serve from
+# ${DEPLOY_PATH}/current (see deploy/nginx.conf and deploy/Caddyfile).
+RELEASE_ID="$(git rev-parse --short HEAD 2>/dev/null || date -u +%Y%m%dT%H%M%SZ)"
+RELEASES_DIR="${DEPLOY_PATH%/}/releases"
+NEW_RELEASE="${RELEASES_DIR}/${RELEASE_ID}"
+
+info "Preparing rsync to ${DEPLOY_USER}@${DEPLOY_HOST}:${NEW_RELEASE}"
 rsync_args=( -avz --delete --checksum --exclude=.DS_Store )
 if [ "${DRY_RUN}" -eq 1 ]; then
   rsync_args+=( --dry-run )
@@ -167,7 +173,19 @@ for ((i=1;i<${#rsync_ssh[@]};i++)); do
 done
 rsync_args+=( -e "${RSYNC_RSH_COMMAND}" )
 
-remote_target="${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH%/}/"
+remote_target="${DEPLOY_USER}@${DEPLOY_HOST}:${NEW_RELEASE}/"
+
+# Build ssh command for remote operations
+ssh_cmd=( ssh -p "${DEPLOY_PORT}" )
+if [ -n "${DEPLOY_SSH_KEY}" ]; then
+  ssh_cmd+=( -i "${DEPLOY_SSH_KEY}" )
+fi
+ssh_cmd+=( "${DEPLOY_USER}@${DEPLOY_HOST}" )
+
+if [ "${DRY_RUN}" -ne 1 ]; then
+  info "Creating remote release directory ${NEW_RELEASE}"
+  "${ssh_cmd[@]}" "mkdir -p '${NEW_RELEASE}'"
+fi
 
 info "Starting rsync..."
 echo "rsync ${rsync_args[*]} dist/ ${remote_target}"
@@ -176,6 +194,18 @@ echo "rsync ${rsync_args[*]} dist/ ${remote_target}"
 rsync "${rsync_args[@]}" dist/ "${remote_target}"
 
 success "Rsync completed."
+
+if [ "${DRY_RUN}" -ne 1 ]; then
+  info "Atomically swapping 'current' → ${NEW_RELEASE} and pruning old releases (keep 5)"
+  "${ssh_cmd[@]}" bash -s <<EOF
+set -euo pipefail
+ln -sfn '${NEW_RELEASE}' '${DEPLOY_PATH%/}/current.new'
+mv -Tf '${DEPLOY_PATH%/}/current.new' '${DEPLOY_PATH%/}/current'
+ls -1dt '${RELEASES_DIR}'/*/ 2>/dev/null | tail -n +6 | xargs -r rm -rf
+echo "Active release: \$(readlink '${DEPLOY_PATH%/}/current')"
+EOF
+  success "Symlink swapped to release ${RELEASE_ID}."
+fi
 
 # Success message with URL hint
 echo ""
