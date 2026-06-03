@@ -57,9 +57,6 @@ let selectedDate = null;
 let dpYear = new Date().getFullYear(), dpMonth = new Date().getMonth();
 
 // ── HELPERS ───────────────────────────────────────────────────────
-function isDesktop() {
-  return window.innerWidth >= 768;
-}
 
 /**
  * Lightweight event delegation.
@@ -210,7 +207,7 @@ function refreshClusterByItemId(id) {
 }
 
 function rebuildClusterMarkers() {
-  Object.values(leafMarkers).forEach((m) => { try { map.removeLayer(m); } catch (_) {} });
+  Object.values(leafMarkers).forEach((m) => { try { map.removeLayer(m); } catch (e) { void e; } });
   leafMarkers = {};
   clusters = buildClusters(getVisible());
   clusters.forEach(addClusterMarker);
