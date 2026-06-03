@@ -32,8 +32,10 @@ const CHIP_SVGS = {
   musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
 };
 
-const CAT_COLOR = { event: '#bf5917', konst: '#068a99', motes: '#c0136f', musik: '#c3a523' };
+const CAT_COLOR = { event: '#a04612', konst: '#055e69', motes: '#9a0e58', musik: '#8a7515' };
 const CAT_LABEL = { event: 'Event', konst: 'Konst', motes: 'Mötesplats', musik: 'Musik' };
+const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' };
+const ALL_CAT = '__all__';
 
 // Tab-based category lists
 const EVENT_CATS = ['event', 'musik'];
@@ -153,7 +155,7 @@ const BOUNDS = L.latLngBounds([59.08, 17.73], [59.34, 18.24]);
 function initMap() {
   map = L.map('map', {
     center: [59.218, 17.978],
-    zoom: 13,
+    zoom: 14,
     minZoom: 11,
     maxZoom: 19,
     maxBounds: BOUNDS,
@@ -315,11 +317,12 @@ function evCardHtml(item) {
         ${dateLine}
         <span class="ev-tag">${S_PIN}${esc(item.loc)}</span>
         <span class="ev-tag ev-tag-cat cat-${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
-        ${item.free ? '<span class="free-badge">Gratis</span>' : ''}
+        ${item.free ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
+        ${item.registration === false ? '<span class="ev-tag ev-tag-noreg">Ingen anmälan krävs</span>' : ''}
       </div>
       <div class="ev-card-btns">
         <button class="btn-ghost" data-action="detail" data-item-id="${Number(item.id)}">Mer info</button>
-        <button class="btn-dark" data-action="join" data-item-id="${Number(item.id)}">Ansök</button>
+        ${item.cta && CTA_LABEL[item.cta] ? `<button class="btn-dark" data-action="join" data-item-id="${Number(item.id)}">${CTA_LABEL[item.cta]}</button>` : ''}
       </div>
     </div>
   </div>`;
@@ -441,13 +444,22 @@ function closeFilter() {
 
 // ── CATEGORY CHIPS ────────────────────────────────────────────────
 function selectCat(cat) {
-  selectedCat = selectedCat === cat ? null : cat;
+  if (cat === ALL_CAT) {
+    selectedCat = null;
+  } else {
+    selectedCat = selectedCat === cat ? null : cat;
+  }
   renderChips();
   applyFilters();
 }
 
 function chipHtml(cat) {
   const isOn = selectedCat === cat;
+  // "Alla"-chippet är aktivt när ingen kategori är vald.
+  if (cat === ALL_CAT) {
+    const allOn = selectedCat === null;
+    return `<button class="chip chip-all${allOn ? ' chip-on' : ''}" data-cat="${ALL_CAT}" aria-pressed="${allOn}">Alla</button>`;
+  }
   const isDim = selectedCat !== null && !isOn;
   return `<button class="chip cat-${esc(cat)}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${esc(cat)}" aria-pressed="${isOn}">
     ${CHIP_SVGS[cat] || ''}${CAT_LABEL[cat]}
@@ -456,14 +468,14 @@ function chipHtml(cat) {
 
 function renderChips() {
   const cats = activeTab === 'platser' ? PLATS_CATS : EVENT_CATS;
-  const html = cats.map(chipHtml).join('');
+  const html = [ALL_CAT, ...cats].map(chipHtml).join('');
   const tc = document.getElementById('topChips');
   if (tc) tc.innerHTML = html;
 }
 
 function renderCalendarChips() {
   const cats = EVENT_CATS;
-  const html = cats.map(chipHtml).join('');
+  const html = [ALL_CAT, ...cats].map(chipHtml).join('');
   const cc = document.getElementById('calChips');
   if (cc) cc.innerHTML = html;
 }
@@ -666,7 +678,8 @@ function onSearch(q) {
         <div class="srch-card-desc">${esc(item.desc)}</div>
         <div class="srch-card-tags">
           <span class="srch-card-cat cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
-          ${item.free ? '<span class="free-badge">Gratis</span>' : ''}
+          ${item.free ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
+          ${item.registration === false ? '<span class="ev-tag ev-tag-noreg">Ingen anmälan krävs</span>' : ''}
         </div>
       </div>
     </div>`
@@ -715,14 +728,23 @@ function openDetail(id) {
       <div class="det-host">
         <div class="det-host-logo cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${initials}</div>
         <div>
-          <div class="det-host-name">Hosted av ${esc(item.host)}</div>
+          <div class="det-host-name">Arrangör: ${esc(item.host)}</div>
           <div class="det-host-since">Arrangör i Huddinge</div>
         </div>
       </div>
     </div>`;
 
   document.getElementById('detFlyBtn').onclick = () => openMapsSheet(item);
-  document.getElementById('detJoinBtn').onclick = () => openEventUrl(item);
+  // CTA-knappen visas bara om item.cta finns; etikett växlar på cta-typ.
+  const detJoin = document.getElementById('detJoinBtn');
+  if (item.cta && CTA_LABEL[item.cta]) {
+    detJoin.textContent = CTA_LABEL[item.cta];
+    detJoin.hidden = false;
+    detJoin.onclick = () => openEventUrl(item);
+  } else {
+    detJoin.hidden = true;
+    detJoin.onclick = null;
+  }
   document.getElementById('detBackBtn').onclick = closeDetail;
   document.getElementById('detBottom').classList.add('visible');
   const ds = document.getElementById('detailScreen');
@@ -806,13 +828,15 @@ function openMapsSheet(item) {
 }
 
 function openEventUrl(item) {
-  if (!item.url || !isSafeHttpUrl(item.url)) {
+  // Prefer the explicit cta_url (registration / ticket link) over the generic url
+  const target = item.cta_url || item.url;
+  if (!target || !isSafeHttpUrl(target)) {
     showActionSheet([{ label: `Kontakta ${item.host}`, subtitle: `Arrangör av ${item.name}`, bold: true, action: () => {} }]);
     return;
   }
   let host = '';
-  try { host = new URL(item.url).host; } catch { /* fall through */ }
-  const url = item.url;
+  try { host = new URL(target).host; } catch { /* fall through */ }
+  const url = target;
   showActionSheet([
     {
       label: `Öppna ${host}`,

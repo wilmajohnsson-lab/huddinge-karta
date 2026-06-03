@@ -424,10 +424,12 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 #loadErrorBanner .load-err-btn:hover{background:#057280}
 
 /* ── Per-category color tokens (consumed via CSS custom properties) ── */
-.cat-event { --cat-color: #bf5917; --cat-bg: rgba(209,96,23,.14); }
-.cat-konst { --cat-color: #068a99; --cat-bg: rgba(71,193,206,.14); }
-.cat-motes { --cat-color: #c0136f; --cat-bg: rgba(209,66,142,.14); }
-.cat-musik { --cat-color: #c3a523; --cat-bg: rgba(248,216,75,.22); }
+/* Note: keep --cat-color in sync with CAT_COLOR in src/js/app.js (used to */
+/* recolor SVG strokes for the detail badge). Darkened 2026-06 per designer. */
+.cat-event { --cat-color: #a04612; --cat-bg: rgba(160,70,18,.14); }
+.cat-konst { --cat-color: #055e69; --cat-bg: rgba(5,94,105,.14); }
+.cat-motes { --cat-color: #9a0e58; --cat-bg: rgba(154,14,88,.14); }
+.cat-musik { --cat-color: #8a7515; --cat-bg: rgba(138,117,21,.18); }
 
 /* Chip uses the category vars; selected state inverts */
 .chip[data-cat]                       { background: var(--cat-bg); color: var(--cat-color); }
@@ -503,3 +505,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 /* index.html: replaces removed inline styles (CSP hardening) */
 #detailCard { position: relative; }
 .noscript-msg { padding: 2rem; text-align: center; font-family: sans-serif; }
+
+/* "Alla"-chip — neutral grey, no category color */
+.chip-all { background: rgba(0,0,0,.06); color: rgba(0,0,0,.75); }
+.chip-all.chip-on { background: #1c1c1e; color: #fff; }
+
+/* "Ingen anmälan krävs"-tagg */
+.ev-tag-noreg { background: rgba(52,199,89,.12); color: #1a7a38; }

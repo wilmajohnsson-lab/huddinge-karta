@@ -219,6 +219,43 @@ async function main() {
       itemErrors.push({ field: 'free', msg: 'must be a boolean' });
     }
 
+    // pris: number (0+) or null/undefined
+    if (item.pris !== undefined && item.pris !== null) {
+      if (typeof item.pris !== 'number' || Number.isNaN(item.pris) || item.pris < 0) {
+        itemErrors.push({ field: 'pris', msg: 'must be a non-negative number, null, or omitted' });
+      }
+    }
+
+    // registration: boolean or null/undefined
+    if (item.registration !== undefined && item.registration !== null) {
+      if (typeof item.registration !== 'boolean') {
+        itemErrors.push({ field: 'registration', msg: 'must be a boolean, null, or omitted' });
+      }
+    }
+
+    // cta: one of the allowed enum values, null, or undefined
+    if (item.cta !== undefined && item.cta !== null) {
+      if (!['buy', 'apply', 'info'].includes(item.cta)) {
+        itemErrors.push({ field: 'cta', msg: "must be 'buy', 'apply', 'info', null, or omitted" });
+      }
+    }
+
+    // cta_url: parseable http(s) URL or null/undefined
+    if (item.cta_url !== undefined && item.cta_url !== null) {
+      if (typeof item.cta_url !== 'string') {
+        itemErrors.push({ field: 'cta_url', msg: 'must be a string URL, null, or omitted' });
+      } else {
+        try {
+          const u = new URL(item.cta_url);
+          if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+            itemErrors.push({ field: 'cta_url', msg: 'must use http or https protocol' });
+          }
+        } catch (_e) {
+          itemErrors.push({ field: 'cta_url', msg: 'must be a parseable URL' });
+        }
+      }
+    }
+
     // host exists in orgs
     if (typeof item.host !== 'string' || !orgSet.has(item.host)) {
       itemErrors.push({ field: 'host', msg: 'must be one of the top-level orgs' });

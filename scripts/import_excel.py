@@ -18,53 +18,77 @@ SV_MON = {
 }
 
 # ── Area slug / display-name tables ───────────────────────────────────────
+# The 15 canonical kommundelar per Huddinge kommun.
+# Source: designer-confirmed list (2026-06).
 AREA_SLUG = {
-    'sjödalen-fullersta':  'sjodalen-fullersta',
-    'sjödalen':            'sjodalen-fullersta',
-    'fullersta':           'sjodalen-fullersta',
+    # canonical 15 (lower-cased input → slug)
     'flemingsberg':        'flemingsberg',
     'skogås':              'skogas',
     'trångsund':           'trangsund',
-    'segeltorp':           'segeltorp',
-    'vårby':               'varby',
+    'sjödalen-fullersta':  'sjodalen-fullersta',
+    'sjödalen':            'sjodalen-fullersta',
+    'fullersta':           'sjodalen-fullersta',
     'gladö-lissma':        'glado-lissma',
     'gladö':               'glado-lissma',
     'lissma':              'glado-lissma',
-    'huddinge':            'huddinge',
+    'stuvsta':             'stuvsta',
+    'vårby':               'varby',
+    'segeltorp':           'segeltorp',
     'glömsta':             'glomsta',
-    'vistaberg':           'vistaberg',
-    'lida':                'lida',
+    'vidja-ågesta':        'vidja-agesta',
+    'vidja':               'vidja-agesta',
+    'ågesta':              'vidja-agesta',
+    'snättringe':          'snattringe',
+    'länna':               'lanna',
+    'loviseberg':          'loviseberg',
+    'kungens kurva':       'kungens-kurva',
+    'kungens-kurva':       'kungens-kurva',
+    'högmora':             'hogmora',
+    # alternative names / sub-areas folded into nearest kommundel
+    'huddinge':            'sjodalen-fullersta',
+    'huddinge centrum':    'sjodalen-fullersta',
+    'vistaberg':           'glomsta',     # Vistaberg ligger inom Glömsta kommundel
+    'lida':                'glado-lissma',
 }
 
 AREA_DISPLAY = {
-    'sjodalen-fullersta': 'Sjödalen-Fullersta',
     'flemingsberg':       'Flemingsberg',
     'skogas':             'Skogås',
     'trangsund':          'Trångsund',
-    'segeltorp':          'Segeltorp',
-    'varby':              'Vårby',
+    'sjodalen-fullersta': 'Sjödalen-Fullersta',
     'glado-lissma':       'Gladö-Lissma',
-    'huddinge':           'Huddinge',
+    'stuvsta':            'Stuvsta',
+    'varby':              'Vårby',
+    'segeltorp':          'Segeltorp',
     'glomsta':            'Glömsta',
-    'vistaberg':          'Vistaberg',
-    'lida':               'Lida',
+    'vidja-agesta':       'Vidja-Ågesta',
+    'snattringe':         'Snättringe',
+    'lanna':              'Länna',
+    'loviseberg':         'Loviseberg',
+    'kungens-kurva':      'Kungens Kurva',
+    'hogmora':            'Högmora',
 }
+
+DEFAULT_AREA = 'sjodalen-fullersta'
 
 def to_area_id(raw):
     if not raw:
-        return 'huddinge'
+        return DEFAULT_AREA
     s = raw.strip().lower()
     if s in AREA_SLUG:
         return AREA_SLUG[s]
-    # fallback: ASCII-ify
-    return (s.replace('å','a').replace('ä','a').replace('ö','o')
-             .replace(' ','-').replace('/','-'))
+    ascii_s = (s.replace('å','a').replace('ä','a').replace('ö','o')
+                 .replace(' ','-').replace('/','-'))
+    return ascii_s if ascii_s in AREA_DISPLAY else DEFAULT_AREA
 
 def place_to_area(place_str):
-    """Rough area from a place/address string."""
+    """Rough area from a place/address string — returns one of the 15 canonical kommundelar."""
     if not place_str:
-        return 'huddinge'
+        return DEFAULT_AREA
     p = place_str.lower()
+    # match in priority order: most specific names first
+    if 'kungens kurva' in p or 'kungens-kurva' in p or 'ikea' in p:
+        return 'kungens-kurva'
     if 'flemingsberg' in p or 'södertörn' in p or 'sh ' in p or 'alfred nobels' in p:
         return 'flemingsberg'
     if 'skogås' in p or 'storvretsvägen' in p:
@@ -73,23 +97,59 @@ def place_to_area(place_str):
         return 'trangsund'
     if 'vårby' in p:
         return 'varby'
-    if 'solhagavägen' in p or 'myrstuguberget' in p:
-        return 'vistaberg'
     if 'segeltorp' in p or 'juringe' in p:
         return 'segeltorp'
-    return 'huddinge'
+    if 'gladö' in p or 'lissma' in p:
+        return 'glado-lissma'
+    if 'stuvsta' in p:
+        return 'stuvsta'
+    if 'snättringe' in p:
+        return 'snattringe'
+    if 'glömsta' in p or 'vistaberg' in p or 'solhagavägen' in p or 'myrstuguberget' in p:
+        return 'glomsta'
+    if 'vidja' in p or 'ågesta' in p:
+        return 'vidja-agesta'
+    if 'länna' in p:
+        return 'lanna'
+    if 'loviseberg' in p:
+        return 'loviseberg'
+    if 'högmora' in p:
+        return 'hogmora'
+    # Huddinge centrum / Sjödalen / Fullersta and unmarked items default here
+    return DEFAULT_AREA
 
 def coords_to_area(lat, lng):
-    """Fallback: rough geo-box area assignment."""
+    """Fallback: coarse geo-box assignment using the 15 canonical kommundelar.
+
+    These boxes are approximate; place_to_area() (name-based) is preferred
+    when a place string is available. Order matters — the first match wins.
+    """
+    # ── Far east / south-east cluster ────────────────────────────────────
     if lng > 18.10:
-        return 'trangsund' if lat < 59.23 else 'skogas'
-    if lat < 59.225 and lng < 17.97:
-        return 'flemingsberg'
-    if lat > 59.26 and lng < 17.95:
-        return 'varby'
-    if lat > 59.26:
-        return 'segeltorp'
-    return 'huddinge'
+        if lat < 59.20:               return 'lanna'
+        if lat < 59.225:              return 'trangsund'
+        if lat < 59.235:              return 'hogmora'
+        return 'skogas'
+    # ── Vidja-Ågesta (sydost) ────────────────────────────────────────────
+    if lng > 18.05 and lat < 59.21:   return 'vidja-agesta'
+    # ── Flemingsberg & Loviseberg (south) ────────────────────────────────
+    if lat < 59.205:                  return 'loviseberg'
+    if lat < 59.225 and lng < 17.97:  return 'flemingsberg'
+    # ── Gladö-Lissma (south rural) ───────────────────────────────────────
+    if lat < 59.215 and 17.97 <= lng <= 18.05:  return 'glado-lissma'
+    # ── Vårby (NW) ───────────────────────────────────────────────────────
+    if lat > 59.275 and lng < 17.92:  return 'varby'
+    # ── Kungens Kurva (N, near E4/IKEA) ──────────────────────────────────
+    if lat > 59.27 and 17.91 <= lng < 17.95:  return 'kungens-kurva'
+    # ── Segeltorp (N) ────────────────────────────────────────────────────
+    if lat > 59.265:                  return 'segeltorp'
+    # ── Snättringe / Stuvsta (mid-N) ─────────────────────────────────────
+    if lat > 59.245 and lng < 17.96:  return 'snattringe'
+    if lat > 59.245:                  return 'stuvsta'
+    # ── Glömsta (W of Huddinge centrum) ──────────────────────────────────
+    if lng < 17.96:                   return 'glomsta'
+    # Default: Sjödalen-Fullersta (Huddinge centrum etc.)
+    return DEFAULT_AREA
 
 # ── Date helpers ──────────────────────────────────────────────────────────
 def format_date_range(dates):
@@ -348,7 +408,12 @@ def load_konst(id_start: int) -> list[dict]:
             if place:
                 long_desc += f' Belägen vid {place}.'
 
-        area = place_to_area(place) or coords_to_area(lat_f, lng_f)
+        # For konst we prefer coordinate-based assignment because Plats names
+        # ("Forelltorget", "Sjödalsparken") rarely match a kommundel name. Fall
+        # back to place_to_area only when place_to_area finds a real keyword.
+        area = place_to_area(place)
+        if area == DEFAULT_AREA and lat_f and lng_f:
+            area = coords_to_area(lat_f, lng_f)
 
         items.append({
             'id':       iid,
@@ -409,6 +474,7 @@ def load_events(id_start: int) -> list[dict]:
                 'kategori':   str(kategori or '').strip(),
                 'passar':     str(passar  or '').strip() if passar else '',
                 'free':       pris == 0 or pris is None,
+                'pris':       int(pris) if isinstance(pris, (int, float)) else None,
                 'anmalan':    str(anmalan or '').strip() if anmalan else '',
                 'url':        str(länk  or '').strip() if länk else '',
             }
@@ -428,9 +494,14 @@ def load_events(id_start: int) -> list[dict]:
         time_str   = clean_time(g['tid'])
         coords     = lookup_coords(g['addr'])
 
-        # Area: prefer kommundel if present, else derive from address string
+        # Area: prefer kommundel xlsx column, then address keyword, then coords
         kd = g['kommundel']
-        area = to_area_id(kd) if (kd and kd not in ('None', '')) else place_to_area(g['addr'])
+        if kd and kd not in ('None', ''):
+            area = to_area_id(kd)
+        else:
+            area = place_to_area(g['addr'])
+            if area == DEFAULT_AREA and coords[0] and coords[1]:
+                area = coords_to_area(coords[0], coords[1])
 
         # desc (≤ 80 chars): type · audience
         passar = g['passar'] if g['passar'] not in ('', 'None', 'ingen info finns') else ''
@@ -457,23 +528,40 @@ def load_events(id_start: int) -> list[dict]:
         else:
             long_desc = f'Evenemang arrangerat av {g["org"]}.'
 
+        # Derive registration / cta from anmalan + price + link
+        anm = g['anmalan'].lower().strip()
+        registration = True if anm == 'ja' else (False if anm == 'nej' else None)
+        has_link = g['url'] and g['url'] not in ('https://www.huddinge.se', '')
+        if registration is True:
+            cta = 'apply'   # Anmäl mig
+        elif g['pris'] and g['pris'] > 0:
+            cta = 'buy'     # Köp biljett
+        elif has_link:
+            cta = 'info'    # Mer info
+        else:
+            cta = None
+
         items.append({
-            'id':       iid,
-            'cat':      cat,
-            'name':     g['name'],
-            'desc':     desc,
-            'longDesc': long_desc,
-            'date':     date_str,
-            'time':     time_str,
-            'loc':      g['addr'],
-            'addr':     g['addr'],
-            'host':     g['org'],
-            'area':     area,
-            'free':     g['free'],
-            'img':      pick_img(cat),
-            'url':      g['url'] or 'https://www.huddinge.se',
-            'lat':      coords[0],
-            'lng':      coords[1],
+            'id':           iid,
+            'cat':          cat,
+            'name':         g['name'],
+            'desc':         desc,
+            'longDesc':     long_desc,
+            'date':         date_str,
+            'time':         time_str,
+            'loc':          g['addr'],
+            'addr':         g['addr'],
+            'host':         g['org'],
+            'area':         area,
+            'free':         g['free'],
+            'pris':         g['pris'],
+            'registration': registration,
+            'cta':          cta,
+            'cta_url':      g['url'] if has_link else None,
+            'img':          pick_img(cat),
+            'url':          g['url'] or 'https://www.huddinge.se',
+            'lat':          coords[0],
+            'lng':          coords[1],
         })
         iid += 1
 
