@@ -13,10 +13,9 @@
 <title>Huddinge Karta</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="/manifest.json">
-<!-- Inter font — only external CDN dependency; all other assets bundled via Vite -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Inter font is bundled via @fontsource/inter (Latin subset). Map tiles preconnect: -->
+<link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
 </head>
 <body>
 <a class="skip-link" href="#map">Hoppa till kartan</a>

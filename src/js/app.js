@@ -1,6 +1,11 @@
 // ── Imports ───────────────────────────────────────────────────────
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+// Self-hosted Inter (Latin subset — covers Swedish åäö) replaces Google Fonts CDN
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
 import '../css/styles.css';
 
 // ── Tile provider ─────────────────────────────────────────────────
@@ -69,9 +74,31 @@ function isSafeHttpUrl(u) {
   }
 }
 
-/** Return an HTML-attribute-safe URL or '' if the URL is not safe. */
-function attrUrl(u) {
-  return isSafeHttpUrl(u) ? esc(u) : '';
+/**
+ * Build an Unsplash URL at a given width with auto=format so Unsplash
+ * negotiates AVIF/WebP. Items.json URLs already include ?w=600&q=80; we
+ * override w per render context (thumbnail vs hero).
+ */
+function unsplashUrl(u, width) {
+  if (!isSafeHttpUrl(u)) return '';
+  try {
+    const url = new URL(u);
+    if (url.host !== 'images.unsplash.com') return u;
+    url.searchParams.set('w', String(width));
+    url.searchParams.set('q', '75');
+    url.searchParams.set('auto', 'format');
+    return url.toString();
+  } catch {
+    return u;
+  }
+}
+
+/** Return src + srcset (1x/2x) HTML attributes for a responsive image. */
+function imgSrc(u, width) {
+  const x1 = unsplashUrl(u, width);
+  const x2 = unsplashUrl(u, width * 2);
+  if (!x1) return '';
+  return `src="${esc(x1)}" srcset="${esc(x1)} 1x, ${esc(x2)} 2x"`;
 }
 
 /**
@@ -276,7 +303,7 @@ function evCardHtml(item) {
     ? `<span class="ev-tag">${S_CLOCK}${esc(item.date)} · ${esc(item.time.split('–')[0].split('-')[0])}</span>`
     : '';
   return `<div class="ev-card" data-item-id="${Number(item.id)}" role="listitem">
-    <img class="ev-card-img" src="${attrUrl(item.img)}" alt="${esc(item.name)}" loading="lazy" decoding="async">
+    <img class="ev-card-img" ${imgSrc(item.img, 600)} width="600" height="320" alt="${esc(item.name)}" loading="lazy" decoding="async">
     <div class="ev-card-body">
       <div class="ev-card-top">
         <div>
@@ -563,7 +590,7 @@ function renderDpCalendar() {
 // ── CALENDAR VIEW ─────────────────────────────────────────────────
 function calCardHtml(item) {
   return `<div class="cal-card" data-item-id="${Number(item.id)}">
-    <img class="cal-card-img" src="${attrUrl(item.img)}" alt="${esc(item.name)}" loading="lazy" decoding="async">
+    <img class="cal-card-img" ${imgSrc(item.img, 600)} width="600" height="320" alt="${esc(item.name)}" loading="lazy" decoding="async">
     <div class="cal-card-body">
       <div class="cal-card-name">${esc(item.name)}</div>
       <div class="cal-card-desc">${esc(item.desc)}</div>
@@ -633,7 +660,7 @@ function onSearch(q) {
     .map(
       (item) => `
     <div class="srch-card" data-item-id="${Number(item.id)}">
-      <img class="srch-card-img" src="${attrUrl(item.img)}" alt="${esc(item.name)}" loading="lazy" decoding="async">
+      <img class="srch-card-img" ${imgSrc(item.img, 160)} width="160" height="160" alt="${esc(item.name)}" loading="lazy" decoding="async">
       <div class="srch-card-body">
         <div class="srch-card-title">${esc(item.name)}</div>
         <div class="srch-card-desc">${esc(item.desc)}</div>
@@ -658,7 +685,7 @@ function openDetail(id) {
   const isPlats = itemType(item) === 'plats';
 
   document.getElementById('detInner').innerHTML = `
-    <img class="det-hero" src="${attrUrl(item.img)}" alt="${esc(item.name)}" decoding="async">
+    <img class="det-hero" ${imgSrc(item.img, 1200)} width="1200" height="600" alt="${esc(item.name)}" decoding="async" fetchpriority="high">
     <div class="det-card">
       <div class="det-center-text">
         <div class="det-cat-badge cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${icoForColor(col)}${lbl}</div>

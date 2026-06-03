@@ -24,6 +24,7 @@
     "vitest": "^4.1.7"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
     "leaflet": "^1.9.4"
   }
 }
