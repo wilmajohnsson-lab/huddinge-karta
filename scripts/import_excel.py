@@ -1,15 +1,40 @@
 #!/usr/bin/env python3
 """
-Import Source/*.xlsx into public/data/items.json
+Import Source/*.xlsx into the PocketBase `items` collection.
 
-Usage:  python3 scripts/import_excel.py
-Output: public/data/items.json
+PocketBase is the source of truth for items. This script is a one-way bulk
+importer from the original Excel sources; it dedups by (cat, name, host, addr)
+and updates existing PB records in-place. After the import you must press
+"Publicera" in the admin UI (or call POST /api/publish/items-json) to push the
+resulting items.json to GitHub and trigger a deploy.
+
+Usage:
+    # Dry-run: parse Excel, show what would change, do not write to PB
+    python3 scripts/import_excel.py
+
+    # Actually write
+    PB_PASSWORD='...' python3 scripts/import_excel.py --apply
+
+    # Also delete PB items that match the Excel signature but are not in Excel
+    PB_PASSWORD='...' python3 scripts/import_excel.py --apply --prune
+
+Environment variables:
+    PB_URL       default http://192.168.86.112:8090  (LAN, bypasses CF WAF)
+    PB_EMAIL     default admin@huddinge.mreh.site
+    PB_PASSWORD  required for --apply
 """
 
+import argparse
 import json
+import os
 import re
-import openpyxl
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
 from datetime import datetime
+
+import openpyxl
 
 # ── Swedish month names ────────────────────────────────────────────────────
 SV_MON = {
@@ -568,8 +593,128 @@ def load_events(id_start: int) -> list[dict]:
     return items
 
 
+# ── PocketBase API helpers ────────────────────────────────────────────────
+class PBError(Exception):
+    pass
+
+def _http(method: str, url: str, *, token: str | None = None,
+          body: dict | None = None, timeout: int = 30) -> dict:
+    headers = {'Content-Type': 'application/json'}
+    if token:
+        headers['Authorization'] = token
+    data = json.dumps(body).encode('utf-8') if body is not None else None
+    req = urllib.request.Request(url, data=data, headers=headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            raw = r.read().decode('utf-8') or '{}'
+            return json.loads(raw)
+    except urllib.error.HTTPError as e:
+        msg = e.read().decode('utf-8', errors='replace')[:400]
+        raise PBError(f'{method} {url} → HTTP {e.code}: {msg}') from None
+    except urllib.error.URLError as e:
+        raise PBError(f'{method} {url} → {e.reason}') from None
+
+def pb_auth(pb_url: str, email: str, password: str) -> str:
+    res = _http('POST', f'{pb_url}/api/collections/_superusers/auth-with-password',
+                body={'identity': email, 'password': password})
+    return res['token']
+
+def pb_list_items(pb_url: str, token: str) -> list[dict]:
+    out = []
+    page = 1
+    while True:
+        res = _http('GET',
+                    f'{pb_url}/api/collections/items/records?perPage=200&page={page}',
+                    token=token)
+        out.extend(res.get('items', []))
+        if page >= res.get('totalPages', 1):
+            break
+        page += 1
+    return out
+
+def pb_create(pb_url: str, token: str, payload: dict) -> dict:
+    return _http('POST', f'{pb_url}/api/collections/items/records',
+                 token=token, body=payload)
+
+def pb_update(pb_url: str, token: str, record_id: str, payload: dict) -> dict:
+    return _http('PATCH', f'{pb_url}/api/collections/items/records/{record_id}',
+                 token=token, body=payload)
+
+def pb_delete(pb_url: str, token: str, record_id: str) -> None:
+    _http('DELETE', f'{pb_url}/api/collections/items/records/{record_id}',
+          token=token)
+
+# ── Item ↔ PB payload mapping ─────────────────────────────────────────────
+# Fields we send to PB. legacy_id is intentionally NOT in this list — the
+# publish hook generates sequential ids from PB record creation order.
+PB_FIELDS = (
+    'name', 'cat', 'desc', 'longDesc', 'date', 'time', 'loc', 'addr', 'host',
+    'area', 'free', 'pris', 'registration', 'cta', 'cta_url', 'img', 'url',
+    'lat', 'lng',
+)
+
+def _reg_to_pb(v) -> str:
+    if v is True:  return 'yes'
+    if v is False: return 'no'
+    return 'unknown'
+
+def _reg_from_pb(v) -> bool | None:
+    return {'yes': True, 'no': False}.get(v, None)
+
+def to_pb_payload(item: dict) -> dict:
+    """Translate a parsed Excel item into a PB record payload."""
+    p = {
+        'name':         item['name'],
+        'cat':          item['cat'],
+        'desc':         item.get('desc') or '',
+        'longDesc':     item.get('longDesc') or '',
+        'date':         item.get('date') or '',
+        'time':         item.get('time') or '',
+        'loc':          item.get('loc') or '',
+        'addr':         item.get('addr') or '',
+        'host':         item.get('host') or '',
+        'area':         item['area'],
+        'free':         bool(item.get('free')),
+        'registration': _reg_to_pb(item.get('registration')),
+        'lat':          item['lat'],
+        'lng':          item['lng'],
+    }
+    if item.get('pris') is not None:    p['pris']    = int(item['pris'])
+    if item.get('cta'):                 p['cta']     = item['cta']
+    if item.get('cta_url'):             p['cta_url'] = item['cta_url']
+    if item.get('img'):                 p['img']     = item['img']
+    if item.get('url'):                 p['url']     = item['url']
+    return p
+
+def sig(item_or_record: dict) -> tuple:
+    """Stable identifier for matching Excel items to PB records."""
+    return (
+        (item_or_record.get('cat')  or '').strip(),
+        (item_or_record.get('name') or '').strip(),
+        (item_or_record.get('host') or '').strip(),
+        (item_or_record.get('addr') or '').strip(),
+    )
+
+def diff_payload(payload: dict, record: dict) -> dict:
+    """Return only the fields where payload differs from record."""
+    out = {}
+    for k, v in payload.items():
+        rv = record.get(k)
+        # Treat None / empty string as equivalent for text fields
+        if v == '' and (rv is None or rv == ''):
+            continue
+        if k in ('lat', 'lng', 'pris') and rv is not None and v is not None:
+            try:
+                if abs(float(v) - float(rv)) < 1e-9:
+                    continue
+            except (TypeError, ValueError):
+                pass
+        if v != rv:
+            out[k] = v
+    return out
+
 # ── Main ──────────────────────────────────────────────────────────────────
-def main():
+def parse_excel() -> list[dict]:
     print('Loading aktorlista coordinate index…')
     load_aktor_coord_index()
 
@@ -583,45 +728,170 @@ def main():
     events = load_events(1 + len(motes) + len(konst))
 
     all_items = motes + konst + events
-
-    # ── orgs: all unique host values ────────────────────────────────────────
-    orgs = sorted({i['host'] for i in all_items if i['host']})
-
-    # ── areas: collect all area IDs that appear ─────────────────────────────
-    area_ids = sorted({i['area'] for i in all_items})
-    areas = [
-        {'id': aid, 'name': AREA_DISPLAY.get(aid, aid.replace('-', ' ').title())}
-        for aid in area_ids
-    ]
-
-    output = {
-        'orgs':  orgs,
-        'areas': areas,
-        'items': all_items,
-    }
-
-    out_path = 'public/data/items.json'
-    with open(out_path, 'w', encoding='utf-8') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
-
     print()
-    print(f'✓ Wrote {out_path}')
     print(f'  {len(motes):>4}  motes    (aktorlista)')
     print(f'  {len(konst):>4}  konst    (konstlista, with coords)')
     print(f'  {len(events):>4}  events   (eventlista, grouped)')
     print(f'  ────')
-    print(f'  {len(all_items):>4}  total items')
-    print(f'  {len(orgs):>4}  organisations')
-    print(f'  {len(areas):>4}  areas')
+    print(f'  {len(all_items):>4}  total items parsed')
 
-    # Quick sanity checks
-    missing_coords = [i for i in all_items if i['lat'] == 59.2372 and i['lng'] == 17.9820]
+    # Sanity: warn on coord fallback
+    missing_coords = [i for i in all_items
+                      if i['lat'] == 59.2372 and i['lng'] == 17.9820]
     if missing_coords:
         print(f'\n  ⚠  {len(missing_coords)} items fell back to Huddinge centrum coords:')
         for i in missing_coords[:10]:
             print(f'     [{i["cat"]}] {i["name"]} — addr: "{i["addr"]}"')
         if len(missing_coords) > 10:
-            print(f'     … and {len(missing_coords)-10} more')
+            print(f'     … and {len(missing_coords) - 10} more')
+
+    # Sanity: warn on duplicate signatures inside Excel
+    seen: dict[tuple, dict] = {}
+    dups = []
+    for it in all_items:
+        s = sig(it)
+        if s in seen:
+            dups.append((s, it['name']))
+        seen[s] = it
+    if dups:
+        print(f'\n  ⚠  {len(dups)} duplicate (cat,name,host,addr) signatures inside Excel — '
+              f'later rows will overwrite earlier ones in PB:')
+        for s, n in dups[:5]:
+            print(f'     {s}')
+
+    return all_items
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description='Import Excel → PocketBase')
+    ap.add_argument('--apply', action='store_true',
+                    help='Actually write to PocketBase (default: dry-run)')
+    ap.add_argument('--prune', action='store_true',
+                    help='Delete PB items not present in current Excel '
+                         '(only with --apply)')
+    args = ap.parse_args()
+
+    pb_url   = os.environ.get('PB_URL',   'http://192.168.86.112:8090')
+    pb_email = os.environ.get('PB_EMAIL', 'admin@huddinge.mreh.site')
+    pb_pw    = os.environ.get('PB_PASSWORD', '')
+
+    parsed = parse_excel()
+
+    print()
+    print(f'PocketBase: {pb_url} (as {pb_email})')
+    if args.apply and not pb_pw:
+        print('  ✗ --apply requires PB_PASSWORD env var', file=sys.stderr)
+        return 2
+
+    # Always authenticate so we can dry-run a real diff
+    if not pb_pw:
+        print('  (no PB_PASSWORD set — cannot fetch existing PB state)')
+        print('  Set PB_PASSWORD to see a real diff, or pass --apply to write.')
+        return 0
+
+    print('  Authenticating…', end=' ', flush=True)
+    try:
+        token = pb_auth(pb_url, pb_email, pb_pw)
+    except PBError as e:
+        print('FAIL'); print(f'  ✗ {e}', file=sys.stderr); return 2
+    print('ok')
+
+    print('  Fetching existing items…', end=' ', flush=True)
+    try:
+        existing = pb_list_items(pb_url, token)
+    except PBError as e:
+        print('FAIL'); print(f'  ✗ {e}', file=sys.stderr); return 2
+    print(f'{len(existing)} found')
+
+    by_sig: dict[tuple, dict] = {}
+    for r in existing:
+        by_sig[sig(r)] = r
+
+    creates: list[dict] = []
+    updates: list[tuple[dict, dict, dict]] = []   # (record, payload, diff)
+    unchanged = 0
+    for item in parsed:
+        payload = to_pb_payload(item)
+        s = sig(item)
+        if s in by_sig:
+            d = diff_payload(payload, by_sig[s])
+            if d:
+                updates.append((by_sig[s], payload, d))
+            else:
+                unchanged += 1
+        else:
+            creates.append(payload)
+
+    parsed_sigs = {sig(it) for it in parsed}
+    orphans = [r for s, r in by_sig.items() if s not in parsed_sigs]
+
+    print()
+    print('=== Diff ===')
+    print(f'  create:    {len(creates):>4}')
+    print(f'  update:    {len(updates):>4}')
+    print(f'  unchanged: {unchanged:>4}')
+    print(f'  orphan:    {len(orphans):>4}  '
+          '(in PB but not in Excel — would be deleted with --prune)')
+
+    # Show samples
+    if creates:
+        print('\n  create samples:')
+        for p in creates[:5]:
+            print(f'    + [{p["cat"]}] {p["name"]}  ({p["host"]})')
+        if len(creates) > 5: print(f'    … and {len(creates) - 5} more')
+    if updates:
+        print('\n  update samples:')
+        for r, p, d in updates[:5]:
+            keys = ', '.join(sorted(d.keys()))
+            print(f'    ~ [{r["cat"]}] {r["name"]}  ({keys})')
+        if len(updates) > 5: print(f'    … and {len(updates) - 5} more')
+    if orphans:
+        print('\n  orphan samples:')
+        for r in orphans[:5]:
+            print(f'    - [{r["cat"]}] {r["name"]}  ({r["host"]})')
+        if len(orphans) > 5: print(f'    … and {len(orphans) - 5} more')
+
+    if not args.apply:
+        print('\n(dry-run — re-run with --apply to write)')
+        return 0
+
+    # ── Apply ─────────────────────────────────────────────────────────────
+    print('\n=== Applying ===')
+    ok = err = 0
+    for p in creates:
+        try:
+            pb_create(pb_url, token, p)
+            ok += 1
+        except PBError as e:
+            err += 1
+            print(f'  ✗ create [{p["cat"]}] {p["name"]}: {e}', file=sys.stderr)
+    print(f'  created:  {ok}/{len(creates)}')
+
+    ok = err = 0
+    for r, p, d in updates:
+        try:
+            pb_update(pb_url, token, r['id'], d)
+            ok += 1
+        except PBError as e:
+            err += 1
+            print(f'  ✗ update [{r["cat"]}] {r["name"]}: {e}', file=sys.stderr)
+    print(f'  updated:  {ok}/{len(updates)}')
+
+    if args.prune and orphans:
+        ok = err = 0
+        for r in orphans:
+            try:
+                pb_delete(pb_url, token, r['id'])
+                ok += 1
+            except PBError as e:
+                err += 1
+                print(f'  ✗ delete [{r["cat"]}] {r["name"]}: {e}', file=sys.stderr)
+        print(f'  deleted:  {ok}/{len(orphans)}')
+    elif orphans:
+        print(f'  orphans:  {len(orphans)} kept (no --prune flag)')
+
+    print('\nDone. Open https://huddinge-admin.mreh.site/publicera.html '
+          'to publish to the live site.')
+    return 0
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
