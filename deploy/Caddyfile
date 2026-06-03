@@ -2,8 +2,9 @@
 # Place at /etc/caddy/Caddyfile (Caddy will obtain and renew TLS automatically)
 
 YOUR-DOMAIN.se {
-    # Root directory where the built Vite `dist/` has been copied
-    root * /var/www/huddinge-karta
+    # Root directory — 'current' is a symlink the deploy workflow swaps atomically
+    # to /var/www/huddinge-karta/releases/<sha>. Caddy follows symlinks transparently.
+    root * /var/www/huddinge-karta/current
 
     # Serve static files from disk
     file_server

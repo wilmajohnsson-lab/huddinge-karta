@@ -19,6 +19,16 @@ const COLORS = {
 
 const ALLOWED_CATS = new Set(['event', 'konst', 'motes', 'musik']);
 
+// Geographic bounds for Huddinge — must match BOUNDS in src/js/app.js
+const LAT_MIN = 59.08, LAT_MAX = 59.34;
+const LNG_MIN = 17.73, LNG_MAX = 18.24;
+
+// CSP img-src whitelists only these hosts — enforce here so prod can't 404 silently
+const ALLOWED_IMG_HOSTS = new Set(['images.unsplash.com']);
+
+// Reject HTML metacharacters in user-text fields (defense in depth for client esc())
+const HTML_FORBIDDEN_RE = /[<>]/;
+
 function color(text, col) {
   return col ? `${col}${text}${COLORS.reset}` : text;
 }
@@ -167,20 +177,41 @@ async function main() {
       }
     }
 
-    // img & url must start with https://
+    // img & url must be https:// and parse as a real URL
+    let imgUrl = null;
     if (typeof item.img !== 'string' || !item.img.startsWith('https://')) {
-      itemErrors.push({ field: 'img', msg: 'must be a string starting with https://'});
+      itemErrors.push({ field: 'img', msg: 'must be a string starting with https://' });
+    } else {
+      try { imgUrl = new URL(item.img); } catch (_e) {
+        itemErrors.push({ field: 'img', msg: 'must be a valid URL' });
+      }
     }
-    if (typeof item.url !== 'string' || !item.url.startsWith('https://')) {
-      itemErrors.push({ field: 'url', msg: 'must be a string starting with https://'});
+    if (imgUrl && !ALLOWED_IMG_HOSTS.has(imgUrl.host)) {
+      itemErrors.push({ field: 'img', msg: `host '${imgUrl.host}' is not in CSP img-src allow-list (${[...ALLOWED_IMG_HOSTS].join(', ')})` });
     }
 
-    // lat / lng ranges
-    if (typeof item.lat !== 'number' || Number.isNaN(item.lat) || item.lat < 59.0 || item.lat > 59.5) {
-      itemErrors.push({ field: 'lat', msg: 'must be a number between 59.0 and 59.5' });
+    if (typeof item.url !== 'string' || !item.url.startsWith('https://')) {
+      itemErrors.push({ field: 'url', msg: 'must be a string starting with https://' });
+    } else {
+      try { new URL(item.url); } catch (_e) {
+        itemErrors.push({ field: 'url', msg: 'must be a valid URL' });
+      }
     }
-    if (typeof item.lng !== 'number' || Number.isNaN(item.lng) || item.lng < 17.5 || item.lng > 18.5) {
-      itemErrors.push({ field: 'lng', msg: 'must be a number between 17.5 and 18.5' });
+
+    // Reject HTML metacharacters in any user-visible text field
+    for (const f of ['name', 'desc', 'loc', 'addr', 'longDesc', 'host', 'date', 'time']) {
+      const v = item[f];
+      if (typeof v === 'string' && HTML_FORBIDDEN_RE.test(v)) {
+        itemErrors.push({ field: f, msg: `must not contain '<' or '>' characters` });
+      }
+    }
+
+    // lat / lng must be inside the Huddinge map bounds
+    if (typeof item.lat !== 'number' || Number.isNaN(item.lat) || item.lat < LAT_MIN || item.lat > LAT_MAX) {
+      itemErrors.push({ field: 'lat', msg: `must be a number between ${LAT_MIN} and ${LAT_MAX} (Huddinge bounds)` });
+    }
+    if (typeof item.lng !== 'number' || Number.isNaN(item.lng) || item.lng < LNG_MIN || item.lng > LNG_MAX) {
+      itemErrors.push({ field: 'lng', msg: `must be a number between ${LNG_MIN} and ${LNG_MAX} (Huddinge bounds)` });
     }
 
     // free boolean
@@ -198,9 +229,9 @@ async function main() {
       itemErrors.push({ field: 'area', msg: 'must match an area id from top-level areas' });
     }
 
-    // duplicates
+    // duplicates — hard error: causes broken DOM ids and marker churn
     if (typeof item.id !== 'undefined' && idCounts.get(item.id) > 1) {
-      itemWarnings.push({ field: 'id', msg: 'duplicate id found in items array' });
+      itemErrors.push({ field: 'id', msg: 'duplicate id found in items array' });
     }
 
     // print errors / warnings

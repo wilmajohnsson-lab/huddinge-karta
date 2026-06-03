@@ -403,3 +403,22 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 :focus-visible{outline:2.5px solid #068a99;outline-offset:2px;border-radius:4px}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #068a99;outline-offset:2px}
 #map:focus{outline:none}
+
+/* Load error banner (shown when items.json fetch fails) */
+#loadErrorBanner{
+  position:fixed;left:50%;top:16px;transform:translateX(-50%);
+  z-index:10000;max-width:min(560px,calc(100vw - 24px));
+  background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.18);
+  font-family:'Inter',sans-serif;color:#1c1c1e;
+  padding:14px 16px;
+}
+#loadErrorBanner .load-err-inner{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#loadErrorBanner .load-err-text{flex:1;min-width:200px;font-size:14px;line-height:1.4;display:flex;flex-direction:column;gap:2px}
+#loadErrorBanner strong{font-weight:600}
+#loadErrorBanner .load-err-btn{
+  background:#068a99;color:#fff;border:none;border-radius:10px;
+  padding:10px 14px;font-family:inherit;font-size:14px;font-weight:600;
+  cursor:pointer;
+}
+#loadErrorBanner .load-err-btn:hover{background:#057280}
