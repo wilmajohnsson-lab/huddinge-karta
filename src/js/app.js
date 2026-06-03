@@ -193,10 +193,11 @@ function initMap() {
 
 function mHtml(cat, big, label = null) {
   const sz = big ? 'mpin-lg' : 'mpin-sm';
+  const activeClass = big ? ' mpin-active' : '';
   const catClass = CAT_COLOR[cat] ? `cat-${cat}` : '';
   const icon = CAT_SVG_W[cat] || CAT_SVG_W['event'];
   const lbl = label ? `<div class="pin-label">${esc(label)}</div>` : '';
-  return `<div class="mpin ${sz} ${catClass}">
+  return `<div class="mpin ${sz}${activeClass} ${catClass}">
     <div class="mpin-tail"></div>
     <div class="mpin-circle">${icon}</div>
     ${lbl}
@@ -205,10 +206,11 @@ function mHtml(cat, big, label = null) {
 
 function mClusterHtml(cluster, big) {
   const sz = big ? 'mpin-lg' : 'mpin-sm';
+  const activeClass = big ? ' mpin-active' : '';
   const cats = [...new Set(cluster.items.map((i) => i.cat))];
   const isMulti = cats.length > 1;
   const catClass = isMulti ? 'mpin-multi' : (CAT_COLOR[cats[0]] ? `cat-${cats[0]}` : '');
-  return `<div class="mpin ${sz} ${catClass}">
+  return `<div class="mpin ${sz}${activeClass} ${catClass}">
     <div class="mpin-tail"></div>
     <div class="mpin-circle flex-center">
       <span class="mpin-cluster-num">${cluster.items.length}</span>

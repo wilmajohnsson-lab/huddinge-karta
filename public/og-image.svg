@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="teal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#068a99"/>
+      <stop offset="100%" stop-color="#055e69"/>
+    </linearGradient>
+    <clipPath id="leftClip">
+      <rect width="520" height="630"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f6f6f6"/>
+
+  <!-- Subtle dot grid (map feel) -->
+  <pattern id="dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1.5" fill="#cde8ea" opacity="0.6"/>
+  </pattern>
+  <rect x="480" width="720" height="630" fill="url(#dots)"/>
+
+  <!-- Left teal panel -->
+  <rect width="520" height="630" fill="url(#teal)"/>
+
+  <!-- Map pin icon (white) centred on panel -->
+  <g transform="translate(260,210)">
+    <!-- pin body -->
+    <path fill-rule="evenodd" clip-rule="evenodd"
+      d="M0-100C-55.2-100-100-55.2-100 0-100 55.2-55.2 100 0 100 55.2 100 100 55.2 100 0 100-55.2 55.2-100 0-100Z"
+      fill="white" opacity="0.12" transform="scale(0.9)"/>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+      d="M0-120C-66.3-120-120-66.3-120 0-120 66.3 0 210 0 210S120 66.3 120 0C120-66.3 66.3-120 0-120ZM0 40C-22.1 40-40 22.1-40 0-40-22.1-22.1-40 0-40 22.1-40 40-22.1 40 0 40 22.1 22.1 40 0 40Z"
+      fill="white" opacity="0.95"/>
+  </g>
+
+  <!-- Brand tag on pin -->
+  <rect x="174" y="372" width="172" height="36" rx="18" fill="white" opacity="0.2"/>
+  <text x="260" y="395" font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="700"
+    fill="white" text-anchor="middle" letter-spacing="1.5">HUDDINGE</text>
+
+  <!-- Right: main content -->
+  <!-- Title -->
+  <text x="600" y="220" font-family="Arial,Helvetica,sans-serif" font-size="72" font-weight="700"
+    fill="#111" letter-spacing="-1">Huddinge</text>
+  <text x="600" y="300" font-family="Arial,Helvetica,sans-serif" font-size="72" font-weight="300"
+    fill="#068a99" letter-spacing="-1">Karta</text>
+
+  <!-- Divider line -->
+  <rect x="600" y="328" width="80" height="4" rx="2" fill="#068a99"/>
+
+  <!-- Subtitle -->
+  <text x="600" y="376" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="400"
+    fill="#444">Evenemang · Konst · Mötesplatser · Musik</text>
+
+  <!-- Category pills row -->
+  <g transform="translate(600,420)">
+    <!-- event pill -->
+    <rect width="120" height="36" rx="18" fill="rgba(160,70,18,.14)"/>
+    <text x="60" y="23" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="600"
+      fill="#a04612" text-anchor="middle">Event</text>
+    <!-- konst pill -->
+    <rect x="132" width="110" height="36" rx="18" fill="rgba(5,94,105,.14)"/>
+    <text x="187" y="23" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="600"
+      fill="#055e69" text-anchor="middle">Konst</text>
+    <!-- motes pill -->
+    <rect x="254" width="160" height="36" rx="18" fill="rgba(154,14,88,.14)"/>
+    <text x="334" y="23" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="600"
+      fill="#9a0e58" text-anchor="middle">Mötesplats</text>
+    <!-- musik pill -->
+    <rect x="426" width="110" height="36" rx="18" fill="rgba(138,117,21,.18)"/>
+    <text x="481" y="23" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="600"
+      fill="#8a7515" text-anchor="middle">Musik</text>
+  </g>
+
+  <!-- URL -->
+  <text x="600" y="548" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="500"
+    fill="#068a99">huddinge.mreh.site</text>
+</svg>

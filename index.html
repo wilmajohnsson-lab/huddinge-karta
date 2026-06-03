@@ -7,9 +7,23 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.">
 <meta name="theme-color" content="#068a99">
+<link rel="canonical" href="https://huddinge.mreh.site">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://huddinge.mreh.site">
+<meta property="og:site_name" content="Huddinge Karta">
+<meta property="og:locale" content="sv_SE">
 <meta property="og:title" content="Huddinge Karta">
 <meta property="og:description" content="Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.">
-<meta property="og:type" content="website">
+<meta property="og:image" content="https://huddinge.mreh.site/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Huddinge Karta – interaktiv evenemangskarta">
+<!-- Twitter / X card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Huddinge Karta">
+<meta name="twitter:description" content="Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.">
+<meta name="twitter:image" content="https://huddinge.mreh.site/og-image.png">
 <title>Huddinge Karta</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="/manifest.json">
@@ -202,6 +216,24 @@
   </div><!-- #mapWrap -->
 </div><!-- #app -->
 
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Huddinge Karta",
+  "url": "https://huddinge.mreh.site",
+  "description": "Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.",
+  "applicationCategory": "Map",
+  "operatingSystem": "Web",
+  "inLanguage": "sv",
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": "Huddinge",
+    "containedInPlace": { "@type": "Country", "name": "Sverige" }
+  }
+}
+</script>
 <!-- Entry point: ESM module — bundles Leaflet + all CSS via Vite -->
 <script type="module" src="src/js/app.js"></script>
 <noscript><p class="noscript-msg">JavaScript krävs för att visa kartan. Aktivera JavaScript i din webbläsare.</p></noscript>

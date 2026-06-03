@@ -512,3 +512,51 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
 /* "Ingen anmälan krävs"-tagg */
 .ev-tag-noreg { background: rgba(52,199,89,.12); color: #1a7a38; }
+
+/* ══ B.2 ACTIVE PIN HIGHLIGHT ══ */
+/* Ring on the circle of the selected pin */
+.mpin-active .mpin-circle {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--cat-color, #555);
+}
+.mpin-active.mpin-multi .mpin-circle {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px #1c1c1e;
+}
+/* Deeper shadow on active pin tail */
+.mpin-active .mpin-tail {
+  box-shadow: 0 6px 20px rgba(0,0,0,.26), 0 24px 48px rgba(0,0,0,.18);
+}
+
+/* ══ B.7 DESKTOP CARD PANEL ══ */
+@media (min-width: 720px) {
+  /* Slide in from right instead of up */
+  #cardPanel {
+    left: auto;
+    right: 20px;
+    bottom: 20px;
+    top: 80px;
+    width: 400px;
+    padding-top: 0;
+    background: none;
+    transform: translateX(calc(100% + 40px));
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #cardPanel.visible { transform: translateX(0); }
+
+  /* Close button floats to top-right of column */
+  #closeCardBtn { position: static; margin: 0 0 0 auto; }
+
+  /* Cards stack vertically, scrollable */
+  #cardScroll {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-snap-type: none;
+    max-height: 100%;
+    padding: 0 0 16px !important;
+  }
+  #cardScroll::before, #cardScroll::after { display: none !important; }
+  #cardScroll.single-card { padding: 0 !important; overflow-x: hidden; }
+  .ev-card { width: 100% !important; scroll-snap-align: none; }
+}
