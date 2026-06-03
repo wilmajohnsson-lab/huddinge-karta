@@ -806,12 +806,16 @@ def main() -> int:
     for r in existing:
         by_sig[sig(r)] = r
 
+    # Dedup parsed list by signature (last row wins, matches the warning above)
+    parsed_by_sig: dict[tuple, dict] = {}
+    for item in parsed:
+        parsed_by_sig[sig(item)] = item
+
     creates: list[dict] = []
     updates: list[tuple[dict, dict, dict]] = []   # (record, payload, diff)
     unchanged = 0
-    for item in parsed:
+    for s, item in parsed_by_sig.items():
         payload = to_pb_payload(item)
-        s = sig(item)
         if s in by_sig:
             d = diff_payload(payload, by_sig[s])
             if d:
@@ -821,8 +825,7 @@ def main() -> int:
         else:
             creates.append(payload)
 
-    parsed_sigs = {sig(it) for it in parsed}
-    orphans = [r for s, r in by_sig.items() if s not in parsed_sigs]
+    orphans = [r for s, r in by_sig.items() if s not in parsed_by_sig]
 
     print()
     print('=== Diff ===')
