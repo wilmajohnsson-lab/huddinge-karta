@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # NOTE: Update the Sitemap line below with the real domain before launch
-Sitemap: https://YOUR-DOMAIN.HERE/sitemap.xml
+Sitemap: https://huddinge.mreh.site/sitemap.xml

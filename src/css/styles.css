@@ -290,7 +290,16 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .det-addr-name{font-size:20px;font-weight:600;color:#000;margin-bottom:4px}
 .det-addr-street{font-size:13px;color:rgba(0,0,0,.7);margin-bottom:24px}
 .det-divider{height:.5px;background:rgba(0,0,0,.1);margin-bottom:16px}
-.det-host{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.det-host{
+  display:flex;align-items:center;gap:16px;margin-bottom:8px;
+  /* B.9: now a <button> — reset and make interactive */
+  background:none;border:none;width:100%;padding:12px;
+  border-radius:16px;cursor:pointer;transition:background .15s;
+  font-family:'Inter',sans-serif;text-align:left;
+}
+.det-host:hover,.det-host:active{background:rgba(0,0,0,.05)}
+.det-host-info{display:flex;flex-direction:column;gap:2px}
+.det-host-cta{color:#068a99;font-weight:600;font-size:13px}
 .det-host-logo{width:56px;height:56px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;text-align:center;padding:6px;line-height:1.2}
 .det-host-name{font-size:18px;font-weight:600;color:#000}
 .det-host-since{font-size:13px;color:rgba(0,0,0,.7);margin-top:4px}
@@ -512,6 +521,18 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
 /* "Ingen anmälan krävs"-tagg */
 .ev-tag-noreg { background: rgba(52,199,89,.12); color: #1a7a38; }
+
+/* B.11 zoom hint */
+#zoomHint{
+  position:absolute;bottom:130px;left:50%;transform:translateX(-50%);
+  z-index:150;
+  background:rgba(0,0,0,.72);color:#fff;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  font-size:13px;font-weight:500;padding:8px 16px;border-radius:20px;
+  white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity .4s;
+}
+#zoomHint.visible{opacity:1}
 
 /* ══ B.2 ACTIVE PIN HIGHLIGHT ══ */
 /* Ring on the circle of the selected pin */

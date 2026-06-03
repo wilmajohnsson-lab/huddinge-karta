@@ -27,9 +27,12 @@
 <title>Huddinge Karta</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/pwa-180.png">
 <!-- Inter font is bundled via @fontsource/inter (Latin subset). Map tiles preconnect: -->
 <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<!-- Analytics: Plausible (privacy-friendly, no cookies). Sign up at plausible.io and add domain huddinge.mreh.site to activate. -->
+<script defer data-domain="huddinge.mreh.site" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#map">Hoppa till kartan</a>
@@ -68,6 +71,10 @@
           <button class="filter-pill" id="calFilterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h14M6 10h8M9 15h2"/></svg>
             Filter
+          </button>
+          <button class="filter-pill" id="calIdag" aria-label="Visa vad som händer idag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            Idag
           </button>
           <button class="filter-pill" id="calDatumBtn" aria-label="Välj datum">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -191,6 +198,9 @@
       <div id="actionSheetOptions"></div>
       <button class="as-cancel" id="actionSheetCancelBtn" aria-label="Avbryt">Avbryt</button>
     </div>
+
+    <!-- Zoom hint (B.11): fades in once when user first zooms to level 14–15 -->
+    <div id="zoomHint" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Floating tab bar -->
     <div id="tabBar" role="tablist" aria-label="Vyer">

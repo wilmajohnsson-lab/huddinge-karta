@@ -37,6 +37,13 @@ const CAT_LABEL = { event: 'Event', konst: 'Konst', motes: 'Mötesplats', musik:
 const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' };
 const ALL_CAT = '__all__';
 
+/** Fire a Plausible custom event if the analytics snippet has loaded. */
+function track(event, props) {
+  if (typeof window.plausible === 'function') window.plausible(event, props ? { props } : undefined);
+}
+
+let _searchTrackTimer = null;
+
 // Tab-based category lists
 const EVENT_CATS = ['event', 'musik'];
 const PLATS_CATS = ['konst', 'motes'];
@@ -183,11 +190,27 @@ function initMap() {
   });
   window.addEventListener('resize', () => map.invalidateSize());
 
-  // Show place name labels at zoom >= 15
+  // Show place name labels at zoom >= 16 (B.10)
   function updateLabelVisibility() {
-    document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 15);
+    document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 16);
   }
-  map.on('zoomend', updateLabelVisibility);
+  // B.11 zoom hint — shown once per session when user first reaches zoom 14-15
+  let _zoomHintShown = !!sessionStorage.getItem('zoom-hint-shown');
+  function updateZoomHint() {
+    if (_zoomHintShown) return;
+    const z = map.getZoom();
+    if (z >= 14 && z < 16) {
+      _zoomHintShown = true;
+      sessionStorage.setItem('zoom-hint-shown', '1');
+      const hint = document.getElementById('zoomHint');
+      if (hint) {
+        hint.textContent = 'Zooma in för att se platsnamn';
+        hint.classList.add('visible');
+        setTimeout(() => hint.classList.remove('visible'), 3500);
+      }
+    }
+  }
+  map.on('zoomend', () => { updateLabelVisibility(); updateZoomHint(); });
   updateLabelVisibility();
 }
 
@@ -282,7 +305,10 @@ function showCards(ids) {
   document.getElementById('topBar').style.pointerEvents = 'none';
 
   const first = ITEMS.find((x) => x.id === ids[0]);
-  if (first) map.flyTo([first.lat, first.lng], 15, { duration: 0.7, easeLinearity: 0.5 });
+  if (first) {
+    track('Pin Click', { category: first.cat, type: itemType(first) });
+    map.flyTo([first.lat, first.lng], 15, { duration: 0.7, easeLinearity: 0.5 });
+  }
 }
 
 function dismissCards() {
@@ -332,6 +358,7 @@ function evCardHtml(item) {
 
 // ── TAB NAVIGATION ────────────────────────────────────────────────
 function setTab(tab) {
+  track('Tab', { tab });
   activeTab = tab;
   selectedCat = null;
   document.querySelectorAll('.tab-btn').forEach((b) => {
@@ -368,6 +395,7 @@ function getVisible() {
 
 function applyFilters() {
   filterState.free = document.getElementById('freeToggle').checked;
+  track('Filter', { free: String(filterState.free), orgs: String(filterState.orgs.size), areas: String(filterState.areas.size) });
   rebuildClusterMarkers();
   updateFilterBtnState();
 }
@@ -554,7 +582,25 @@ function clearDateFilter() {
   selectedDate = null;
   document.getElementById('dpClearBtn').style.display = 'none';
   document.getElementById('calDatumBtn').classList.remove('active');
+  document.getElementById('calIdag')?.classList.remove('active');
   renderDpCalendar();
+  renderCalendar();
+}
+
+function setTodayFilter() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  // Toggle off if already active
+  if (selectedDate && selectedDate.getTime() === today.getTime()) {
+    clearDateFilter();
+    return;
+  }
+  selectedDate = today;
+  dpYear = today.getFullYear();
+  dpMonth = today.getMonth();
+  document.getElementById('dpClearBtn').style.display = 'block';
+  document.getElementById('calDatumBtn').classList.add('active');
+  document.getElementById('calIdag')?.classList.add('active');
   renderCalendar();
 }
 
@@ -659,6 +705,9 @@ function closeSearch() {
 function onSearch(q) {
   const res = document.getElementById('searchResults');
   const term = q.trim().toLowerCase();
+  // Debounced Plausible event (fires 600 ms after user stops typing)
+  clearTimeout(_searchTrackTimer);
+  if (term) _searchTrackTimer = setTimeout(() => track('Search', { query: term }), 600);
   const hits = term
     ? ITEMS.filter((i) =>
         i.name.toLowerCase().includes(term) ||
@@ -727,13 +776,13 @@ function openDetail(id) {
       <div class="det-addr-name">${esc(item.loc)}</div>
       <div class="det-addr-street">${esc(item.addr)}</div>
       <div class="det-divider"></div>
-      <div class="det-host">
+      <button class="det-host" id="detHostBtn" aria-label="Visa alla från ${esc(item.host)}">
         <div class="det-host-logo cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${initials}</div>
-        <div>
-          <div class="det-host-name">Arrangör: ${esc(item.host)}</div>
-          <div class="det-host-since">Arrangör i Huddinge</div>
+        <div class="det-host-info">
+          <div class="det-host-name">${esc(item.host)}</div>
+          <div class="det-host-since">Arrangör i Huddinge · <span class="det-host-cta">Visa alla</span></div>
         </div>
-      </div>
+      </button>
     </div>`;
 
   document.getElementById('detFlyBtn').onclick = () => openMapsSheet(item);
@@ -748,6 +797,16 @@ function openDetail(id) {
     detJoin.onclick = null;
   }
   document.getElementById('detBackBtn').onclick = closeDetail;
+  // B.9: tap host → filter map to all items by that organiser
+  document.getElementById('detHostBtn').addEventListener('click', () => {
+    const host = item.host;
+    closeDetail();
+    filterState.orgs.clear();
+    filterState.orgs.add(host);
+    setTab(itemType(item) === 'plats' ? 'platser' : 'event');
+    applyFilters();
+  });
+  track('Detail View', { category: item.cat, name: item.name });
   document.getElementById('detBottom').classList.add('visible');
   const ds = document.getElementById('detailScreen');
   ds.classList.add('visible');
@@ -901,6 +960,7 @@ function initDom() {
 
   // Date picker
   document.getElementById('calDatumBtn').addEventListener('click', openDatePicker);
+  document.getElementById('calIdag').addEventListener('click', setTodayFilter);
   document.getElementById('dpCloseBtn').addEventListener('click', closeDatePicker);
   document.getElementById('dateBg').addEventListener('click', closeDatePicker);
   document.getElementById('dpPrevBtn').addEventListener('click', dpPrevMonth);
