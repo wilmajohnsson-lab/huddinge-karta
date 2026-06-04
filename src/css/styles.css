@@ -79,6 +79,20 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 #backBtn.visible{display:flex}
 
 /* ══ MARKERS ══ */
+/* Pin hover tooltip */
+.leaflet-tooltip.pin-tooltip {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.18);
+  border-radius: 3px;
+  box-shadow: none;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #000;
+  padding: 4px 9px;
+  white-space: nowrap;
+}
+.leaflet-tooltip.pin-tooltip::before { display: none; }
 .mpin{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
 .mpin:hover{transform:scale(1.08)}
 .pin-label{

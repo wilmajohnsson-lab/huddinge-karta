@@ -276,6 +276,9 @@ function addClusterMarker(cluster) {
   const sz = isActive ? 74.5 : 53.3;
   const icon = L.divIcon({ html, className: '', iconSize: [sz, sz], iconAnchor: [sz / 2, sz] });
   const m = L.marker([cluster.lat, cluster.lng], { icon }).addTo(map);
+  // Desktop hover tooltip — show item name (or cluster count)
+  const tipText = single ? item.name : cluster.items.length + ' objekt';
+  m.bindTooltip(tipText, { direction: 'top', offset: [0, -sz + 10], className: 'pin-tooltip', sticky: false });
   m.on('click', (e) => {
     L.DomEvent.stopPropagation(e);
     showCards(cluster.items.map((i) => i.id));
