@@ -1036,10 +1036,10 @@ function openDetail(itemOrId) {
           <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 15C6 8.373 11.373 3 18 3s12 5.373 12 12c0 3.711-1.641 7.138-3.554 9.891C24.522 27.66 22.224 29.889 20.688 31.236A1.984 1.984 0 0 1 18 31.236C16.464 29.889 14.165 27.66 12.554 24.891 10.641 22.138 9 18.711 9 15zM17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#47C1CE" fill-opacity="0.4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#068A99"/></svg></div>
           <div class="det-stat-val">${esc(item.loc)}</div>
         </div>
-        <div class="det-stat">
+        ${item._source !== 'konst' ? `<div class="det-stat">
           <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 33c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15C9.716 3 3 9.716 3 18c0 8.284 6.716 15 15 15zm1.5-21a1.5 1.5 0 0 0-3 0v6c0 .398.158.779.44 1.06l3.75 3.75a1.5 1.5 0 1 0 2.12-2.12L19.5 17.378V12z" fill="#47C1CE" fill-opacity="0.4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18 10.5c.828 0 1.5.672 1.5 1.5v5.379l3.31 3.31a1.5 1.5 0 1 1-2.12 2.122l-3.75-3.75A1.5 1.5 0 0 1 16.5 18v-6c0-.828.672-1.5 1.5-1.5z" fill="#068A99"/></svg></div>
           <div class="det-stat-val">${esc(isPlats ? item.date : item.time)}</div>
-        </div>
+        </div>` : ''}
       </div>
       <p class="det-desc">${esc(item.longDesc)}</p>
       <div class="det-map-label">Var det är</div>
