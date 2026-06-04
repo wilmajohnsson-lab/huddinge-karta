@@ -555,12 +555,12 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 /* ══ B.7 DESKTOP CARD PANEL ══ */
 @media (min-width: 720px) {
   /* Show header on desktop */
-  #headerContainer { display: block; height: 180px; }
-  #headerLogo { display: block; max-width: 140px; }
+  #headerContainer { display: block; height: 120px; }
+  #headerLogo { display: block; max-width: 500px; }
   
   /* Move topBar below header */
   #topBar {
-    top: 180px;
+    top: 120px;
     background: #f6f6f6;
     padding: 12px 20px;
   }
@@ -570,7 +570,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
     left: auto;
     right: 20px;
     bottom: 20px;
-    top: 240px;
+    top: 160px;
     width: 400px;
     padding-top: 0;
     background: none;
