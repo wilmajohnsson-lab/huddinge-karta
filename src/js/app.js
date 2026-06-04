@@ -426,7 +426,9 @@ function getVisible() {
     if (selectedCats.size > 0 && !selectedCats.has(i.cat)) return false;
     if (filterState.free && !i.free) return false;
     if (filterState.orgs.size > 0 && !filterState.orgs.has(i.host)) return false;
-    if (filterState.areas.size > 0 && !filterState.areas.has(i.area)) return false;
+    if (filterState.areas.size > 0 && ![
+      ...filterState.areas
+    ].some(a => a.toLowerCase() === (i.area || '').toLowerCase())) return false;
     return true;
   });
 }
@@ -470,6 +472,8 @@ function initFilterChips() {
     return [...arr].sort((a, b) => a.length - b.length);
   }
   const orgsEl = document.getElementById('fpOrgs');
+  // Clear before (re)building to avoid duplication on data reload
+  orgsEl.innerHTML = '';
   sortByLength(ORGS_LIST).forEach((o) => {
     const b = document.createElement('button');
     b.className = 'fp-chip';
@@ -478,11 +482,13 @@ function initFilterChips() {
     orgsEl.appendChild(b);
   });
   const areasEl = document.getElementById('fpAreas');
+  areasEl.innerHTML = '';
   AREAS_LIST.forEach((a) => {
     const b = document.createElement('button');
     b.className = 'fp-chip';
     b.textContent = a.name;
-    b.addEventListener('click', () => toggleFpChip(b, filterState.areas, a.id));
+    // Store display name; getVisible() normalises case when comparing
+    b.addEventListener('click', () => toggleFpChip(b, filterState.areas, a.name));
     areasEl.appendChild(b);
   });
 }
@@ -1146,12 +1152,11 @@ function loadAndBoot() {
       ].sort();
       
       AREAS_LIST = [
-        ...new Set([
-          ...events.map(e => e.area).filter(Boolean),
-          ...konst.map(k => k.area).filter(Boolean),
-          ...aktorer.map(a => a.area).filter(Boolean),
-        ]),
-      ].map(name => ({ id: name.toLowerCase().replace(/\s+/g, '-'), name })).sort((a, b) => a.name.localeCompare(b.name));
+        'Flemingsberg','Skogås','Trångsund','Sjödalen-Fullersta',
+        'Gladö-Lissma','Stuvsta','Vårby','Segeltorp',
+        'Glömsta','Vidja-Ågesta','Snättringe','Länna',
+        'Loviseberg','Kungens Kurva','Högmora',
+      ].map(name => ({ id: name.toLowerCase().replace(/\s+/g,'-'), name }));
       
       if (!_booted) {
         initDom();
