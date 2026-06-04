@@ -12,7 +12,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 /* ══ HEADER CONTAINER ══ */
 #headerContainer{display:none;position:absolute;top:0;left:0;right:0;width:100%;height:0;z-index:5}
 #headerBg{width:100%;height:100%;object-fit:cover;display:block}
-#headerLogo{display:none;position:absolute;top:0;left:0;z-index:10;max-width:200px;height:auto;object-fit:contain;padding:16px}
+#headerLogo{display:none;position:absolute;top:0;left:0;z-index:10;max-width:400px;height:auto;object-fit:contain;padding:16px}
 
 /* ══ TOP BAR ══ */
 #topBar{
