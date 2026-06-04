@@ -62,7 +62,7 @@ const CHIP_SVGS = {
   lokal: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 };
 
-const CAT_COLOR = { event: '#a04612', musik: '#8a7515', konst: '#055e69', teater: '#9a0e58', samhalle: '#0066cc', fritid: '#ff6b35', spel: '#6a4c93', hantverk: '#d4a574', film: '#1a1a1a', kurs: '#2ecc71', kultur: '#e74c3c', plats: '#9a0e58', litteratur: '#1b6ca8', museum: '#7b5ea7', skola: '#2e7d32', dans: '#c2185b', poesi: '#5d4037', bradspel: '#e65100', lokal: '#546e7a' };
+const CAT_COLOR = { event: '#D63D3D', musik: '#C94091', konst: '#008296', teater: '#BE5A00', samhalle: '#99CDD5', fritid: '#3D8700', spel: '#BE5A00', hantverk: '#E5BD99', film: '#D63D3D', kurs: '#B1CF99', kultur: '#C94091', plats: '#99CDD5', litteratur: '#3D8700', museum: '#008296', skola: '#B1CF99', dans: '#C94091', poesi: '#E9B3D3', bradspel: '#BE5A00', lokal: '#EFB1B1' };
 const CAT_LABEL = { event: 'Event', musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur', plats: 'Platser', litteratur: 'Litteratur', museum: 'Museum', skola: 'Skola', dans: 'Dans', poesi: 'Poesi', bradspel: 'Brädspel', lokal: 'Lokal' };
 const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' };
 const ALL_CAT = '__all__';
