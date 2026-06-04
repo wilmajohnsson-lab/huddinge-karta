@@ -64,8 +64,19 @@ const CHIP_SVGS = {
 
 const CAT_COLOR = { event: '#D63D3D', musik: '#C94091', konst: '#008296', teater: '#BE5A00', samhalle: '#008296', fritid: '#3D8700', spel: '#BE5A00', hantverk: '#BE5A00', film: '#D63D3D', kurs: '#3D8700', kultur: '#C94091', plats: '#C94091', litteratur: '#3D8700', museum: '#008296', skola: '#3D8700', dans: '#C94091', poesi: '#C94091', bradspel: '#BE5A00', lokal: '#D63D3D' };
 const CAT_LABEL = { event: 'Event', musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur', plats: 'Platser', litteratur: 'Litteratur', museum: 'Museum', skola: 'Skola', dans: 'Dans', poesi: 'Poesi', bradspel: 'Brädspel', lokal: 'Lokal' };
-const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' };
+// CTA_LABEL kept for backwards compatibility with any stored cta values
+const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' }; // eslint-disable-line no-unused-vars
 const ALL_CAT = '__all__';
+
+/** Determine CTA button label + disabled state from registration + pris. */
+function ctaInfo(item) {
+  const reg  = item.registration; // true=ja, false=nej, null/undefined=ingen info
+  const pris = (typeof item.pris === 'number') ? item.pris : 0;
+  if (reg === false) return { label: 'Ingen anmälan krävs', disabled: true };
+  if (reg == null)   return { label: 'Ingen info finns',        disabled: true };
+  // reg === true
+  return { label: pris > 0 ? 'Köp biljett' : 'Anmäl mig', disabled: false };
+}
 
 /** Fire an Umami custom event if the tracker has loaded. */
 function track(event, props) {
@@ -374,11 +385,10 @@ function evCardHtml(item) {
         <span class="ev-tag">${S_PIN}${esc(item.loc)}</span>
         <span class="ev-tag ev-tag-cat cat-${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
         ${item.free ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
-        ${item.registration === false ? '<span class="ev-tag ev-tag-noreg">Ingen anmälan krävs</span>' : ''}
       </div>
       <div class="ev-card-btns">
         <button class="btn-ghost" data-action="detail" data-item-id="${Number(item.id)}">Mer info</button>
-        ${item.cta && CTA_LABEL[item.cta] ? `<button class="btn-dark" data-action="join" data-item-id="${Number(item.id)}">${CTA_LABEL[item.cta]}</button>` : ''}
+        ${(() => { const c = ctaInfo(item); return `<button class="${c.disabled ? 'btn-ghost btn-cta-disabled' : 'btn-dark'}" ${c.disabled ? 'disabled' : `data-action="join" data-item-id="${Number(item.id)}"`}>${c.label}</button>`; })()}
       </div>
     </div>
   </div>`;
@@ -766,7 +776,6 @@ function onSearch(q) {
         <div class="srch-card-tags">
           <span class="srch-card-cat cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
           ${item.free ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
-          ${item.registration === false ? '<span class="ev-tag ev-tag-noreg">Ingen anmälan krävs</span>' : ''}
         </div>
       </div>
     </div>`
@@ -822,15 +831,19 @@ function openDetail(id) {
     </div>`;
 
   document.getElementById('detFlyBtn').onclick = () => openMapsSheet(item);
-  // CTA-knappen visas bara om item.cta finns; etikett växlar på cta-typ.
+  // CTA-knappen — label och disabled-state baseras på registration + pris.
   const detJoin = document.getElementById('detJoinBtn');
-  if (item.cta && CTA_LABEL[item.cta]) {
-    detJoin.textContent = CTA_LABEL[item.cta];
-    detJoin.hidden = false;
-    detJoin.onclick = () => openEventUrl(item);
-  } else {
-    detJoin.hidden = true;
+  const cta = ctaInfo(item);
+  detJoin.textContent = cta.label;
+  detJoin.hidden = false;
+  if (cta.disabled) {
+    detJoin.disabled = true;
+    detJoin.classList.add('btn-cta-disabled');
     detJoin.onclick = null;
+  } else {
+    detJoin.disabled = false;
+    detJoin.classList.remove('btn-cta-disabled');
+    detJoin.onclick = () => openEventUrl(item);
   }
   document.getElementById('detBackBtn').onclick = closeDetail;
   // B.9: tap host → filter map to all items by that organiser
