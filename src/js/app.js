@@ -1,11 +1,11 @@
 // ── Imports ───────────────────────────────────────────────────────
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-// Self-hosted Inter (Latin subset — covers Swedish åäö) replaces Google Fonts CDN
-import '@fontsource/inter/latin-400.css';
-import '@fontsource/inter/latin-500.css';
-import '@fontsource/inter/latin-600.css';
-import '@fontsource/inter/latin-700.css';
+// Self-hosted Source Sans 3 (Latin subset — covers Swedish åäö)
+import '@fontsource/source-sans-3/latin-400.css';
+import '@fontsource/source-sans-3/latin-500.css';
+import '@fontsource/source-sans-3/latin-600.css';
+import '@fontsource/source-sans-3/latin-700.css';
 import '../css/styles.css';
 
 // ── Tile provider ─────────────────────────────────────────────────
@@ -18,38 +18,52 @@ const TILE_ATTRIBUTION =
 
 // ── SVGs (white stroke for map pins) ─────────────────────────────
 const CAT_SVG_W = {
-  event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
-  konst: `<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke="white" stroke-width="2"/><path d="M21 15l-5-5L5 21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
-  teater: `<svg viewBox="0 0 24 24" fill="none"><path d="M2 6h20M2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6M6 14l6-4 6 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  samhalle: `<svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="7" r="2" stroke="white" stroke-width="2"/><circle cx="16" cy="7" r="2" stroke="white" stroke-width="2"/><path d="M4 21v-3c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v3M14 21v-3c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  fritid: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  spel: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="white" stroke-width="2"/><rect x="6" y="18" width="12" height="2" rx="1" stroke="white" stroke-width="2"/><circle cx="9" cy="9" r="1" stroke="white" stroke-width="2"/><circle cx="15" cy="9" r="1" stroke="white" stroke-width="2"/></svg>`,
-  hantverk: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 12l9-9 9 9M5 14v6c0 1 1 2 2 2h10c1 0 2-1 2-2v-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  film: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="2" stroke="white" stroke-width="2"/><path d="M2 8h20M2 16h20M7 2v20M17 2v20" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
-  kurs: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 15c3.314 0 6-1.343 6-3v-2c0 1.657-2.686 3-6 3s-6-1.343-6-3v2c0 1.657 2.686 3 6 3z M6 10c0 1.657 2.686 3 6 3s6-1.343 6-3M6 10v6c0 1.657 2.686 3 6 3s6-1.343 6-3v-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  kultur: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2c5.5 0 10 3.6 10 8 0 .5-.1 1-.2 1.5-1.6 3.5-6 6.5-9.8 6.5-4.4 0-8-2.5-8-5.5 0-1.2.4-2.3 1.1-3.3 1-1.4 2.4-2.5 4.1-3.2M8 17s2 1.5 4 1.5 4-1.5 4-1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  plats: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
+  event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="white" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+  konst: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" stroke="white" stroke-width="2.5"/><circle cx="6.5" cy="11.5" r="1.5" fill="white"/><circle cx="9.5" cy="7" r="1.5" fill="white"/><circle cx="14.5" cy="7" r="1.5" fill="white"/><circle cx="17.5" cy="11.5" r="1.5" fill="white"/></svg>`,
+  teater: `<svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="1.5" stroke="white" stroke-width="2.5"/><path d="M8 8h8M8 12h8M8 16h5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
+  samhalle: `<svg viewBox="0 0 24 24" fill="none"><circle cx="7" cy="6" r="2.5" stroke="white" stroke-width="2.5"/><circle cx="17" cy="6" r="2.5" stroke="white" stroke-width="2.5"/><path d="M2 22v-4a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v-4a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  fritid: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="3" r="3" stroke="white" stroke-width="2.5"/><path d="M12 6L12 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M12 9L6 12.5L8.5 16" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9L17.5 7L15.5 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14L6.5 18.5L9 22" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14L17.5 18.5L16 22" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  spel: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="white" stroke-width="2.5"/><rect x="6" y="18" width="12" height="2" rx="1" stroke="white" stroke-width="2.5"/><circle cx="9" cy="9" r="1" stroke="white" stroke-width="2.5"/><circle cx="15" cy="9" r="1" stroke="white" stroke-width="2.5"/></svg>`,
+  hantverk: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 1l12 22" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M20 1L8 23" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="12" cy="13" r="7" stroke="white" stroke-width="2.5"/><path d="M7.5 11c2 2 5.5 2.5 8.5 1" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 16c2 1.5 6.5 2 9.5 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  film: `<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="1" stroke="white" stroke-width="2.5"/><rect x="1.5" y="3" width="3" height="5" rx="0.5" stroke="white" stroke-width="2"/><rect x="1.5" y="9" width="3" height="5" rx="0.5" stroke="white" stroke-width="2"/><rect x="1.5" y="15" width="3" height="5" rx="0.5" stroke="white" stroke-width="2"/><rect x="19.5" y="3" width="3" height="5" rx="0.5" stroke="white" stroke-width="2"/><rect x="19.5" y="9" width="3" height="5" rx="0.5" stroke="white" stroke-width="2"/><rect x="19.5" y="15" width="3" height="5" rx="0.5" stroke="white" stroke-width="2"/></svg>`,
+  kurs: `<svg viewBox="0 0 24 24" fill="none"><path d="M2 4h7a4 4 0 0 1 3 1.5V20a3.5 3.5 0 0 0-3-1.5H2V4z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 4h-7a4 4 0 0 0-3 1.5V20a3.5 3.5 0 0 1 3-1.5h7V4z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  kultur: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="white" stroke-width="2.5"/><ellipse cx="12" cy="12" rx="4.5" ry="9" stroke="white" stroke-width="2"/><path d="M3 12h18" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M4.5 7.5c3.5-1.5 11.5-1.5 15 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4.5 16.5c3.5 1.5 11.5 1.5 15 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  plats: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="white" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+  litteratur: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  museum: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v10h18V10M7 14v2M11 14v2M15 14v2" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  skola: `<svg viewBox="0 0 24 24" fill="none"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 12v5c3.33 2 8.67 2 12 0v-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  dans: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4" r="1.5" stroke="white" stroke-width="2.5"/><path d="M12 5.5v6l-3 4m3-4l3 4M9 9.5l-2 1.5m8-1.5l2 1.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  poesi: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  bradspel: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" stroke="white" stroke-width="2.5"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="9" cy="13" r="1.5" fill="white"/><circle cx="15" cy="13" r="1.5" fill="white"/></svg>`,
+  lokal: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9 22 9 12 15 12 15 22" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 };
 
 // SVGs with currentColor stroke (for chips)
 const CHIP_SVGS = {
-  event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
-  konst: `<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="2"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
-  teater: `<svg viewBox="0 0 24 24" fill="none"><path d="M2 6h20M2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6M6 14l6-4 6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  samhalle: `<svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="7" r="2" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="2"/><path d="M4 21v-3c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v3M14 21v-3c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  fritid: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  spel: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><rect x="6" y="18" width="12" height="2" rx="1" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="1" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="9" r="1" stroke="currentColor" stroke-width="2"/></svg>`,
-  hantverk: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 12l9-9 9 9M5 14v6c0 1 1 2 2 2h10c1 0 2-1 2-2v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  film: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M2 8h20M2 16h20M7 2v20M17 2v20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
-  kurs: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 15c3.314 0 6-1.343 6-3v-2c0 1.657-2.686 3-6 3s-6-1.343-6-3v2c0 1.657 2.686 3 6 3z M6 10c0 1.657 2.686 3 6 3s6-1.343 6-3M6 10v6c0 1.657 2.686 3 6 3s6-1.343 6-3v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  kultur: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2c5.5 0 10 3.6 10 8 0 .5-.1 1-.2 1.5-1.6 3.5-6 6.5-9.8 6.5-4.4 0-8-2.5-8-5.5 0-1.2.4-2.3 1.1-3.3 1-1.4 2.4-2.5 4.1-3.2M8 17s2 1.5 4 1.5 4-1.5 4-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  plats: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
+  event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+  konst: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" stroke="currentColor" stroke-width="2.5"/><circle cx="6.5" cy="11.5" r="1.5" fill="currentColor"/><circle cx="9.5" cy="7" r="1.5" fill="currentColor"/><circle cx="14.5" cy="7" r="1.5" fill="currentColor"/><circle cx="17.5" cy="11.5" r="1.5" fill="currentColor"/></svg>`,
+  teater: `<svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="1.5" stroke="currentColor" stroke-width="2.5"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  samhalle: `<svg viewBox="0 0 24 24" fill="none"><circle cx="7" cy="6" r="2.5" stroke="currentColor" stroke-width="2.5"/><circle cx="17" cy="6" r="2.5" stroke="currentColor" stroke-width="2.5"/><path d="M2 22v-4a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v-4a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  fritid: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="3" r="3" stroke="currentColor" stroke-width="2.5"/><path d="M12 6L12 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M12 9L6 12.5L8.5 16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9L17.5 7L15.5 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14L6.5 18.5L9 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14L17.5 18.5L16 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  spel: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2.5"/><rect x="6" y="18" width="12" height="2" rx="1" stroke="currentColor" stroke-width="2.5"/><circle cx="9" cy="9" r="1" stroke="currentColor" stroke-width="2.5"/><circle cx="15" cy="9" r="1" stroke="currentColor" stroke-width="2.5"/></svg>`,
+  hantverk: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 1l12 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M20 1L8 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="12" cy="13" r="7" stroke="currentColor" stroke-width="2.5"/><path d="M7.5 11c2 2 5.5 2.5 8.5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 16c2 1.5 6.5 2 9.5 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  film: `<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="1" stroke="currentColor" stroke-width="2.5"/><rect x="1.5" y="3" width="3" height="5" rx="0.5" stroke="currentColor" stroke-width="2"/><rect x="1.5" y="9" width="3" height="5" rx="0.5" stroke="currentColor" stroke-width="2"/><rect x="1.5" y="15" width="3" height="5" rx="0.5" stroke="currentColor" stroke-width="2"/><rect x="19.5" y="3" width="3" height="5" rx="0.5" stroke="currentColor" stroke-width="2"/><rect x="19.5" y="9" width="3" height="5" rx="0.5" stroke="currentColor" stroke-width="2"/><rect x="19.5" y="15" width="3" height="5" rx="0.5" stroke="currentColor" stroke-width="2"/></svg>`,
+  kurs: `<svg viewBox="0 0 24 24" fill="none"><path d="M2 4h7a4 4 0 0 1 3 1.5V20a3.5 3.5 0 0 0-3-1.5H2V4z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 4h-7a4 4 0 0 0-3 1.5V20a3.5 3.5 0 0 1 3-1.5h7V4z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  kultur: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5"/><ellipse cx="12" cy="12" rx="4.5" ry="9" stroke="currentColor" stroke-width="2"/><path d="M3 12h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4.5 7.5c3.5-1.5 11.5-1.5 15 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4.5 16.5c3.5 1.5 11.5 1.5 15 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  plats: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+  litteratur: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  museum: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 10V8l9-5 9 5v2M3 10v10h18V10M7 14v2M11 14v2M15 14v2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  skola: `<svg viewBox="0 0 24 24" fill="none"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 12v5c3.33 2 8.67 2 12 0v-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  dans: `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4" r="1.5" stroke="currentColor" stroke-width="2.5"/><path d="M12 5.5v6l-3 4m3-4l3 4M9 9.5l-2 1.5m8-1.5l2 1.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  poesi: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  bradspel: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2.5"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="15" cy="13" r="1.5" fill="currentColor"/></svg>`,
+  lokal: `<svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 };
 
-const CAT_COLOR = { event: '#a04612', musik: '#8a7515', konst: '#055e69', teater: '#9a0e58', samhalle: '#0066cc', fritid: '#ff6b35', spel: '#6a4c93', hantverk: '#d4a574', film: '#1a1a1a', kurs: '#2ecc71', kultur: '#e74c3c', plats: '#9a0e58' };
-const CAT_LABEL = { event: 'Event', musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur', plats: 'Platser' };
+const CAT_COLOR = { event: '#D63D3D', musik: '#C94091', konst: '#008296', teater: '#BE5A00', samhalle: '#008296', fritid: '#3D8700', spel: '#BE5A00', hantverk: '#BE5A00', film: '#D63D3D', kurs: '#3D8700', kultur: '#C94091', plats: '#C94091', litteratur: '#3D8700', museum: '#008296', skola: '#3D8700', dans: '#C94091', poesi: '#C94091', bradspel: '#BE5A00', lokal: '#D63D3D' };
+const CAT_LABEL = { event: 'Event', musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur', plats: 'Platser', litteratur: 'Litteratur', museum: 'Museum', skola: 'Skola', dans: 'Dans', poesi: 'Poesi', bradspel: 'Brädspel', lokal: 'Lokal' };
 const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' };
 const ALL_CAT = '__all__';
 
@@ -63,16 +77,19 @@ function track(event, props) {
 let _searchTrackTimer = null;
 
 // Tab-based category lists
-const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'hantverk', 'film', 'kurs', 'kultur'];
+const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'hantverk', 'film', 'kurs', 'kultur', 'litteratur', 'dans', 'poesi'];
 const PLATS_CATS = ['konst', 'plats'];
 const PLATS_SET = new Set(PLATS_CATS);
 
-/** Derive item type from category or from item structure */
+/** Derive item type from collection source or category.
+ *  _source is stamped in loadAndBoot so events with cat='konst' (e.g. Konstrunda)
+ *  are never accidentally routed to the Platser tab. */
 function itemType(item) {
-  // If item has an explicit type field (for aktorer), use it to determine it's a "plats"
+  if (item._source === 'event') return 'event';
+  if (item._source === 'konst' || item._source === 'aktor') return 'plats';
+  // Fallback for items loaded without _source stamp
   if (item.type) return 'plats';
   if (item.cat === 'plats') return 'plats';
-  // Otherwise check if it's in plats categories
   return PLATS_SET.has(item.cat) ? 'plats' : 'event';
 }
 
@@ -81,7 +98,7 @@ let ITEMS = [], ORGS_LIST = [], AREAS_LIST = [];
 
 // ── STATE ─────────────────────────────────────────────────────────
 let map, leafMarkers = {}, clusters = [], activeIds = [];
-let selectedCat = null, activeTab = 'event', detailMapInstance = null;
+let selectedCats = new Set(), activeTab = 'event', detailMapInstance = null;
 const filterState = { free: false, orgs: new Set(), areas: new Set() };
 let selectedDate = null;
 let dpYear = new Date().getFullYear(), dpMonth = new Date().getMonth();
@@ -382,7 +399,7 @@ function evCardHtml(item) {
 function setTab(tab) {
   track('Tab', { tab });
   activeTab = tab;
-  selectedCat = null;
+  selectedCats = new Set();
   document.querySelectorAll('.tab-btn').forEach((b) => {
     const active = b.dataset.tab === tab;
     b.classList.toggle('active', active);
@@ -407,7 +424,7 @@ function getVisible() {
     if (activeTab === 'event' && type !== 'event') return false;
     if (activeTab === 'platser' && type !== 'plats') return false;
     if (activeTab === 'kalender' && type !== 'event') return false;
-    if (selectedCat && i.cat !== selectedCat) return false;
+    if (selectedCats.size > 0 && !selectedCats.has(i.cat)) return false;
     if (filterState.free && !i.free) return false;
     if (filterState.orgs.size > 0 && !filterState.orgs.has(i.host)) return false;
     if (filterState.areas.size > 0 && !filterState.areas.has(i.area)) return false;
@@ -497,23 +514,31 @@ function closeFilter() {
 // ── CATEGORY CHIPS ────────────────────────────────────────────────
 function selectCat(cat) {
   if (cat === ALL_CAT) {
-    selectedCat = null;
+    selectedCats = new Set();
   } else {
-    selectedCat = selectedCat === cat ? null : cat;
+    if (selectedCats.has(cat)) {
+      selectedCats.delete(cat);
+    } else {
+      selectedCats.add(cat);
+    }
   }
   renderChips();
   applyFilters();
 }
 
 function chipHtml(cat) {
-  const isOn = selectedCat === cat;
+  const allShown = selectedCats.size === 0;
   // "Alla"-chippet är aktivt när ingen kategori är vald.
   if (cat === ALL_CAT) {
-    const allOn = selectedCat === null;
-    return `<button class="chip chip-all${allOn ? ' chip-on' : ''}" data-cat="${ALL_CAT}" aria-pressed="${allOn}">Alla</button>`;
+    return `<button class="chip chip-all${allShown ? ' chip-on' : ''}" data-cat="${ALL_CAT}" aria-pressed="${allShown}">Alla</button>`;
   }
-  const isDim = selectedCat !== null && !isOn;
-  return `<button class="chip cat-${esc(cat)}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${esc(cat)}" aria-pressed="${isOn}">
+  // When no filter active: chips appear in their light colour (chip-on-all).
+  // When a specific filter active: matching chip fills dark (chip-on), others dim.
+  const isAll  = allShown;
+  const isOn   = !allShown && selectedCats.has(cat);
+  const isDim  = !allShown && !selectedCats.has(cat);
+  const stateClass = isAll ? ' chip-on-all' : (isOn ? ' chip-on' : (isDim ? ' chip-dim' : ''));
+  return `<button class="chip cat-${esc(cat)}${stateClass}" data-cat="${esc(cat)}" aria-pressed="${isAll || isOn}">
     ${CHIP_SVGS[cat] || ''}${CAT_LABEL[cat]}
   </button>`;
 }
@@ -1048,6 +1073,7 @@ function loadAndBoot() {
       
       // Transform: events stay mostly as-is, konst and aktorer get prepared for platser tab
       const events = (data.events || []).map(e => ({
+        _source: 'event',
         ...e,
         cat: e.cat || 'event',
         date: e.date || '',
@@ -1065,6 +1091,7 @@ function loadAndBoot() {
       }));
       
       const konst = (data.konst || []).map(k => ({
+        _source: 'konst',
         ...k,
         id: k.id || `konst-${Math.random()}`,
         cat: 'konst',
@@ -1083,6 +1110,7 @@ function loadAndBoot() {
       }));
       
       const aktorer = (data.aktorer || []).map(a => ({
+        _source: 'aktor',
         ...a,
         id: a.id || `aktor-${Math.random()}`,
         cat: 'plats',
