@@ -1140,6 +1140,15 @@ function initDom() {
   });
 
   // Date picker
+  document.getElementById('calHomeBtn').addEventListener('click', () => {
+    dateStart = null; dateEnd = null;
+    showHistorik = false;
+    document.getElementById('calHistorikBtn').classList.remove('active');
+    document.getElementById('calDatumBtn').classList.remove('active');
+    document.getElementById('calIdag')?.classList.remove('active');
+    renderCalendarChips();
+    renderCalendar();
+  });
   document.getElementById('calHistorikBtn').addEventListener('click', toggleHistorik);
   document.getElementById('calDatumBtn').addEventListener('click', () => {
     if (dateStart) { clearDateFilter(); } else { openDatePicker(); }

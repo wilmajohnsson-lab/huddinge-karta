@@ -242,10 +242,12 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   padding:8px 16px 4px;
 }
 .cal-icon-wrap{
-  width:48px;height:48px;display:flex;align-items:center;justify-content:center;
-  border-radius:134px;flex-shrink:0;
+  width:62px;height:62px;display:flex;align-items:center;justify-content:center;
+  border-radius:134px;flex-shrink:0;background:none;border:none;cursor:pointer;padding:0;
+  transition:transform .12s;
 }
-.cal-icon-wrap svg{width:32px;height:32px}
+.cal-icon-wrap:active{transform:scale(.92)}
+.cal-icon-wrap svg{width:42px;height:42px}
 .cal-title{font-size:26px;font-weight:600;color:#000;line-height:1.2}
 .cal-sub{font-size:16px;font-weight:500;color:rgba(0,0,0,.6);margin-top:4px}
 .cal-chips{
