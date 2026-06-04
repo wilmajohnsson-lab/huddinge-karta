@@ -157,7 +157,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 
 /* ══ EVENT CARD ══ */
 .ev-card{
-  flex-shrink:0;width:calc(100vw - 96px);
+  flex-shrink:0;width:calc(100vw - 48px);
   background:#fff;border-radius:24px;
   box-shadow:0 4px 8px -1px rgba(0,0,0,.06),0 16px 32px -4px rgba(0,0,0,.12);
   padding:8px;scroll-snap-align:start;cursor:pointer;
@@ -174,8 +174,8 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .ev-card-btns{display:flex;gap:6px;margin-top:auto;flex-shrink:0}
 
 /* ══ BUTTONS ══ */
-.btn-ghost{flex:1;padding:16px 8px;border-radius:56px;background:rgba(70,70,70,.1);border:none;font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:500;color:#000;cursor:pointer;white-space:nowrap}
-.btn-dark{flex:1;padding:16px 8px;border-radius:56px;background:#000;border:none;font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:600;color:#fff;cursor:pointer;white-space:nowrap}
+.btn-ghost{flex:1;padding:11px 8px;border-radius:56px;background:rgba(70,70,70,.1);border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000;cursor:pointer;white-space:nowrap}
+.btn-dark{flex:1;padding:11px 8px;border-radius:56px;background:#000;border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer;white-space:nowrap}
 .btn-cta-disabled{opacity:.7;cursor:default;pointer-events:none;background:rgba(0,0,0,.07);color:rgba(0,0,0,.6);}
 .free-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:8px;font-size:15px;font-weight:600;background:rgba(52,199,89,.15);color:#1a7a38}
 
