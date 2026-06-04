@@ -383,7 +383,7 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
   border-radius:40px;border:.5px solid rgba(0,0,0,.14);
   background:#fff;font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:500;
   color:#000;cursor:pointer;transition:background .15s,border-color .15s;
-  max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  white-space:nowrap;
 }
 .fp-chip.on{background:#000;color:#fff;border-color:#000}
 .fp-footer{padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 16px);border-top:.5px solid rgba(0,0,0,.09);display:flex;gap:8px;flex-shrink:0;background:#f8f8f8}

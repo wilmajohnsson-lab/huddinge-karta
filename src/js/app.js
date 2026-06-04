@@ -465,8 +465,15 @@ function toggleFpChip(el, set, val) {
 }
 
 function initFilterChips() {
+  // Interleave shortest↔longest so short+long pairs tend to share a row
+  function interleave(arr) {
+    const s = [...arr].sort((a, b) => a.length - b.length);
+    const out = []; let l = 0, r = s.length - 1;
+    while (l <= r) { out.push(s[l++]); if (l <= r) out.push(s[r--]); }
+    return out;
+  }
   const orgsEl = document.getElementById('fpOrgs');
-  ORGS_LIST.forEach((o) => {
+  interleave(ORGS_LIST).forEach((o) => {
     const b = document.createElement('button');
     b.className = 'fp-chip';
     b.textContent = o;
