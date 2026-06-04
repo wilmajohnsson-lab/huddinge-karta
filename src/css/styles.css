@@ -396,11 +396,11 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
   position:absolute;top:50%;left:50%;width:469px;max-width:92vw;
   z-index:621;background:#fff;border-radius:20px;
   box-shadow:0 20px 60px rgba(0,0,0,.18);
-  transform:translate(-50%,-46%) scale(.97);opacity:0;
+  transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;
   transition:transform .28s cubic-bezier(.32,.94,.6,1),opacity .2s;
   padding-bottom:16px;
 }
-#dateSheet.open{transform:translate(-50%,-50%) scale(1);opacity:1}
+#dateSheet.open{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
 .dp-head{display:flex;align-items:center;justify-content:center;padding:16px 20px 12px}
 .dp-title{font-size:17px;font-weight:600;color:#000}
 .dp-close{position:absolute;top:-46px;left:0;display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;background:rgba(255,255,255,.92);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);border-radius:40px;border:none;cursor:pointer;font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:500;color:#000;box-shadow:0 4px 16px rgba(0,0,0,.13);flex-shrink:0}
