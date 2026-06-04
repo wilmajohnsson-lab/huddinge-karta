@@ -680,7 +680,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
   }
   #cardPanel.visible { transform: translateX(-50%) translateY(0); }
 
-  /* Close button: restore mobile position on desktop */
+  #cardPanel { background: none; padding-top: 0; }
 
   /* Nav arrows — hidden on mobile, shown on desktop */
   #cardPrevBtn:not([hidden]), #cardNextBtn:not([hidden]) {
