@@ -578,7 +578,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .noscript-msg { padding: 2rem; text-align: center; font-family: sans-serif; }
 
 /* "Alla"-chip — neutral grey, no category color */
-.chip-all { background: #e2e2e2; color: #444; border-color: #aaa; }
+.chip-all { background: #fff; color: #000; border-color: #000; }
 .chip-all.chip-on { background: #1c1c1e; color: #fff; border-color: #1c1c1e; }
 
 /* "Ingen anmälan krävs"-tagg */
