@@ -1029,6 +1029,7 @@ function openDetail(itemOrId) {
       <div class="det-map" id="detMapEl"></div>
       <div class="det-addr-name">${esc(item.loc)}</div>
       <div class="det-addr-street">${esc(item.addr)}</div>
+      ${item._source !== 'konst' ? `
       <div class="det-divider"></div>
       <button class="det-host" id="detHostBtn" aria-label="Visa information om ${esc(item.host)}">
         ${orgLogoHtml(item.host, findAktor(item.host)?.url || '', '', 'det-host-logo', item.cat)}
@@ -1036,7 +1037,7 @@ function openDetail(itemOrId) {
           <div class="det-host-name">${esc(item.host)}</div>
           <div class="det-host-since">Arrangör i Huddinge</div>
         </div>
-      </button>
+      </button>` : '<span id="detHostBtn" hidden></span>'}
     </div>`;
 
   document.getElementById('detFlyBtn').onclick = () => openMapsSheet(item);
@@ -1065,7 +1066,6 @@ function openDetail(itemOrId) {
     }
   }
   document.getElementById('detBackBtn').onclick = closeDetail;
-  document.getElementById('orgBackBtn').addEventListener('click', closeOrgDetail);
   // Org icon → open org detail page
   document.getElementById('detHostBtn').addEventListener('click', () => {
     openOrgDetail(item);
@@ -1184,6 +1184,8 @@ function initDom() {
   document.getElementById('filterBg').addEventListener('click', closeFilter);
   document.getElementById('filterCloseBtn').addEventListener('click', closeFilter);
   document.getElementById('freeToggle').addEventListener('change', applyFilters);
+  // Org + detail back buttons
+  document.getElementById('orgBackBtn').addEventListener('click', closeOrgDetail);
   document.getElementById('filterResetBtn').addEventListener('click', resetFilters);
   document.getElementById('filterApplyBtn').addEventListener('click', closeFilter);
 
