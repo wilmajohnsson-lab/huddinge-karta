@@ -9,6 +9,9 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 #map{position:absolute;inset:0;z-index:0}
 .leaflet-control-zoom,.leaflet-control-attribution{display:none!important}
 
+/* ══ HEADER IMAGE ══ */
+#headerImage{display:none;position:absolute;top:0;left:0;right:0;z-index:10;width:100%;object-fit:cover}
+
 /* ══ TOP BAR ══ */
 #topBar{
   position:absolute;top:0;left:0;right:0;z-index:100;
@@ -549,6 +552,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
 /* ══ B.7 DESKTOP CARD PANEL ══ */
 @media (min-width: 720px) {
+  /* Show header image on desktop */
+  #headerImage { display: block; height: 200px; }
+
   /* Slide in from right instead of up */
   #cardPanel {
     left: auto;
