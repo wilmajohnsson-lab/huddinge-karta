@@ -402,7 +402,7 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 #dateBg{position:absolute;inset:0;z-index:620;background:rgba(0,0,0,0);transition:background .25s;pointer-events:none}
 #dateSheet{
   position:absolute;top:50%;left:50%;width:469px;max-width:92vw;
-  z-index:621;background:#fff;border-radius:20px;
+  z-index:621;background:#fff;border-radius:26px;
   box-shadow:0 20px 60px rgba(0,0,0,.18);
   transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;
   transition:transform .28s cubic-bezier(.32,.94,.6,1),opacity .2s;
@@ -419,13 +419,14 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 .dp-arrow svg{width:18px;height:18px}
 .dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px;margin-bottom:4px}
 .dp-weekday{text-align:center;font-size:14px;font-weight:500;color:rgba(0,0,0,.4);padding:6px 0}
-.dp-days{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px 8px;gap:0;border-top:1px solid rgba(0,0,0,.15);border-left:1px solid rgba(0,0,0,.15)}
+.dp-days{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px 8px;gap:0}
 .dp-day{
   aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  border-radius:0;border:none;border-right:1px solid rgba(0,0,0,.15);border-bottom:1px solid rgba(0,0,0,.15);background:none;cursor:pointer;
+  border-radius:0;border:none;border-right:1px solid rgba(0,0,0,.15);border-bottom:1px solid rgba(0,0,0,.15);border-top:1px solid rgba(0,0,0,.15);background:none;cursor:pointer;
   font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:500;color:#000;
   position:relative;transition:background .12s;
 }
+.dp-day:nth-child(7n){border-right:none}
 .dp-day:disabled{color:rgba(0,0,0,.2);cursor:default;border-color:rgba(0,0,0,.08)}
 .dp-day.empty{pointer-events:none;border:none;border-right:1px solid rgba(0,0,0,.15);border-bottom:1px solid rgba(0,0,0,.15)}
 .dp-day.selected{background:#068a99;color:#fff;border-color:#068a99}
