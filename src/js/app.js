@@ -352,6 +352,7 @@ function showCards(ids) {
     .join('');
 
   scroll.classList.toggle('single-card', activeIds.length === 1);
+  document.getElementById('cardPanel').classList.toggle('multi-cards', activeIds.length > 1);
   document.getElementById('cardPanel').classList.add('visible');
   document.getElementById('tabBar').classList.add('hidden');
   document.getElementById('backBtn').classList.add('visible');
@@ -371,7 +372,7 @@ function dismissCards() {
   const prevIds = [...activeIds];
   activeIds = [];
   prevIds.forEach(refreshClusterByItemId);
-  document.getElementById('cardPanel').classList.remove('visible');
+  document.getElementById('cardPanel').classList.remove('visible', 'multi-cards');
   document.getElementById('cardScroll').classList.remove('single-card');
   document.getElementById('tabBar').classList.remove('hidden');
   document.getElementById('backBtn').classList.remove('visible');
