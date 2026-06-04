@@ -537,6 +537,7 @@ function selectCat(cat) {
     }
   }
   renderChips();
+  renderCalendarChips();
   applyFilters();
 }
 
