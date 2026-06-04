@@ -636,7 +636,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 @media (min-width: 720px) {
   /* Show header on desktop */
   #headerContainer { display: block; height: 80px; overflow: hidden; background: #008296; z-index: 110; }
-  #headerLogo { display: block; max-width: 245px; }
+  #headerLogo { display: block; max-width: 245px; top: -5px; }
   
   /* Move topBar below header */
   #topBar {
