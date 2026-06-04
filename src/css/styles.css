@@ -96,10 +96,14 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .mpin-tail{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);background:white;border-radius:80px 80px 4px 80px;box-shadow:0 6px 12px rgba(0,0,0,.12),0 16px 32px rgba(0,0,0,.10)}
 .mpin-circle{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;border-radius:50%}
 .mpin-circle svg{width:24px;height:24px}
-.mpin-sm .mpin-tail{width:44.3px;height:44.3px}
-.mpin-sm .mpin-circle{width:40px;height:40px;padding:8px}
-.mpin-lg .mpin-tail{width:61.9px;height:61.9px}
-.mpin-lg .mpin-circle{width:56px;height:56px;padding:12px}
+.mpin-sm .mpin-tail{width:37.7px;height:37.7px}
+.mpin-sm .mpin-circle{width:34px;height:34px;padding:5px}
+.mpin-lg .mpin-tail{width:52.6px;height:52.6px}
+.mpin-lg .mpin-circle{width:47.6px;height:47.6px;padding:8px}
+/* Icons that fill more of their viewbox — scale down in smaller pins */
+.cat-teater .mpin-circle svg,.cat-samhalle .mpin-circle svg,
+.cat-fritid .mpin-circle svg,.cat-spel .mpin-circle svg,
+.cat-litteratur .mpin-circle svg { width:20px; height:20px; }
 .user-dot{width:26px;height:26px;border-radius:50%;background:white;box-shadow:0 4px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
 .user-dot-inner{width:18px;height:18px;border-radius:50%;background:#357af6}
 
@@ -530,8 +534,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .cal-tag-free { background: rgba(52,199,89,.12); color: #1a7a38; }
 
 /* Map pin sizes (replaces old inline width/height) */
-.mpin-sm { width: 62.7px; height: 62.7px; }
-.mpin-lg { width: 87.6px; height: 87.6px; }
+.mpin-sm { width: 53.3px; height: 53.3px; }
+.mpin-lg { width: 74.5px; height: 74.5px; }
 
 /* Pin circle: default uses category color, multi-category clusters override */
 .mpin .mpin-circle      { background: var(--cat-color, #555); }
@@ -541,9 +545,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .mpin-cluster-num {
   color: #fff; font-family: 'Source Sans 3', sans-serif;
   font-weight: 700; line-height: 1; letter-spacing: -.5px;
-  font-size:17px;
+  font-size:14px;
 }
-.mpin-lg .mpin-cluster-num { font-size:22px; }
+.mpin-lg .mpin-cluster-num { font-size:19px; }
 .mpin-circle.flex-center { display: flex; align-items: center; justify-content: center; }
 
 /* Detail screen: host logo and centered header block */

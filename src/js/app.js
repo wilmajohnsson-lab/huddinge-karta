@@ -273,7 +273,7 @@ function addClusterMarker(cluster) {
   const html = single
     ? mHtml(item.cat, isActive, label)
     : mClusterHtml(cluster, isActive);
-  const sz = isActive ? 87.6 : 62.7;
+  const sz = isActive ? 74.5 : 53.3;
   const icon = L.divIcon({ html, className: '', iconSize: [sz, sz], iconAnchor: [sz / 2, sz] });
   const m = L.marker([cluster.lat, cluster.lng], { icon }).addTo(map);
   m.on('click', (e) => {
@@ -296,7 +296,7 @@ function refreshClusterByItemId(id) {
   const html = single
     ? mHtml(item0.cat, isActive, label)
     : mClusterHtml(cluster, isActive);
-  const sz = isActive ? 87.6 : 62.7;
+  const sz = isActive ? 74.5 : 53.3;
   m.setIcon(L.divIcon({ html, className: '', iconSize: [sz, sz], iconAnchor: [sz / 2, sz] }));
 }
 
