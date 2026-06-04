@@ -559,31 +559,14 @@ function chipHtml(cat) {
 function renderChips() {
   const tc = document.getElementById('topChips');
   if (!tc) return;
-  if (activeTab === 'platser') {
-    const html = [ALL_CAT, ...PLATS_CATS].map(chipHtml).join('');
-    tc.innerHTML = html;
-    tc.style.display = '';
-  } else {
-    tc.innerHTML = '';
-    tc.style.display = 'none';
-  }
+  const cats = activeTab === 'platser' ? PLATS_CATS : EVENT_CATS;
+  const html = [ALL_CAT, ...cats].map(chipHtml).join('');
+  tc.innerHTML = html;
+  tc.style.display = '';
 }
 
 function initFpCatChips() {
-  const el = document.getElementById('fpCats');
-  if (!el) return;
-  el.innerHTML = '';
-  const cats = activeTab === 'platser' ? PLATS_FILTER_CATS : EVENT_CATS;
-  cats.forEach((cat) => {
-    const b = document.createElement('button');
-    b.className = 'fp-chip' + (selectedCats.has(cat) ? ' on' : '');
-    b.textContent = CAT_LABEL[cat] || cat;
-    b.addEventListener('click', () => {
-      toggleFpChip(b, selectedCats, cat);
-      renderChips();
-    });
-    el.appendChild(b);
-  });
+  // no-op: category selection is via topChips
 }
 
 function renderCalendarChips() {
