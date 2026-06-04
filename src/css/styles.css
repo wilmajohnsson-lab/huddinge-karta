@@ -646,6 +646,16 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
     padding: 12px 20px;
   }
 
+  /* Card panel: centred, max width so it doesn't span the full desktop screen */
+  #cardPanel {
+    left: 50%;
+    right: auto;
+    width: 520px;
+    max-width: 95vw;
+    transform: translateX(-50%) translateY(100%);
+  }
+  #cardPanel.visible { transform: translateX(-50%) translateY(0); }
+
   /* Close button: restore mobile position on desktop */
 
   /* Cards stack vertically, scrollable */
