@@ -47,10 +47,10 @@ describe('test-helpers', () => {
   it('mHtml returns mpin html with color and size', () => {
     const html = mHtml('event', true);
     expect(html).toContain('mpin-lg');
-    expect(html).toContain('#bf5917');
+    expect(html).toContain('#a04612');
     const html2 = mHtml('musik', false);
     expect(html2).toContain('mpin-sm');
-    expect(html2).toContain('#c3a523');
+    expect(html2).toContain('#8a7515');
   });
 
   it('chipHtml includes chip-on or chip-dim classes', () => {
