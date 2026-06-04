@@ -387,7 +387,7 @@ function evCardHtml(item) {
   const dateLine = !isPlats
     ? `<span class="ev-tag">${S_CLOCK}${esc(item.date)} · ${esc(item.time.split('–')[0].split('-')[0])}</span>`
     : '';
-  return `<div class="ev-card" data-item-id="${Number(item.id)}" role="listitem">
+  return `<div class="ev-card" data-item-id="${String(item.id)}" role="listitem">
     <img class="ev-card-img" ${imgSrc(item.img, 600)} width="600" height="320" alt="${esc(item.name)}" loading="lazy" decoding="async">
     <div class="ev-card-body">
       <div class="ev-card-top">
@@ -402,8 +402,8 @@ function evCardHtml(item) {
         <span class="ev-tag ev-tag-cat cat-${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
       </div>
       <div class="ev-card-btns">
-        <button class="btn-ghost" data-action="detail" data-item-id="${Number(item.id)}">Mer info</button>
-        ${item._source !== 'konst' ? (() => { const c = ctaInfo(item); return c ? `<button class="${c.disabled ? 'btn-ghost btn-cta-disabled' : 'btn-dark'}" ${c.disabled ? 'disabled' : `data-action="join" data-item-id="${Number(item.id)}"`}>${c.label}</button>` : ''; })() : ''}
+        <button class="btn-ghost" data-action="detail" data-item-id="${String(item.id)}">Mer info</button>
+        ${item._source !== 'konst' ? (() => { const c = ctaInfo(item); return c ? `<button class="${c.disabled ? 'btn-ghost btn-cta-disabled' : 'btn-dark'}" ${c.disabled ? 'disabled' : `data-action="join" data-item-id="${String(item.id)}"`}>${c.label}</button>` : ''; })() : ''}
       </div>
     </div>
   </div>`;
@@ -802,7 +802,7 @@ function calCardInner(item) {
 }
 
 function calCardHtml(item) {
-  return `<div class="cal-card" data-item-id="${Number(item.id)}">${calCardInner(item)}</div>`;
+  return `<div class="cal-card" data-item-id="${String(item.id)}">${calCardInner(item)}</div>`;
 }
 
 function renderCalendar() {
@@ -905,7 +905,7 @@ function onSearch(q) {
   res.innerHTML = hits
     .map(
       (item) => `
-    <div class="srch-card" data-item-id="${Number(item.id)}">
+    <div class="srch-card" data-item-id="${String(item.id)}">
       <img class="srch-card-img" ${imgSrc(item.img, 160)} width="160" height="160" alt="${esc(item.name)}" loading="lazy" decoding="async">
       <div class="srch-card-body">
         <div class="srch-card-title">${esc(item.name)}</div>
@@ -983,8 +983,19 @@ function closeOrgDetail() {
   document.getElementById('orgScreen').classList.remove('visible');
 }
 
-function openDetail(id) {
-  const item = ITEMS.find((x) => x.id === id);
+function findById(id) {
+  const s = String(id);
+  return ITEMS.find(x => String(x.id) === s) || null;
+}
+
+function openDetailForItem(item) {
+  if (!item) return;
+  if (item._source === 'aktor') openOrgDetail(item);
+  else openDetail(item);
+}
+
+function openDetail(itemOrId) {
+  const item = (typeof itemOrId === 'object' && itemOrId !== null) ? itemOrId : findById(itemOrId);
   if (!item) return;
   const col = CAT_COLOR[item.cat];
   const lbl = CAT_LABEL[item.cat];
@@ -1192,13 +1203,11 @@ function initDom() {
 
   // Card scroll — detail and join buttons
   delegate(document.getElementById('cardScroll'), '[data-action="detail"]', (_e, el) => {
-    const id = Number(el.dataset.itemId);
-    const item = ITEMS.find((x) => x.id === id);
-    if (item && item._source === 'aktor') { openOrgDetail(item); }
-    else { openDetail(id); }
+    const item = findById(el.dataset.itemId);
+    openDetailForItem(item);
   });
   delegate(document.getElementById('cardScroll'), '[data-action="join"]', (_e, el) => {
-    const item = ITEMS.find((x) => x.id === Number(el.dataset.itemId));
+    const item = findById(el.dataset.itemId);
     if (item) openEventUrl(item);
   });
 
@@ -1210,9 +1219,9 @@ function initDom() {
 
   // Calendar cards
   delegate(document.getElementById('calContent'), '[data-item-id]', (_e, el) => {
-    if (el.closest('.cal-card-past')) return; // historik cards not clickable
-    const id = Number(el.closest('[data-item-id]').dataset.itemId);
-    openDetail(id);
+    if (el.closest('.cal-card-past')) return;
+    const item = findById(el.closest('[data-item-id]').dataset.itemId);
+    if (item) openDetailForItem(item);
   });
 
   // Search
@@ -1222,7 +1231,8 @@ function initDom() {
   // Search results
   delegate(document.getElementById('searchResults'), '[data-item-id]', (_e, el) => {
     closeSearch();
-    showCards([Number(el.dataset.itemId)]);
+    const item = findById(el.dataset.itemId);
+    if (item) { openDetailForItem(item); }
   });
 
   // Date picker
