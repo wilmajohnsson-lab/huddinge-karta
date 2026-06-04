@@ -566,7 +566,25 @@ function renderChips() {
 }
 
 function initFpCatChips() {
-  // no-op: category selection is via topChips
+  const section = document.getElementById('fpCatSection');
+  const el = document.getElementById('fpCats');
+  if (!el || !section) return;
+  if (activeTab !== 'platser') {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = '';
+  el.innerHTML = '';
+  PLATS_FILTER_CATS.forEach((cat) => {
+    const b = document.createElement('button');
+    b.className = 'fp-chip' + (selectedCats.has(cat) ? ' on' : '');
+    b.textContent = CAT_LABEL[cat] || cat;
+    b.addEventListener('click', () => {
+      toggleFpChip(b, selectedCats, cat);
+      renderChips();
+    });
+    el.appendChild(b);
+  });
 }
 
 function renderCalendarChips() {
