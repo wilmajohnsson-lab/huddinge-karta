@@ -379,8 +379,8 @@ input:checked+.toggle-track{background:#34c759}
 input:checked+.toggle-track::after{transform:translateX(20px)}
 .fp-chips{display:flex;flex-wrap:wrap;gap:8px}
 .fp-chip{
-  display:inline-flex;align-items:center;height:34px;padding:0 14px;
-  border-radius:40px;border:.5px solid rgba(0,0,0,.14);
+  display:inline-flex;align-items:center;height:30px;padding:0 9px;
+  border-radius:8px;border:.5px solid rgba(0,0,0,.14);
   background:#fff;font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:500;
   color:#000;cursor:pointer;transition:background .15s,border-color .15s;
   white-space:nowrap;
