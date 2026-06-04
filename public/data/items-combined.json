@@ -24,7 +24,7 @@
     },
     {
       "id": 129,
-      "cat": "event",
+      "cat": "samhalle",
       "name": "Drop-in-vigsel",
       "desc": "Övrigt · vuxna",
       "longDesc": "Drop-in-vigsel är ett evenemang av typen övrigt. passar för vuxna.",
@@ -46,7 +46,7 @@
     },
     {
       "id": 130,
-      "cat": "event",
+      "cat": "konst",
       "name": "Konstrunda",
       "desc": "Utställning · passar alla",
       "longDesc": "Konstrunda är ett evenemang av typen utställning. passar för passar alla.",
@@ -90,7 +90,7 @@
     },
     {
       "id": 132,
-      "cat": "event",
+      "cat": "fritid",
       "name": "Visättra promenadgrupp",
       "desc": "Fritidsaktivitet · passar alla",
       "longDesc": "Visättra promenadgrupp är ett evenemang av typen fritidsaktivitet. passar för passar alla.",
@@ -112,7 +112,7 @@
     },
     {
       "id": 133,
-      "cat": "event",
+      "cat": "spel",
       "name": "Rollspelsklubben",
       "desc": "Fritidsaktivitet · unga",
       "longDesc": "Rollspelsklubben är ett evenemang av typen fritidsaktivitet. passar för unga. anmälan krävs.",
@@ -134,7 +134,7 @@
     },
     {
       "id": 134,
-      "cat": "event",
+      "cat": "samhalle",
       "name": "Film, fika och samtal - Nunnan del 1",
       "desc": "Film",
       "longDesc": "Film, fika och samtal - nunnan del 1 är ett evenemang av typen film. anmälan krävs.",
@@ -156,7 +156,7 @@
     },
     {
       "id": 135,
-      "cat": "event",
+      "cat": "samhalle",
       "name": "Att bli förälder",
       "desc": "Föreläsning · för nyblivna föräldrar",
       "longDesc": "Att bli förälder är ett evenemang av typen föreläsning. passar för för nyblivna föräldrar. anmälan krävs. avgiftsbelagd.",
@@ -178,7 +178,7 @@
     },
     {
       "id": 136,
-      "cat": "event",
+      "cat": "litteratur",
       "name": "Skrivworkshop för unga",
       "desc": "Workshop · 12-19 år",
       "longDesc": "Skrivworkshop för unga är ett evenemang av typen workshop. passar för 12-19 år. anmälan krävs.",
@@ -200,7 +200,7 @@
     },
     {
       "id": 137,
-      "cat": "event",
+      "cat": "kultur",
       "name": "Sommarfest",
       "desc": "Workshop · 6-12 år",
       "longDesc": "Sommarfest är ett evenemang av typen workshop. passar för 6-12 år.",
@@ -222,7 +222,7 @@
     },
     {
       "id": 138,
-      "cat": "event",
+      "cat": "samhalle",
       "name": "Krisberedskap (Civilförsvarsförbundet)",
       "desc": "Föreläsning · vuxna",
       "longDesc": "Krisberedskap (civilförsvarsförbundet) är ett evenemang av typen föreläsning. passar för vuxna. anmälan krävs.",
@@ -244,7 +244,7 @@
     },
     {
       "id": 139,
-      "cat": "event",
+      "cat": "samhalle",
       "name": "Dialogmöte med Huddinges lokalpolitiker",
       "desc": "Möte · vuxna",
       "longDesc": "Dialogmöte med huddinges lokalpolitiker är ett evenemang av typen möte. passar för vuxna. anmälan krävs.",
@@ -266,7 +266,7 @@
     },
     {
       "id": 140,
-      "cat": "event",
+      "cat": "fritid",
       "name": "Sagan om Flemingsbergsskogen",
       "desc": "Vandring · familjer",
       "longDesc": "Sagan om flemingsbergsskogen är ett evenemang av typen vandring. passar för familjer.",
@@ -288,7 +288,7 @@
     },
     {
       "id": 141,
-      "cat": "event",
+      "cat": "samhalle",
       "name": "Stöd i digitala ärenden av Ungs It utbildarna",
       "desc": "Workshop · seniorer",
       "longDesc": "Stöd i digitala ärenden av ungs it utbildarna är ett evenemang av typen workshop. passar för seniorer.",
@@ -310,7 +310,7 @@
     },
     {
       "id": 142,
-      "cat": "event",
+      "cat": "konst",
       "name": "Konst i Skogås",
       "desc": "Föreläsning",
       "longDesc": "Konst i skogås är ett evenemang av typen föreläsning. anmälan krävs.",
@@ -332,7 +332,7 @@
     },
     {
       "id": 143,
-      "cat": "event",
+      "cat": "samhalle",
       "name": "Killsnack!",
       "desc": "Möte · intellektuell funktionsnedsättning",
       "longDesc": "Killsnack! är ett evenemang av typen möte. passar för intellektuell funktionsnedsättning. anmälan krävs. avgiftsbelagd.",
@@ -354,7 +354,7 @@
     },
     {
       "id": 144,
-      "cat": "event",
+      "cat": "teater",
       "name": "Teater för nybörjare",
       "desc": "Kurs · 9-12år",
       "longDesc": "Teater för nybörjare är ett evenemang av typen kurs. passar för 9-12år. avgiftsbelagd.",
@@ -376,7 +376,7 @@
     },
     {
       "id": 145,
-      "cat": "event",
+      "cat": "kultur",
       "name": "Kulturkollo Huddinge",
       "desc": "Kurs · barn & unga",
       "longDesc": "Kulturkollo huddinge är ett evenemang av typen kurs. passar för barn & unga. anmälan krävs. avgiftsbelagd.",
@@ -398,7 +398,7 @@
     },
     {
       "id": 146,
-      "cat": "event",
+      "cat": "kultur",
       "name": "Kulturkollo Lovkurs",
       "desc": "Kurs · 6-22 år",
       "longDesc": "Kulturkollo lovkurs är ett evenemang av typen kurs. passar för 6-22 år. anmälan krävs.",
@@ -420,7 +420,7 @@
     },
     {
       "id": 147,
-      "cat": "event",
+      "cat": "kultur",
       "name": "Kulturkollo Skogås",
       "desc": "Kurs · 6-16 år",
       "longDesc": "Kulturkollo skogås är ett evenemang av typen kurs. passar för 6-16 år. anmälan krävs. avgiftsbelagd.",
@@ -486,7 +486,7 @@
     },
     {
       "id": 150,
-      "cat": "event",
+      "cat": "spel",
       "name": "Spelkväll på Folkes",
       "desc": "Fritidsaktivitet",
       "longDesc": "Spelkväll på folkes är ett evenemang av typen fritidsaktivitet.",
@@ -508,7 +508,7 @@
     },
     {
       "id": 151,
-      "cat": "event",
+      "cat": "konst",
       "name": "Vilka är vi?",
       "desc": "Utställning",
       "longDesc": "Vilka är vi? är ett evenemang av typen utställning.",
@@ -530,7 +530,7 @@
     },
     {
       "id": 152,
-      "cat": "event",
+      "cat": "hantverk",
       "name": "Keramik",
       "desc": "Utställning",
       "longDesc": "Keramik är ett evenemang av typen utställning.",
@@ -552,7 +552,7 @@
     },
     {
       "id": 153,
-      "cat": "event",
+      "cat": "hantverk",
       "name": "Hantverk med Kathrine",
       "desc": "Workshop",
       "longDesc": "Hantverk med kathrine är ett evenemang av typen workshop.",
@@ -574,7 +574,7 @@
     },
     {
       "id": 154,
-      "cat": "event",
+      "cat": "hantverk",
       "name": "Folkbroderi från Polen",
       "desc": "Workshop/föreläsning · hålls på engelska",
       "longDesc": "Folkbroderi från polen är ett evenemang av typen workshop/föreläsning. passar för hålls på engelska.",
@@ -596,7 +596,7 @@
     },
     {
       "id": 155,
-      "cat": "event",
+      "cat": "teater",
       "name": "Tanter på rymmen",
       "desc": "Uppträdande · familj",
       "longDesc": "Tanter på rymmen är ett evenemang av typen uppträdande. passar för familj. anmälan krävs. avgiftsbelagd.",
@@ -618,7 +618,7 @@
     },
     {
       "id": 156,
-      "cat": "event",
+      "cat": "teater",
       "name": "Jävla pappor",
       "desc": "Uppträdande",
       "longDesc": "Jävla pappor är ett evenemang av typen uppträdande. anmälan krävs. avgiftsbelagd.",
