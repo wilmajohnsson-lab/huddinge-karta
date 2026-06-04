@@ -258,7 +258,7 @@ function mHtml(cat, big, label = null) {
   const activeClass = big ? ' mpin-active' : '';
   const catClass = CAT_COLOR[cat] ? `cat-${cat}` : '';
   const icon = CAT_SVG_W[cat] || CAT_SVG_W['event'];
-  const lbl = label ? `<div class="pin-label">${esc(label)}</div>` : '';
+  const lbl = label ? `<div class="pin-label">${label.split(' ').map(esc).join('<br>')}</div>` : '';
   return `<div class="mpin ${sz}${activeClass} ${catClass}">
     <div class="mpin-tail"></div>
     <div class="mpin-circle">${icon}</div>
