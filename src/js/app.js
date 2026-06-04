@@ -388,7 +388,7 @@ function evCardHtml(item) {
       </div>
       <div class="ev-card-btns">
         <button class="btn-ghost" data-action="detail" data-item-id="${Number(item.id)}">Mer info</button>
-        ${(() => { const c = ctaInfo(item); return `<button class="${c.disabled ? 'btn-ghost btn-cta-disabled' : 'btn-dark'}" ${c.disabled ? 'disabled' : `data-action="join" data-item-id="${Number(item.id)}"`}>${c.label}</button>`; })()}
+        ${item._source !== 'konst' ? (() => { const c = ctaInfo(item); return `<button class="${c.disabled ? 'btn-ghost btn-cta-disabled' : 'btn-dark'}" ${c.disabled ? 'disabled' : `data-action="join" data-item-id="${Number(item.id)}"`}>${c.label}</button>`; })() : ''}
       </div>
     </div>
   </div>`;
@@ -841,19 +841,24 @@ function openDetail(id) {
     </div>`;
 
   document.getElementById('detFlyBtn').onclick = () => openMapsSheet(item);
-  // CTA-knappen — label och disabled-state baseras på registration + pris.
+  // CTA-knappen — hide for konst (artworks have no registration/price)
   const detJoin = document.getElementById('detJoinBtn');
-  const cta = ctaInfo(item);
-  detJoin.textContent = cta.label;
-  detJoin.hidden = false;
-  if (cta.disabled) {
-    detJoin.disabled = true;
-    detJoin.classList.add('btn-cta-disabled');
+  if (item._source === 'konst') {
+    detJoin.hidden = true;
     detJoin.onclick = null;
   } else {
-    detJoin.disabled = false;
-    detJoin.classList.remove('btn-cta-disabled');
-    detJoin.onclick = () => openEventUrl(item);
+    const cta = ctaInfo(item);
+    detJoin.textContent = cta.label;
+    detJoin.hidden = false;
+    if (cta.disabled) {
+      detJoin.disabled = true;
+      detJoin.classList.add('btn-cta-disabled');
+      detJoin.onclick = null;
+    } else {
+      detJoin.disabled = false;
+      detJoin.classList.remove('btn-cta-disabled');
+      detJoin.onclick = () => openEventUrl(item);
+    }
   }
   document.getElementById('detBackBtn').onclick = closeDetail;
   // B.9: tap host → filter map to all items by that organiser
