@@ -674,7 +674,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
   #cardPanel {
     left: 50%;
     right: auto;
-    width: 520px;
+    width: 390px;
     max-width: 95vw;
     transform: translateX(-50%) translateY(100%);
   }
@@ -682,18 +682,19 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
   /* Close button: restore mobile position on desktop */
 
-  /* Cards stack vertically, scrollable */
+  /* Multiple cards: horizontal scroll (same as mobile) */
   #cardScroll {
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: auto;
-    scroll-snap-type: none;
-    max-height: 100%;
-    padding: 0 0 16px !important;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    max-height: none;
+    padding: 0 0 calc(env(safe-area-inset-bottom,0px) + 16px) 0 !important;
   }
-  #cardScroll::before, #cardScroll::after { display: none !important; }
+  #cardScroll::before, #cardScroll::after { display: block !important; min-width: 8px; width: 8px; }
   #cardScroll.single-card { padding: 0 !important; overflow-x: hidden; }
-  .ev-card { width: 100% !important; scroll-snap-align: none; }
+  .ev-card { width: 340px !important; flex-shrink: 0; scroll-snap-align: start; }
+  #cardScroll.single-card .ev-card { width: calc(100% - 16px) !important; margin: 0 8px; }
 }
 /* Pin labels larger on desktop */
 @media (min-width: 720px) {
