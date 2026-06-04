@@ -1118,7 +1118,7 @@ function loadAndBoot() {
         cat: 'plats',
         date: '',
         time: '',
-        host: a.org || '',
+        host: a.org || a.name || '',
         loc: a.name || '',
         desc: a.type || '',
         free: true,
@@ -1134,13 +1134,11 @@ function loadAndBoot() {
       // Combine all items
       ITEMS = [...events, ...konst, ...aktorer];
       
-      // Extract unique orgs and areas
+      // Extract unique orgs — only from plats/aktorer (place names shown in filter)
       ORGS_LIST = [
-        ...new Set([
-          ...events.map(e => e.host).filter(Boolean),
-          ...konst.map(k => k.host).filter(Boolean),
-          ...aktorer.map(a => a.host).filter(Boolean),
-        ]),
+        ...new Set(
+          aktorer.map(a => a.host).filter(Boolean)
+        ),
       ].sort();
       
       AREAS_LIST = [
