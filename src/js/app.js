@@ -921,16 +921,14 @@ function onSearch(q) {
 }
 
 // ── DETAIL ────────────────────────────────────────────────────────
-function orgFaviconUrl(url) {
-  try {
-    const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  } catch { return null; }
+function orgFaviconUrl(name) {
+  const slug = name.toLowerCase().replace(/[^a-z0-9åäö]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  return `/images/favicons/${slug}.png`;
 }
 
 function orgLogoHtml(name, url, col, cssClass = 'org-logo', extraStyle = '') {
   const initials = esc(name.split(' ').map(w => w[0] || '').slice(0, 3).join(''));
-  const favicon = url ? orgFaviconUrl(url) : null;
+  const favicon = orgFaviconUrl(name);
   const base = `<div class="${cssClass}" style="background:${col};${extraStyle}">${initials}</div>`;
   if (!favicon) return base;
   return `<img class="${cssClass} org-favicon" src="${favicon}" alt="${esc(name)} logotyp"
