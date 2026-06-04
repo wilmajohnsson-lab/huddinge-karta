@@ -99,8 +99,8 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   position:absolute;left:50%;top:calc(100% + 2px);
   transform:translateX(-50%);
   background:rgba(255,255,255,.85);color:var(--cat-color,#C94091);
-  padding:2px 7px;border-radius:5px;
-  font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;
+  padding:1px 5px;border-radius:5px;
+  font-family:'Source Sans 3',sans-serif;font-size:13px;font-weight:600;
   white-space:normal;text-align:center;line-height:1.1;
   border:1px solid rgba(0,0,0,.12);
   pointer-events:none;display:none;
@@ -674,4 +674,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
   #cardScroll::before, #cardScroll::after { display: none !important; }
   #cardScroll.single-card { padding: 0 !important; overflow-x: hidden; }
   .ev-card { width: 100% !important; scroll-snap-align: none; }
+}
+/* Pin labels larger on desktop */
+@media (min-width: 720px) {
+  .pin-label { font-size: 15px; padding: 2px 7px; }
 }
