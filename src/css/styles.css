@@ -556,7 +556,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 @media (min-width: 720px) {
   /* Show header on desktop */
   #headerContainer { display: block; height: 120px; }
-  #headerLogo { display: block; max-width: 500px; }
+  #headerLogo { display: block; max-width: 350px; }
   
   /* Move topBar below header */
   #topBar {
