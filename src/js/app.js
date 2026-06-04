@@ -292,6 +292,7 @@ function addClusterMarker(cluster) {
   m.bindTooltip(tipText, { direction: 'top', offset: [0, -sz + 10], className: 'pin-tooltip', sticky: false });
   m.on('click', (e) => {
     L.DomEvent.stopPropagation(e);
+    m.closeTooltip();
     showCards(cluster.items.map((i) => i.id));
   });
   leafMarkers[cluster.key] = m;
