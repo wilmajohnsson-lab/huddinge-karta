@@ -383,6 +383,23 @@ const S_CLOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width
 const S_PIN = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`;
 
 function evCardHtml(item) {
+  if (item._source === 'konst') {
+    return `<div class="ev-card ev-card-konst" data-item-id="${String(item.id)}" role="listitem">
+      <img class="ev-card-img" ${imgSrc(item.img, 600)} width="600" height="320" alt="${esc(item.name)}" loading="lazy" decoding="async">
+      <div class="ev-card-body">
+        <div class="ev-card-top">
+          <div>
+            <div class="ev-card-name">${esc(item.name)}</div>
+            <div class="ev-card-desc">${esc(item.host)}</div>
+          </div>
+        </div>
+        ${item.utomhus ? '<div class="ev-card-tags"><span class="ev-tag-utomhus">Utomhus</span></div>' : ''}
+        <div class="ev-card-btns">
+          <button class="btn-ghost" data-action="detail" data-item-id="${String(item.id)}">Mer info</button>
+        </div>
+      </div>
+    </div>`;
+  }
   const isPlats = itemType(item) === 'plats';
   const dateLine = !isPlats
     ? `<span class="ev-tag">${S_CLOCK}${esc(item.date)} · ${esc(item.time.split('–')[0].split('-')[0])}</span>`
@@ -1359,6 +1376,7 @@ function loadAndBoot() {
         lng: k.lng || 0,
         longDesc: k.longDesc || k.desc || '',
         url: '',
+        utomhus: !!(k.utomhus === true || k.utomhus === 'ja' || k.utomhus === 'Ja'),
       }));
       
       const aktorer = (data.aktorer || []).map(a => ({
