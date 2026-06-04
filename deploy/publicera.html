@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publicera Huddinge Karta</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --border: rgba(0,0,0,.08);
+    --text: #1c1c1e;
+    --muted: rgba(0,0,0,.55);
+    --accent: #1c1c1e;
+    --accent-fg: #ffffff;
+    --ok: #1a7a38;
+    --err: #b00020;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 32px; max-width: 560px; width: 100%;
+    box-shadow: 0 8px 32px rgba(0,0,0,.06);
+  }
+  h1 { margin: 0 0 8px; font-size: 24px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 15px; margin-bottom: 24px; line-height: 1.5; }
+  .who { background: rgba(0,0,0,.04); padding: 12px 16px; border-radius: 12px; font-size: 14px; margin-bottom: 24px; }
+  .who strong { font-weight: 600; }
+  button {
+    width: 100%; padding: 14px 16px; border-radius: 12px; border: none; cursor: pointer;
+    font-family: inherit; font-size: 16px; font-weight: 600; background: var(--accent); color: var(--accent-fg);
+    transition: opacity .1s, transform .05s;
+  }
+  button:hover:not(:disabled) { opacity: .9; }
+  button:active:not(:disabled) { transform: scale(.99); }
+  button:disabled { opacity: .5; cursor: progress; }
+  .login-form { display: flex; flex-direction: column; gap: 12px; }
+  .login-form label { font-size: 13px; color: var(--muted); }
+  .login-form input {
+    width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+    font-family: inherit; font-size: 15px; background: #fafafa;
+  }
+  .login-form input:focus { outline: 2px solid var(--accent); outline-offset: -1px; background: #fff; }
+  .msg { margin-top: 16px; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+  .msg.ok { background: rgba(26,122,56,.12); color: var(--ok); }
+  .msg.err { background: rgba(176,0,32,.10); color: var(--err); white-space: pre-wrap; }
+  .msg a { color: inherit; text-decoration: underline; }
+  .footer { margin-top: 24px; font-size: 12px; color: var(--muted); text-align: center; }
+  .footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Publicera Huddinge Karta</h1>
+    <p class="sub">Trycker du på knappen exporteras events, konst och aktörer från
+    admin-databasen till huddinge.mreh.site. Detta tar normalt 30–60 sekunder.</p>
+
+    <div id="who" class="who" style="display:none">
+      Inloggad som <strong id="whoEmail"></strong>
+      &middot; <a href="#" id="logoutBtn">logga ut</a>
+    </div>
+
+    <div id="loginBox" style="display:none">
+      <p class="sub">Logga in för att publicera.</p>
+      <form id="loginForm" class="login-form" autocomplete="on">
+        <div>
+          <label for="email">E-post</label>
+          <input id="email" type="email" required autocomplete="username">
+        </div>
+        <div>
+          <label for="password">Lösenord</label>
+          <input id="password" type="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" id="loginBtn">Logga in</button>
+      </form>
+    </div>
+
+    <div id="actionBox" style="display:none">
+      <button id="publishBtn">Publicera nu</button>
+    </div>
+
+    <div id="msg" class="msg" style="display:none"></div>
+
+    <div class="footer">
+      <a href="/_/" target="_blank">→ Öppna admin-vyn</a>
+    </div>
+  </div>
+
+<script>
+  // ── Token storage (PB stores its own token under pocketbase_auth in localStorage,
+  //    but that's tied to the /_/ admin SPA. We use our own key for this page.) ──
+  const KEY = 'huddinge_admin_publish_token';
+  function saveAuth(authResp) {
+    localStorage.setItem(KEY, JSON.stringify({
+      token: authResp.token,
+      record: authResp.record,
+      collection: authResp.record.collectionName || '_superusers',
+    }));
+  }
+  function loadAuth() {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; }
+  }
+  function clearAuth() { localStorage.removeItem(KEY); }
+
+  // ── UI helpers ──
+  const $ = (id) => document.getElementById(id);
+  function showMsg(kind, html) {
+    const el = $('msg');
+    el.className = 'msg ' + kind;
+    el.innerHTML = html;
+    el.style.display = 'block';
+  }
+  function hideMsg() { $('msg').style.display = 'none'; }
+
+  function render() {
+    const a = loadAuth();
+    if (a && a.token) {
+      $('loginBox').style.display = 'none';
+      $('actionBox').style.display = 'block';
+      $('who').style.display = 'block';
+      $('whoEmail').textContent = a.record.email || a.record.id;
+    } else {
+      $('loginBox').style.display = 'block';
+      $('actionBox').style.display = 'none';
+      $('who').style.display = 'none';
+    }
+  }
+
+  // ── Login: try _superusers first, then users ──
+  async function tryLogin(identity, password) {
+    for (const coll of ['_superusers', 'users']) {
+      const r = await fetch(`/api/collections/${coll}/auth-with-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity, password }),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        return data;
+      }
+      if (r.status !== 400 && r.status !== 404) {
+        throw new Error(`Login fel (${r.status}): ${await r.text()}`);
+      }
+    }
+    throw new Error('Fel e-post eller lösenord.');
+  }
+
+  $('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideMsg();
+    $('loginBtn').disabled = true;
+    $('loginBtn').textContent = 'Loggar in…';
+    try {
+      const data = await tryLogin($('email').value, $('password').value);
+      saveAuth(data);
+      render();
+    } catch (err) {
+      showMsg('err', err.message);
+    } finally {
+      $('loginBtn').disabled = false;
+      $('loginBtn').textContent = 'Logga in';
+    }
+  });
+
+  $('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault(); clearAuth(); hideMsg(); render();
+  });
+
+  // ── Publish ──
+  $('publishBtn').addEventListener('click', async () => {
+    hideMsg();
+    const a = loadAuth();
+    if (!a) { render(); return; }
+    $('publishBtn').disabled = true;
+    $('publishBtn').textContent = 'Publicerar…';
+    try {
+      const r = await fetch('/api/publish/items-json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': a.token },
+      });
+      const text = await r.text();
+      let data; try { data = JSON.parse(text); } catch { data = { message: text }; }
+      if (!r.ok) {
+        if (r.status === 401) { clearAuth(); render(); }
+        throw new Error(`HTTP ${r.status}: ${data.message || text}`);
+      }
+      const shortSha = (data.commit || '').substring(0, 7);
+      const total = (data.events_count || 0) + (data.konst_count || 0) + (data.aktorer_count || 0);
+      showMsg('ok',
+        `<strong>Publicerat ✓</strong><br>` +
+        `${data.events_count || 0} events · ${data.konst_count || 0} konstverk · ${data.aktorer_count || 0} aktörer = ${total} totalt<br>` +
+        `${data.orgs_count || 0} arrangörer · ${data.areas_count || 0} kommundelar<br>` +
+        `Commit: <a href="https://github.com/wilmajohnsson-lab/huddinge-karta/commit/${data.commit}" target="_blank" rel="noopener">${shortSha}</a><br>` +
+        `Den publika sajten uppdateras inom ~1 minut.`
+      );
+    } catch (err) {
+      showMsg('err', err.message);
+    } finally {
+      $('publishBtn').disabled = false;
+      $('publishBtn').textContent = 'Publicera nu';
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
