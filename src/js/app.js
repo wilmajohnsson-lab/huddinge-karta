@@ -348,7 +348,6 @@ function showCards(ids) {
   const first = ITEMS.find((x) => x.id === ids[0]);
   if (first) {
     track('Pin Click', { category: first.cat, type: itemType(first) });
-    map.flyTo([first.lat, first.lng], 15, { duration: 0.7, easeLinearity: 0.5 });
   }
 }
 
