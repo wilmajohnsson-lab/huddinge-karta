@@ -452,7 +452,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .cat-film      { --cat-color: #D63D3D; --cat-light: #EFB1B1; --cat-bg: rgba(214,61,61,.10); }
 .cat-kurs      { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
 .cat-kultur    { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
-.cat-plats     { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
+.cat-plats     { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
 .cat-litteratur{ --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
 .cat-museum    { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
 .cat-skola     { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
@@ -471,7 +471,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .chip[data-cat].cat-konst,
 .chip[data-cat].cat-samhalle,
 .chip[data-cat].cat-museum,
-.chip[data-cat].cat-plats             { background: #CCE6EA; }
+/* plats chip background now part of the pink group above */
 .chip[data-cat].cat-fritid,
 .chip[data-cat].cat-kurs,
 .chip[data-cat].cat-litteratur,
@@ -479,7 +479,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .chip[data-cat].cat-musik,
 .chip[data-cat].cat-kultur,
 .chip[data-cat].cat-dans,
-.chip[data-cat].cat-poesi             { background: #F4D9E9; }
+.chip[data-cat].cat-poesi,
+.chip[data-cat].cat-plats             { background: #F4D9E9; }
 .chip[data-cat].cat-teater,
 .chip[data-cat].cat-spel,
 .chip[data-cat].cat-hantverk,
