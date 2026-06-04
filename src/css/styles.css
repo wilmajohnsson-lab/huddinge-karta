@@ -465,6 +465,47 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .chip[data-cat]                       { background: var(--cat-light); color: var(--cat-color); border-color: var(--cat-color); }
 .chip[data-cat].chip-on               { background: var(--cat-color); color: #fff; border-color: var(--cat-color); }
 
+/* Explicit light-tone backgrounds per colour family (overrides var fallback) */
+.chip[data-cat].cat-konst,
+.chip[data-cat].cat-samhalle,
+.chip[data-cat].cat-museum,
+.chip[data-cat].cat-plats             { background: #99CDD5; }
+.chip[data-cat].cat-fritid,
+.chip[data-cat].cat-kurs,
+.chip[data-cat].cat-litteratur,
+.chip[data-cat].cat-skola             { background: #B1CF99; }
+.chip[data-cat].cat-musik,
+.chip[data-cat].cat-kultur,
+.chip[data-cat].cat-dans,
+.chip[data-cat].cat-poesi             { background: #E9B3D3; }
+.chip[data-cat].cat-teater,
+.chip[data-cat].cat-spel,
+.chip[data-cat].cat-hantverk,
+.chip[data-cat].cat-bradspel          { background: #E5BD99; }
+.chip[data-cat].cat-event,
+.chip[data-cat].cat-film,
+.chip[data-cat].cat-lokal             { background: #EFB1B1; }
+/* Selected state always uses the dark tone regardless of group */
+.chip[data-cat].chip-on.cat-konst,
+.chip[data-cat].chip-on.cat-samhalle,
+.chip[data-cat].chip-on.cat-museum,
+.chip[data-cat].chip-on.cat-plats,
+.chip[data-cat].chip-on.cat-fritid,
+.chip[data-cat].chip-on.cat-kurs,
+.chip[data-cat].chip-on.cat-litteratur,
+.chip[data-cat].chip-on.cat-skola,
+.chip[data-cat].chip-on.cat-musik,
+.chip[data-cat].chip-on.cat-kultur,
+.chip[data-cat].chip-on.cat-dans,
+.chip[data-cat].chip-on.cat-poesi,
+.chip[data-cat].chip-on.cat-teater,
+.chip[data-cat].chip-on.cat-spel,
+.chip[data-cat].chip-on.cat-hantverk,
+.chip[data-cat].chip-on.cat-bradspel,
+.chip[data-cat].chip-on.cat-event,
+.chip[data-cat].chip-on.cat-film,
+.chip[data-cat].chip-on.cat-lokal     { background: var(--cat-color); color: #fff; }
+
 /* Tags / badges that take the category color */
 .ev-tag-cat,
 .cal-tag-cat,
