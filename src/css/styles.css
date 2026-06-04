@@ -1,5 +1,5 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
-html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;font-family:'Inter',sans-serif}
+html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;font-family:'Source Sans 3',sans-serif}
 
 /* ══ SHELL ══ */
 #app{position:fixed;inset:0;background:#f6f6f6}
@@ -37,7 +37,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 10px 0 8px;
   border-radius:40px;border:1.5px solid rgba(0,0,0,.15);flex-shrink:0;
   background:transparent;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;white-space:nowrap;
+  font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:500;white-space:nowrap;
   cursor:pointer;
   transition:background .15s,opacity .15s,border-color .15s;
 }
@@ -51,7 +51,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   border-radius:40px;border:none;flex-shrink:0;
   background:rgba(255,255,255,.9);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
   box-shadow:0 8px 25px rgba(0,0,0,.10);cursor:pointer;
-  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000;
+  font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000;
   transition:background .15s,color .15s;
 }
 .filter-pill.active{background:#000;color:#fff}
@@ -64,7 +64,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   background:rgba(255,255,255,.9);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
   border-radius:40px;border:none;cursor:pointer;
   box-shadow:0 8px 25px rgba(0,0,0,.10);
-  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000;
+  font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000;
 }
 #backBtn svg{width:18px;height:18px}
 #backBtn.visible{display:flex}
@@ -75,7 +75,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .pin-label{
   position:absolute;left:calc(100% + 6px);top:4px;
   background:#fff;padding:3px 8px;border-radius:20px;
-  font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#000;
+  font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:600;color:#000;
   white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.13);
   pointer-events:none;display:none;
   max-width:120px;overflow:hidden;text-overflow:ellipsis;
@@ -107,7 +107,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   background:rgba(255,255,255,.9);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
   border-radius:40px;border:none;cursor:pointer;
   box-shadow:0 8px 25px rgba(0,0,0,.10);
-  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000;
+  font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000;
 }
 #closeCardBtn svg{width:18px;height:18px}
 
@@ -142,8 +142,8 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .ev-card-btns{display:flex;gap:6px;margin-top:auto;flex-shrink:0}
 
 /* ══ BUTTONS ══ */
-.btn-ghost{flex:1;padding:16px 8px;border-radius:56px;background:rgba(70,70,70,.1);border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000;cursor:pointer;white-space:nowrap}
-.btn-dark{flex:1;padding:16px 8px;border-radius:56px;background:#000;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer;white-space:nowrap}
+.btn-ghost{flex:1;padding:16px 8px;border-radius:56px;background:rgba(70,70,70,.1);border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000;cursor:pointer;white-space:nowrap}
+.btn-dark{flex:1;padding:16px 8px;border-radius:56px;background:#000;border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer;white-space:nowrap}
 .free-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(52,199,89,.15);color:#1a7a38}
 
 /* ══ FLOATING TAB BAR ══ */
@@ -167,7 +167,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .tab-btn{
   display:flex;align-items:center;gap:8px;
   height:48px;padding:8px 16px;border-radius:120px;border:none;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;
   cursor:pointer;transition:background .18s,color .18s;white-space:nowrap;
 }
 .tab-btn svg{width:24px;height:24px;flex-shrink:0;display:none}
@@ -247,10 +247,10 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .srch-top{padding:calc(env(safe-area-inset-top,44px) + 12px) 16px 16px;background:#f8f8f8;border-bottom:.5px solid rgba(0,0,0,.08)}
 .srch-row{display:flex;gap:10px;align-items:center}
 .srch-input-pill{flex:1;height:48px;display:flex;align-items:center;gap:8px;padding:0 14px;background:#fff;border-radius:40px;border:.5px solid rgba(0,0,0,.14)}
-.srch-input-pill input{flex:1;border:none;outline:none;background:transparent;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000}
+.srch-input-pill input{flex:1;border:none;outline:none;background:transparent;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000}
 .srch-input-pill input::placeholder{color:rgba(0,0,0,.4)}
 .srch-input-pill svg{opacity:.3;flex-shrink:0}
-.srch-cancel{background:none;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000;cursor:pointer;white-space:nowrap;padding:0 4px;opacity:.7}
+.srch-cancel{background:none;border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000;cursor:pointer;white-space:nowrap;padding:0 4px;opacity:.7}
 .srch-results{padding:16px;overflow-y:auto;height:calc(100% - 110px);scrollbar-width:none}
 .srch-results::-webkit-scrollbar{display:none}
 .srch-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.09);margin-bottom:10px;display:flex;transition:transform .12s;cursor:pointer}
@@ -277,7 +277,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   background:rgba(255,255,255,.2);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
   border-radius:40px;border:none;cursor:pointer;
   box-shadow:0 8px 25px rgba(0,0,0,.10);
-  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#fff;
+  font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#fff;
 }
 .det-back svg{width:18px;height:18px}
 .det-card{background:#f6f6f6;border-radius:32px 32px 0 0;margin-top:-40px;position:relative;z-index:1;padding:24px 16px 140px}
@@ -300,7 +300,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   /* B.9: now a <button> — reset and make interactive */
   background:none;border:none;width:100%;padding:12px;
   border-radius:16px;cursor:pointer;transition:background .15s;
-  font-family:'Inter',sans-serif;text-align:left;
+  font-family:'Source Sans 3',sans-serif;text-align:left;
 }
 .det-host:hover,.det-host:active{background:rgba(0,0,0,.05)}
 .det-host-info{display:flex;flex-direction:column;gap:2px}
@@ -348,14 +348,14 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 .fp-chip{
   display:inline-flex;align-items:center;height:34px;padding:0 14px;
   border-radius:40px;border:.5px solid rgba(0,0,0,.14);
-  background:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;
+  background:#fff;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:500;
   color:#000;cursor:pointer;transition:background .15s,border-color .15s;
   max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .fp-chip.on{background:#000;color:#fff;border-color:#000}
 .fp-footer{padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 16px);border-top:.5px solid rgba(0,0,0,.09);display:flex;gap:8px;flex-shrink:0;background:#f8f8f8}
-.fp-reset{flex:1;padding:14px;border-radius:56px;background:rgba(0,0,0,.08);border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#000;cursor:pointer}
-.fp-apply{flex:2;padding:14px;border-radius:56px;background:#000;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer}
+.fp-reset{flex:1;padding:14px;border-radius:56px;background:rgba(0,0,0,.08);border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;color:#000;cursor:pointer}
+.fp-apply{flex:2;padding:14px;border-radius:56px;background:#000;border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer}
 
 /* ══ DATE PICKER ══ */
 #dateBg{position:absolute;inset:0;z-index:620;background:rgba(0,0,0,0);transition:background .25s;pointer-events:none}
@@ -379,7 +379,7 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 .dp-day{
   aspect-ratio:1;display:flex;align-items:center;justify-content:center;
   border-radius:50%;border:none;background:none;cursor:pointer;
-  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;color:#000;
+  font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:500;color:#000;
   position:relative;transition:background .12s;
 }
 .dp-day:disabled{color:rgba(0,0,0,.2);cursor:default}
@@ -394,13 +394,13 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 .dp-day.selected .dp-day-count{background:rgba(255,255,255,.25);color:#fff}
 .dp-day.today{font-weight:700}
 .dp-day.empty{pointer-events:none}
-.dp-clear{display:block;width:calc(100% - 40px);margin:4px 20px 0;padding:14px;border-radius:56px;background:rgba(0,0,0,.07);border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:#000;cursor:pointer}
+.dp-clear{display:block;width:calc(100% - 40px);margin:4px 20px 0;padding:14px;border-radius:56px;background:rgba(0,0,0,.07);border:none;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;color:#000;cursor:pointer}
 
 /* ══ ACTION SHEET ══ */
 #actionSheetBg{position:absolute;inset:0;z-index:700;background:rgba(0,0,0,0);transition:background .25s;pointer-events:none}
 #actionSheet{position:absolute;left:8px;right:8px;bottom:8px;z-index:701;transform:translateY(calc(100% + 12px));transition:transform .32s cubic-bezier(.32,.94,.6,1)}
 #actionSheetOptions{background:rgba(242,242,247,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-radius:16px;overflow:hidden;margin-bottom:8px}
-#actionSheet .as-cancel{width:100%;padding:18px;background:rgba(242,242,247,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-radius:16px;border:none;font-family:'Inter',sans-serif;font-size:17px;font-weight:600;color:#007aff;cursor:pointer}
+#actionSheet .as-cancel{width:100%;padding:18px;background:rgba(242,242,247,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-radius:16px;border:none;font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:600;color:#007aff;cursor:pointer}
 
 /* ══ ACCESSIBILITY ══ */
 .skip-link{
@@ -424,7 +424,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
   z-index:10000;max-width:min(560px,calc(100vw - 24px));
   background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:14px;
   box-shadow:0 8px 32px rgba(0,0,0,.18);
-  font-family:'Inter',sans-serif;color:#1c1c1e;
+  font-family:'Source Sans 3',sans-serif;color:#1c1c1e;
   padding:14px 16px;
 }
 #loadErrorBanner .load-err-inner{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -527,7 +527,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
 /* Cluster count number inside a pin */
 .mpin-cluster-num {
-  color: #fff; font-family: 'Inter', sans-serif;
+  color: #fff; font-family: 'Source Sans 3', sans-serif;
   font-weight: 700; line-height: 1; letter-spacing: -.5px;
   font-size: 15px;
 }
@@ -561,7 +561,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
   padding: 17px 16px;
   background: none;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
   font-size: 17px;
   font-weight: 400;
   color: #007aff;
