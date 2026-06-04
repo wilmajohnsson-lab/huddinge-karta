@@ -231,7 +231,7 @@ function initMap() {
 
   // Show place name labels at zoom >= 17
   function updateLabelVisibility() {
-    document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 17);
+    document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 18);
   }
   map.on('zoomend', () => { updateLabelVisibility(); });
   updateLabelVisibility();
