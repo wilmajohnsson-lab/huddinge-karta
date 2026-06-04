@@ -51,6 +51,8 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   transition:background .15s,opacity .15s,border-color .15s;
 }
 .chip svg{width:16px;height:16px;flex-shrink:0}
+.chip.cat-kultur svg,.chip.cat-kurs svg,.chip.cat-spel svg,
+.chip.cat-konst svg,.chip.cat-musik svg { width:19px;height:19px; }
 .chip.chip-dim{opacity:.38}
 /* chip-on is applied by JS for accessibility; colors are inline-styled */
 
