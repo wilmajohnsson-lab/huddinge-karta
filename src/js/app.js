@@ -88,7 +88,7 @@ function track(event, props) {
 let _searchTrackTimer = null;
 
 // Tab-based category lists
-const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'hantverk', 'film', 'kurs', 'kultur', 'litteratur', 'dans', 'poesi'];
+const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'film', 'kurs', 'kultur', 'litteratur', 'poesi'];
 const PLATS_CATS = ['konst', 'plats'];
 const PLATS_SET = new Set(PLATS_CATS);
 
