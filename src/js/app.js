@@ -233,23 +233,7 @@ function initMap() {
   function updateLabelVisibility() {
     document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 16);
   }
-  // B.11 zoom hint — shown once per session when user first reaches zoom 14-15
-  let _zoomHintShown = !!sessionStorage.getItem('zoom-hint-shown');
-  function updateZoomHint() {
-    if (_zoomHintShown) return;
-    const z = map.getZoom();
-    if (z >= 14 && z < 16) {
-      _zoomHintShown = true;
-      sessionStorage.setItem('zoom-hint-shown', '1');
-      const hint = document.getElementById('zoomHint');
-      if (hint) {
-        hint.textContent = 'Zooma in för att se platsnamn';
-        hint.classList.add('visible');
-        setTimeout(() => hint.classList.remove('visible'), 3500);
-      }
-    }
-  }
-  map.on('zoomend', () => { updateLabelVisibility(); updateZoomHint(); });
+  map.on('zoomend', () => { updateLabelVisibility(); });
   updateLabelVisibility();
 }
 

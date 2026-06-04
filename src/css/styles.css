@@ -598,18 +598,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 /* "Ingen anmälan krävs"-tagg */
 .ev-tag-noreg { background: rgba(52,199,89,.12); color: #1a7a38; }
 
-/* B.11 zoom hint */
-#zoomHint{
-  position:absolute;bottom:130px;left:50%;transform:translateX(-50%);
-  z-index:150;
-  background:rgba(0,0,0,.72);color:#fff;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  font-size:15px;font-weight:500;padding:8px 16px;border-radius:20px;
-  white-space:nowrap;pointer-events:none;
-  opacity:0;transition:opacity .4s;
-}
-#zoomHint.visible{opacity:1}
-
 /* ══ B.2 ACTIVE PIN HIGHLIGHT ══ */
 /* Ring on the circle of the selected pin */
 .mpin-active .mpin-circle {
