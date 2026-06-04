@@ -84,9 +84,9 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .pin-label{
   position:absolute;left:50%;top:calc(100% + 2px);
   transform:translateX(-50%);
-  background:var(--cat-color,#555);color:#fff;
+  background:var(--cat-light,#F4D9E9);color:#000;
   padding:3px 10px;border-radius:20px;
-  font-family:'Brando Sans',sans-serif;font-size:13px;font-weight:700;
+  font-family:'Source Sans 3',sans-serif;font-size:13px;font-weight:600;
   white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);
   pointer-events:none;display:none;
   max-width:140px;overflow:hidden;text-overflow:ellipsis;
