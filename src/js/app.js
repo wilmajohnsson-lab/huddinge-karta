@@ -88,8 +88,9 @@ function track(event, props) {
 let _searchTrackTimer = null;
 
 // Tab-based category lists
-const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'film', 'kurs', 'kultur', 'litteratur', 'poesi'];
+const EVENT_CATS = ['musik', 'samhalle', 'konst', 'fritid', 'litteratur', 'kultur', 'teater'];
 const PLATS_CATS = ['konst', 'plats'];
+const PLATS_FILTER_CATS = ['film', 'konst', 'poesi', 'museum', 'dans', 'teater', 'lokal', 'skola', 'kultur', 'spel', 'litteratur', 'samhalle'];
 const PLATS_SET = new Set(PLATS_CATS);
 
 /** Derive item type from collection source or category.
@@ -412,6 +413,7 @@ function setTab(tab) {
   } else {
     calView.classList.remove('visible');
     renderChips();
+    initFpCatChips();
     applyFilters();
   }
 }
@@ -450,8 +452,9 @@ function resetFilters() {
   filterState.free = false;
   filterState.orgs.clear();
   filterState.areas.clear();
+  selectedCats = new Set();
   document.getElementById('freeToggle').checked = false;
-  document.querySelectorAll('#fpOrgs .fp-chip, #fpAreas .fp-chip').forEach((c) => c.classList.remove('on'));
+  document.querySelectorAll('#fpOrgs .fp-chip, #fpAreas .fp-chip, #fpCats .fp-chip').forEach((c) => c.classList.remove('on'));
   applyFilters();
 }
 
@@ -491,6 +494,7 @@ function initFilterChips() {
     b.addEventListener('click', () => toggleFpChip(b, filterState.areas, a.name));
     areasEl.appendChild(b);
   });
+  initFpCatChips();
 }
 
 function toggleFilter() {
@@ -553,10 +557,33 @@ function chipHtml(cat) {
 }
 
 function renderChips() {
-  const cats = activeTab === 'platser' ? PLATS_CATS : EVENT_CATS;
-  const html = [ALL_CAT, ...cats].map(chipHtml).join('');
   const tc = document.getElementById('topChips');
-  if (tc) tc.innerHTML = html;
+  if (!tc) return;
+  if (activeTab === 'platser') {
+    const html = [ALL_CAT, ...PLATS_CATS].map(chipHtml).join('');
+    tc.innerHTML = html;
+    tc.style.display = '';
+  } else {
+    tc.innerHTML = '';
+    tc.style.display = 'none';
+  }
+}
+
+function initFpCatChips() {
+  const el = document.getElementById('fpCats');
+  if (!el) return;
+  el.innerHTML = '';
+  const cats = activeTab === 'platser' ? PLATS_FILTER_CATS : EVENT_CATS;
+  cats.forEach((cat) => {
+    const b = document.createElement('button');
+    b.className = 'fp-chip' + (selectedCats.has(cat) ? ' on' : '');
+    b.textContent = CAT_LABEL[cat] || cat;
+    b.addEventListener('click', () => {
+      toggleFpChip(b, selectedCats, cat);
+      renderChips();
+    });
+    el.appendChild(b);
+  });
 }
 
 function renderCalendarChips() {
