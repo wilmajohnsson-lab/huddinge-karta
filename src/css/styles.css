@@ -363,7 +363,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .fp-head{padding:calc(env(safe-area-inset-top,44px) + 12px) 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid rgba(0,0,0,.09);flex-shrink:0}
 .fp-title{font-size:20px;font-weight:700;color:#000}
 .fp-close{width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.08);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.fp-body{flex:1;overflow-y:auto;padding:20px;scrollbar-width:none}
+.fp-body{flex:1;overflow-y:auto;padding:20px 10px;scrollbar-width:none}
 .fp-body::-webkit-scrollbar{display:none}
 .fp-section{margin-bottom:24px}
 .fp-section-title{font-size:15px;font-weight:600;color:rgba(0,0,0,.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
@@ -381,7 +381,7 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 .fp-chip{
   display:inline-flex;align-items:center;height:30px;padding:0 9px;
   border-radius:8px;border:.5px solid rgba(0,0,0,.14);
-  background:#fff;font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:500;
+  background:#fff;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:500;
   color:#000;cursor:pointer;transition:background .15s,border-color .15s;
   white-space:nowrap;
 }
