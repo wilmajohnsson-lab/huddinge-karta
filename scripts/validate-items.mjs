@@ -21,6 +21,7 @@ const COLORS = {
 const KNOWN_CATS = new Set([
   'event','musik','konst','teater','samhalle','fritid',
   'spel','hantverk','film','kurs','kultur','plats',
+  'litteratur','poesi','dans','museum','lokal','skola','bradspel',
 ]);
 
 // Geographic bounds for Huddinge — must match BOUNDS in src/js/app.js
