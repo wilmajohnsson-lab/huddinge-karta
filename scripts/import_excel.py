@@ -455,6 +455,7 @@ def load_konst(id_start: int) -> list[dict]:
             'free':     True,
             'img':      pick_img('konst'),
             'url':      'https://www.huddinge.se/uppleva-och-gora/konst-och-kultur/',
+            'utomhus':  str(utomhus).strip().lower() == 'ja' if utomhus else False,
             'lat':      lat_f,
             'lng':      lng_f,
         })

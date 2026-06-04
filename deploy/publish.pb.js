@@ -91,7 +91,7 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
       lat:      r.get('lat')      || 0,
       lng:      r.get('lng')      || 0,
       longDesc: r.get('longDesc') || '',
-    });
+      utomhus:  !!r.get('utomhus'),
   }
 
   // ── 3c. Read aktorer ──────────────────────────────────────────────────
