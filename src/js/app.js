@@ -384,7 +384,7 @@ function evCardHtml(item) {
         ${dateLine}
         <span class="ev-tag">${S_PIN}${esc(item.loc)}</span>
         <span class="ev-tag ev-tag-cat cat-${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
-        ${item.free ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
+        ${item.free && item._source !== 'konst' ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
       </div>
       <div class="ev-card-btns">
         <button class="btn-ghost" data-action="detail" data-item-id="${Number(item.id)}">Mer info</button>
@@ -785,7 +785,7 @@ function onSearch(q) {
         <div class="srch-card-desc">${esc(item.desc)}</div>
         <div class="srch-card-tags">
           <span class="srch-card-cat cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
-          ${item.free ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
+          ${item.free && item._source !== 'konst' ? '<span class="free-badge">Gratis</span>' : (typeof item.pris === 'number' && item.pris > 0 ? `<span class="ev-tag">${item.pris} kr</span>` : '')}
         </div>
       </div>
     </div>`
