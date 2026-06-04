@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Brando Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/typeface/brando-sans-bold/brando-sans-bold.woff2') format('woff2'),
+       url('/typeface/brando-sans-bold/brando-sans-bold.otf') format('opentype');
+}
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
 html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;font-family:'Source Sans 3',sans-serif}
 
@@ -134,7 +143,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .ev-card-img{width:100%;height:128px;border-radius:16px;object-fit:cover;display:block;background:#e0e0e0;flex-shrink:0}
 .ev-card-body{padding:12px 8px 8px;flex:1;display:flex;flex-direction:column;min-height:0}
 .ev-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
-.ev-card-name{font-size:17px;font-weight:500;color:#000;line-height:1.2}
+.ev-card-name{font-size:17px;font-weight:700;font-family:'Brando Sans',sans-serif;color:#000;line-height:1.2}
 .ev-card-desc{font-size:15px;color:rgba(0,0,0,.7);margin-top:2px}
 .ev-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .ev-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;font-size:15px;font-weight:500;background:rgba(0,0,0,.07);color:#000;white-space:nowrap}
@@ -167,7 +176,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .tab-btn{
   display:flex;align-items:center;gap:8px;
   height:48px;padding:8px 16px;border-radius:120px;border:none;
-  font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:600;
+  font-family:'Brando Sans',sans-serif;font-size:16px;font-weight:700;
   cursor:pointer;transition:background .18s,color .18s;white-space:nowrap;
 }
 .tab-btn svg{width:24px;height:24px;flex-shrink:0;display:none}
@@ -228,7 +237,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .cal-card:active{transform:scale(.97)}
 .cal-card-img{width:100%;height:128px;object-fit:cover;display:block;background:#e8e8e8;flex-shrink:0}
 .cal-card-body{padding:12px;flex:1;display:flex;flex-direction:column}
-.cal-card-name{font-size:17px;font-weight:500;color:#000;line-height:1.2;margin-bottom:2px}
+.cal-card-name{font-size:17px;font-weight:700;font-family:'Brando Sans',sans-serif;color:#000;line-height:1.2;margin-bottom:2px}
 .cal-card-desc{font-size:15px;color:rgba(0,0,0,.7);margin-bottom:14px;flex:1}
 .cal-card-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
 .cal-tag{
@@ -257,7 +266,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .srch-card:active{transform:scale(.98)}
 .srch-card-img{width:80px;height:80px;object-fit:cover;flex-shrink:0;background:#e8e8e8}
 .srch-card-body{padding:10px 12px;flex:1;min-width:0}
-.srch-card-title{font-size:17px;font-weight:600;color:#000;margin-bottom:2px}
+.srch-card-title{font-size:17px;font-weight:700;font-family:'Brando Sans',sans-serif;color:#000;margin-bottom:2px}
 .srch-card-desc{font-size:15px;color:rgba(0,0,0,.6);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .srch-card-cat{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:14px;font-weight:600}
 .srch-empty{padding:60px 16px;text-align:center;color:rgba(0,0,0,.4);font-size:17px}
@@ -282,7 +291,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .det-back svg{width:18px;height:18px}
 .det-card{background:#f6f6f6;border-radius:32px 32px 0 0;margin-top:-40px;position:relative;z-index:1;padding:24px 16px 140px}
 .det-cat-badge{display:flex;align-items:center;gap:5px;padding:5px 14px;border-radius:40px;font-size:15px;font-weight:600;margin:0 auto 10px;width:fit-content}
-.det-title{font-size:26px;font-weight:600;color:#000;text-align:center;line-height:1.2;margin-bottom:8px}
+.det-title{font-size:26px;font-weight:700;font-family:'Brando Sans',sans-serif;color:#000;text-align:center;line-height:1.2;margin-bottom:8px}
 .det-subtitle{font-size:15px;color:rgba(0,0,0,.7);text-align:center;margin-bottom:20px}
 .det-stats{display:flex;border:.5px solid rgba(0,0,0,.1);border-radius:12px;overflow:hidden;margin-bottom:20px}
 .det-stat{flex:1;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;border-right:.5px solid rgba(0,0,0,.1)}
@@ -306,7 +315,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .det-host-info{display:flex;flex-direction:column;gap:2px}
 .det-host-cta{color:#068a99;font-weight:600;font-size:15px}
 .det-host-logo{width:56px;height:56px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-align:center;padding:6px;line-height:1.2}
-.det-host-name{font-size:20px;font-weight:600;color:#000}
+.det-host-name{font-size:20px;font-weight:700;font-family:'Brando Sans',sans-serif;color:#000}
 .det-host-since{font-size:15px;color:rgba(0,0,0,.7);margin-top:4px}
 .det-bottom{
   position:fixed;bottom:0;left:0;right:0;

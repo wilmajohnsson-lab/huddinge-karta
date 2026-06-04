@@ -18,7 +18,7 @@ export default defineConfig({
           'manifest.json',
         ],
         // Don't precache large media assets – let them be fetched on demand
-        globIgnores: ['og-image.*', 'data/**'],
+        globIgnores: ['og-image.*', 'data/**', '**/*.otf'],
         runtimeCaching: [
           // CartoCDN map tiles — CacheFirst, 7-day TTL, up to 500 tiles
           {
