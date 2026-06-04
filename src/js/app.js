@@ -1088,7 +1088,9 @@ function initDom() {
   });
 
   // Date picker
-  document.getElementById('calDatumBtn').addEventListener('click', openDatePicker);
+  document.getElementById('calDatumBtn').addEventListener('click', () => {
+    if (dateStart) { clearDateFilter(); } else { openDatePicker(); }
+  });
   document.getElementById('calIdag').addEventListener('click', setTodayFilter);
   document.getElementById('dpCloseBtn').addEventListener('click', closeDatePicker);
   document.getElementById('dateBg').addEventListener('click', closeDatePicker);
