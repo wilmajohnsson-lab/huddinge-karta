@@ -324,6 +324,19 @@ function rebuildClusterMarkers() {
 }
 
 // ── CARD PANEL ────────────────────────────────────────────────────
+function updateCardArrows() {
+  const isDesktop = window.innerWidth >= 720;
+  const prev = document.getElementById('cardPrevBtn');
+  const next = document.getElementById('cardNextBtn');
+  if (!prev || !next) return;
+  if (!isDesktop || activeIds.length <= 1) { prev.hidden = true; next.hidden = true; return; }
+  const scroll = document.getElementById('cardScroll');
+  const atStart = scroll.scrollLeft <= 8;
+  const atEnd = scroll.scrollLeft >= scroll.scrollWidth - scroll.clientWidth - 8;
+  prev.hidden = atStart;
+  next.hidden = atEnd;
+}
+
 function showCards(ids) {
   const prevIds = [...activeIds];
   activeIds = ids;
@@ -344,6 +357,9 @@ function showCards(ids) {
   document.getElementById('backBtn').classList.add('visible');
   document.getElementById('topBar').style.opacity = '0';
   document.getElementById('topBar').style.pointerEvents = 'none';
+  scroll.scrollLeft = 0;
+  updateCardArrows();
+  scroll.addEventListener('scroll', updateCardArrows, { passive: true });
 
   const first = ITEMS.find((x) => x.id === ids[0]);
   if (first) {
@@ -1107,6 +1123,16 @@ function initDom() {
   // Card panel
   document.getElementById('backBtn').addEventListener('click', dismissCards);
   document.getElementById('closeCardBtn').addEventListener('click', dismissCards);
+  document.getElementById('cardPrevBtn').addEventListener('click', () => {
+    const s = document.getElementById('cardScroll');
+    const cardW = s.querySelector('.ev-card')?.offsetWidth || 340;
+    s.scrollBy({ left: -(cardW + 12), behavior: 'smooth' });
+  });
+  document.getElementById('cardNextBtn').addEventListener('click', () => {
+    const s = document.getElementById('cardScroll');
+    const cardW = s.querySelector('.ev-card')?.offsetWidth || 340;
+    s.scrollBy({ left: cardW + 12, behavior: 'smooth' });
+  });
 
   // Card scroll — detail and join buttons
   delegate(document.getElementById('cardScroll'), '[data-action="detail"]', (_e, el) =>

@@ -682,6 +682,22 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
   /* Close button: restore mobile position on desktop */
 
+  /* Nav arrows — hidden on mobile, shown on desktop */
+  #cardPrevBtn, #cardNextBtn {
+    display: flex; align-items: center; justify-content: center;
+    position: absolute; bottom: calc(50% - 24px);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(50,50,50,.82); backdrop-filter: blur(8px);
+    border: none; cursor: pointer; color: #fff;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    pointer-events: auto; z-index: 10;
+    transition: opacity .15s, transform .12s;
+  }
+  #cardPrevBtn { right: calc(100% + 10px); }
+  #cardNextBtn { left: calc(100% + 10px); }
+  #cardPrevBtn:hover, #cardNextBtn:hover { transform: scale(1.08); }
+  #cardPrevBtn svg, #cardNextBtn svg { width: 22px; height: 22px; }
+
   /* Multiple cards: horizontal scroll (same as mobile) */
   #cardScroll {
     flex-direction: row;
