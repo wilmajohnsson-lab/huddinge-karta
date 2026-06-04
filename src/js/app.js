@@ -384,7 +384,7 @@ const S_PIN = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="
 
 function evCardHtml(item) {
   if (item._source === 'konst') {
-    return `<div class="ev-card ev-card-konst" data-item-id="${String(item.id)}" role="listitem">
+    return `<div class="ev-card ev-card-aktor" data-item-id="${String(item.id)}" role="listitem">
       <img class="ev-card-img" ${imgSrc(item.img, 600)} width="600" height="320" alt="${esc(item.name)}" loading="lazy" decoding="async">
       <div class="ev-card-body">
         <div class="ev-card-top">
