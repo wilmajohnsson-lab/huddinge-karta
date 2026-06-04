@@ -329,12 +329,12 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 #orgScreen::-webkit-scrollbar{display:none}
 #orgScreen.visible{transform:translateX(0)}
 #orgCard{min-height:100%}
-.org-banner{width:100%;height:200px;display:flex;align-items:center;justify-content:center}
-.org-logo{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;text-align:center;padding:8px;line-height:1.2}
+.org-banner{width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:var(--cat-bg,rgba(0,130,150,.10))}
+.org-logo{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;text-align:center;padding:8px;line-height:1.2;background:var(--cat-color,#068a99)}
+img.org-favicon{width:88px;height:88px;object-fit:contain;background:#fff;border-radius:50%;padding:10px}
 .org-url-btn{display:flex;align-items:center;gap:10px;width:100%;padding:16px;border-radius:16px;background:#068a99;color:#fff;text-decoration:none;font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:600;margin-bottom:12px}
 .org-url-btn svg{width:22px;height:22px;flex-shrink:0}
 .org-no-url{color:rgba(0,0,0,.4);font-size:15px;text-align:center;padding:8px 0}
-img.org-favicon{object-fit:contain;background:#fff;border-radius:50%;}
 .det-hero{width:100%;height:300px;object-fit:cover;display:block;background:#ddd}
 .det-back{
   position:fixed;top:calc(env(safe-area-inset-top,44px) + 12px);left:16px;z-index:10;

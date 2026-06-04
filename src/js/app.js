@@ -926,14 +926,13 @@ function orgFaviconUrl(name) {
   return `/images/favicons/${slug}.png`;
 }
 
-function orgLogoHtml(name, url, col, cssClass = 'org-logo', extraStyle = '') {
+function orgLogoHtml(name, _url, _col, cssClass = 'org-logo', catKey = '') {
   const initials = esc(name.split(' ').map(w => w[0] || '').slice(0, 3).join(''));
   const favicon = orgFaviconUrl(name);
-  const base = `<div class="${cssClass}" style="background:${col};${extraStyle}">${initials}</div>`;
-  if (!favicon) return base;
-  return `<img class="${cssClass} org-favicon" src="${favicon}" alt="${esc(name)} logotyp"
-    onerror="this.style.display='none';this.nextElementSibling.style.removeProperty('display')">
-  <div class="${cssClass}" style="background:${col};display:none;${extraStyle}">${initials}</div>`;
+  const catCls = catKey ? ` cat-${catKey}` : '';
+  if (!favicon) return `<div class="${cssClass}${catCls}" data-cat="${catKey}">${initials}</div>`;
+  return `<img class="${cssClass} org-favicon" data-fallback-cat="${catKey}" data-fallback-initials="${initials}" data-fallback-class="${cssClass}" src="${favicon}" alt="${esc(name)} logotyp">
+  <div class="${cssClass}${catCls}" data-cat="${catKey}" hidden>${initials}</div>`;
 }
 
 function findAktor(hostName) {
@@ -949,15 +948,14 @@ function openOrgDetail(item) {
   const area = aktor ? aktor.area : (item.area || '');
   const url  = aktor ? aktor.url : (item.url || '');
   const typ  = aktor ? aktor.type : '';
-  const col = CAT_COLOR[item.cat] || '#068a99';
 
   document.getElementById('orgInner').innerHTML = `
-    <div class="org-banner" style="background:${col}20">
-      ${orgLogoHtml(name, url, col, 'org-logo')}
+    <div class="org-banner cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">
+      ${orgLogoHtml(name, url, '', 'org-logo', item.cat)}
     </div>
     <div class="det-card">
       <div class="det-center-text">
-        ${typ ? `<div class="det-cat-badge" style="background:${col}20;color:${col}">${typ}</div>` : ''}
+        ${typ ? `<div class="det-cat-badge cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${typ}</div>` : ''}
         <div class="det-title">${esc(name)}</div>
         ${area ? `<div class="det-subtitle">${esc(area)}</div>` : ''}
       </div>
@@ -1022,7 +1020,7 @@ function openDetail(id) {
       <div class="det-addr-street">${esc(item.addr)}</div>
       <div class="det-divider"></div>
       <button class="det-host" id="detHostBtn" aria-label="Visa information om ${esc(item.host)}">
-        ${orgLogoHtml(item.host, findAktor(item.host)?.url || '', col || '#068a99', 'det-host-logo', ``)}
+        ${orgLogoHtml(item.host, findAktor(item.host)?.url || '', '', 'det-host-logo', item.cat)}
         <div class="det-host-info">
           <div class="det-host-name">${esc(item.host)}</div>
           <div class="det-host-since">Arrangör i Huddinge</div>
@@ -1405,6 +1403,15 @@ function loadAndBoot() {
       showLoadError(err && err.message ? err.message : 'okänt fel');
     });
 }
+
+// Favicon fallback: if org-favicon img fails, show initials sibling
+document.addEventListener('error', (e) => {
+  const img = e.target;
+  if (!img.classList?.contains('org-favicon')) return;
+  img.style.display = 'none';
+  const sib = img.nextElementSibling;
+  if (sib) sib.removeAttribute('hidden');
+}, true);
 
 window.addEventListener('load', loadAndBoot);
 
