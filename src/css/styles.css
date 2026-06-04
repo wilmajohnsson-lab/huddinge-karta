@@ -470,8 +470,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 /* Explicit light-tone backgrounds per colour family (overrides var fallback) */
 .chip[data-cat].cat-konst,
 .chip[data-cat].cat-samhalle,
-.chip[data-cat].cat-museum,
-/* plats chip background now part of the pink group above */
+.chip[data-cat].cat-museum             { background: #CCE6EA; }
 .chip[data-cat].cat-fritid,
 .chip[data-cat].cat-kurs,
 .chip[data-cat].cat-litteratur,
