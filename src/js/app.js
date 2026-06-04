@@ -440,6 +440,7 @@ function applyFilters() {
   track('Filter', { free: String(filterState.free), orgs: String(filterState.orgs.size), areas: String(filterState.areas.size) });
   rebuildClusterMarkers();
   updateFilterBtnState();
+  if (activeTab === 'kalender') renderCalendar();
 }
 
 function updateFilterBtnState() {
