@@ -441,20 +441,25 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 /* ── Per-category color tokens (consumed via CSS custom properties) ── */
 /* Note: keep --cat-color in sync with CAT_COLOR in src/js/app.js (used to */
 /* recolor SVG strokes for the detail badge). */
-.cat-event { --cat-color: #a04612; --cat-bg: rgba(160,70,18,.14); }
-.cat-musik { --cat-color: #8a7515; --cat-bg: rgba(138,117,21,.14); }
-.cat-konst { --cat-color: #055e69; --cat-bg: rgba(5,94,105,.14); }
-.cat-teater { --cat-color: #9a0e58; --cat-bg: rgba(154,14,88,.14); }
-.cat-samhalle { --cat-color: #0066cc; --cat-bg: rgba(0,102,204,.14); }
-.cat-fritid { --cat-color: #ff6b35; --cat-bg: rgba(255,107,53,.14); }
-.cat-spel { --cat-color: #6a4c93; --cat-bg: rgba(106,76,147,.14); }
-.cat-hantverk { --cat-color: #d4a574; --cat-bg: rgba(212,165,116,.14); }
-.cat-film { --cat-color: #1a1a1a; --cat-bg: rgba(26,26,26,.14); }
-.cat-kurs { --cat-color: #2ecc71; --cat-bg: rgba(46,204,113,.14); }
-.cat-kultur { --cat-color: #e74c3c; --cat-bg: rgba(231,76,60,.14); }
-.cat-plats { --cat-color: #9a0e58; --cat-bg: rgba(154,14,88,.14); }
-.cat-kurs { --cat-color: #339BAB; --cat-bg: rgba(46,204,113,.14); }
-.cat-kultur { --cat-color: #DE6464; --cat-bg: rgba(231,76,60,.14); }
+.cat-event     { --cat-color: #D63D3D; --cat-bg: rgba(214,61,61,.14); }
+.cat-musik     { --cat-color: #C94091; --cat-bg: rgba(201,64,145,.14); }
+.cat-konst     { --cat-color: #008296; --cat-bg: rgba(0,130,150,.14); }
+.cat-teater    { --cat-color: #BE5A00; --cat-bg: rgba(190,90,0,.14); }
+.cat-samhalle  { --cat-color: #99CDD5; --cat-bg: rgba(153,205,213,.14); }
+.cat-fritid    { --cat-color: #3D8700; --cat-bg: rgba(61,135,0,.14); }
+.cat-spel      { --cat-color: #BE5A00; --cat-bg: rgba(190,90,0,.14); }
+.cat-hantverk  { --cat-color: #E5BD99; --cat-bg: rgba(229,189,153,.14); }
+.cat-film      { --cat-color: #D63D3D; --cat-bg: rgba(214,61,61,.14); }
+.cat-kurs      { --cat-color: #B1CF99; --cat-bg: rgba(177,207,153,.14); }
+.cat-kultur    { --cat-color: #C94091; --cat-bg: rgba(201,64,145,.14); }
+.cat-plats     { --cat-color: #99CDD5; --cat-bg: rgba(153,205,213,.14); }
+.cat-litteratur{ --cat-color: #3D8700; --cat-bg: rgba(61,135,0,.14); }
+.cat-museum    { --cat-color: #008296; --cat-bg: rgba(0,130,150,.14); }
+.cat-skola     { --cat-color: #B1CF99; --cat-bg: rgba(177,207,153,.14); }
+.cat-dans      { --cat-color: #C94091; --cat-bg: rgba(201,64,145,.14); }
+.cat-poesi     { --cat-color: #E9B3D3; --cat-bg: rgba(233,179,211,.14); }
+.cat-bradspel  { --cat-color: #BE5A00; --cat-bg: rgba(190,90,0,.14); }
+.cat-lokal     { --cat-color: #EFB1B1; --cat-bg: rgba(239,177,177,.14); }
 
 /* Chip uses the category vars; selected state inverts */
 .chip[data-cat]                       { background: var(--cat-bg); color: var(--cat-color); }
