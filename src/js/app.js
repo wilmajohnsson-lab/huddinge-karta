@@ -400,6 +400,22 @@ function evCardHtml(item) {
       </div>
     </div>`;
   }
+  if (item._source === 'aktor') {
+    return `<div class="ev-card ev-card-aktor" data-item-id="${String(item.id)}" role="listitem">
+      <img class="ev-card-img" ${imgSrc(item.img, 600)} width="600" height="600" alt="${esc(item.name)}" loading="lazy" decoding="async">
+      <div class="ev-card-body">
+        <div class="ev-card-top">
+          <div>
+            <div class="ev-card-name">${esc(item.name)}</div>
+            <div class="ev-card-desc">${esc(item.desc)}</div>
+          </div>
+        </div>
+        <div class="ev-card-btns">
+          <button class="btn-ghost" data-action="detail" data-item-id="${String(item.id)}">Mer info</button>
+        </div>
+      </div>
+    </div>`;
+  }
   const isPlats = itemType(item) === 'plats';
   const dateLine = !isPlats
     ? `<span class="ev-tag">${S_CLOCK}${esc(item.date)} · ${esc(item.time.split('–')[0].split('-')[0])}</span>`
