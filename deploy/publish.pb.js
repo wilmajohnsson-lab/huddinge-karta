@@ -15,12 +15,12 @@
 // On failure: 4xx/5xx with { message }
 
 routerAdd('POST', '/api/publish/items-json', (e) => {
-  // ── 1. Auth ──────────────────────────────────────────────────────────
+  // -- 1. Auth ----------------------------------------------------------
   if (!e.auth) {
     throw new ApiError(401, 'Inloggning krävs');
   }
 
-  // ── 2. Config ────────────────────────────────────────────────────────
+  // -- 2. Config --------------------------------------------------------
   const pat    = $os.getenv('GITHUB_PAT');
   const repo   = $os.getenv('GITHUB_REPO')      || 'wilmajohnsson-lab/huddinge-karta';
   const branch = $os.getenv('GITHUB_BRANCH')    || 'main';
@@ -31,7 +31,7 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
 
   const HTML_FORBIDDEN = /[<>]/;
 
-  // ── 3a. Read items (→ events) ─────────────────────────────────────────
+  // -- 3a. Read items (→ events) -----------------------------------------
   const itemRecords = arrayOf(new Record);
   e.app.recordQuery('items')
     .orderBy('legacy_id ASC')
@@ -65,14 +65,14 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
     });
   }
 
-  // ── 3b. Read konst ────────────────────────────────────────────────────
+  // -- 3b. Read konst ----------------------------------------------------
   const konstRecords = arrayOf(new Record);
   try {
     e.app.recordQuery('konst')
       .orderBy('name ASC')
       .all(konstRecords);
   } catch (_err) {
-    // collection may be empty or missing — treat as empty
+    // collection may be empty or missing - treat as empty
   }
 
   const konst = [];
@@ -92,16 +92,17 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
       lng:      r.get('lng')      || 0,
       longDesc: r.get('longDesc') || '',
       utomhus:  !!r.get('utomhus'),
+    });
   }
 
-  // ── 3c. Read aktorer ──────────────────────────────────────────────────
+  // -- 3c. Read aktorer --------------------------------------------------
   const aktorRecords = arrayOf(new Record);
   try {
     e.app.recordQuery('aktorer')
       .orderBy('name ASC')
       .all(aktorRecords);
   } catch (_err) {
-    // collection may be empty or missing — treat as empty
+    // collection may be empty or missing - treat as empty
   }
 
   const aktorer = [];
@@ -122,12 +123,12 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
     });
   }
 
-  // ── 4. Require at least some data ─────────────────────────────────────
+  // -- 4. Require at least some data -------------------------------------
   if (events.length === 0 && konst.length === 0 && aktorer.length === 0) {
-    throw new ApiError(400, 'Alla tre samlingar är tomma — inget att publicera');
+    throw new ApiError(400, 'Alla tre samlingar är tomma - inget att publicera');
   }
 
-  // ── 5. Inline validation (mirrors validate-items.mjs) ────────────────
+  // -- 5. Inline validation (mirrors validate-items.mjs) ----------------
   const TEXT_CHECK = ['name','desc','loc','addr','longDesc','host','date','time','artist','year','org'];
   const errors = [];
 
@@ -156,7 +157,7 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
     throw new ApiError(422, 'Validering misslyckades: ' + errors.slice(0, 10).join('; '));
   }
 
-  // ── 6. Build orgs + areas + payload ──────────────────────────────────
+  // -- 6. Build orgs + areas + payload ----------------------------------
   const orgsSet  = {};
   const areasSet = {};
 
@@ -179,7 +180,7 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
   const payload = { events, konst, aktorer, orgs, areas };
   const json    = JSON.stringify(payload, null, 2) + '\n';
 
-  // ── 7. Base64 encode (inline, no Buffer/btoa in Goja) ────────────────
+  // -- 7. Base64 encode (inline, no Buffer/btoa in Goja) ----------------
   const b64 = (function(str) {
     var u = unescape(encodeURIComponent(str));
     var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -197,7 +198,7 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
     return o;
   })(json);
 
-  // ── 8. Get current file SHA from GitHub ───────────────────────────────
+  // -- 8. Get current file SHA from GitHub -------------------------------
   const ghBase = 'https://api.github.com/repos/' + repo + '/contents/' + encodeURI(ghPath);
   const ghHeaders = {
     'Authorization':        'Bearer ' + pat,
@@ -224,7 +225,7 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
     throw new ApiError(502, 'GitHub-anrop misslyckades: ' + (err.message || err));
   }
 
-  // ── 9. PUT new content ────────────────────────────────────────────────
+  // -- 9. PUT new content ------------------------------------------------
   const putBody = {
     message: 'chore(data): publish from huddinge-admin (' + (e.auth.get('email') || e.auth.id) + ')',
     content: b64,
@@ -244,7 +245,7 @@ routerAdd('POST', '/api/publish/items-json', (e) => {
   }
   const commitSha = JSON.parse(put.raw).commit.sha;
 
-  // ── 10. Done ──────────────────────────────────────────────────────────
+  // -- 10. Done ----------------------------------------------------------
   return e.json(200, {
     ok:            true,
     commit:        commitSha,
