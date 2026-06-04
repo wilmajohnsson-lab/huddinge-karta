@@ -958,11 +958,11 @@ function openDetail(id) {
       <div class="det-addr-name">${esc(item.loc)}</div>
       <div class="det-addr-street">${esc(item.addr)}</div>
       <div class="det-divider"></div>
-      <button class="det-host" id="detHostBtn" aria-label="Visa alla från ${esc(item.host)}">
+      <button class="det-host" id="detHostBtn" aria-label="Gå till ${esc(item.host)}s webbplats">
         <div class="det-host-logo cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${initials}</div>
         <div class="det-host-info">
           <div class="det-host-name">${esc(item.host)}</div>
-          <div class="det-host-since">Arrangör i Huddinge · <span class="det-host-cta">Visa alla</span></div>
+          <div class="det-host-since">Arrangör i Huddinge &middot; <span class="det-host-cta">Webbplats ↗</span></div>
         </div>
       </button>
     </div>`;
@@ -993,14 +993,9 @@ function openDetail(id) {
     }
   }
   document.getElementById('detBackBtn').onclick = closeDetail;
-  // B.9: tap host → filter map to all items by that organiser
+  // Org icon → open event/org URL (same as Mer info)
   document.getElementById('detHostBtn').addEventListener('click', () => {
-    const host = item.host;
-    closeDetail();
-    filterState.orgs.clear();
-    filterState.orgs.add(host);
-    setTab(itemType(item) === 'plats' ? 'platser' : 'event');
-    applyFilters();
+    openEventUrl(item);
   });
   track('Detail View', { category: item.cat, name: item.name });
   document.getElementById('detBottom').classList.add('visible');
@@ -1151,8 +1146,8 @@ function initDom() {
   // Calendar cards
   delegate(document.getElementById('calContent'), '[data-item-id]', (_e, el) => {
     if (el.closest('.cal-card-past')) return; // historik cards not clickable
-    setTab('event');
-    setTimeout(() => showCards([Number(el.dataset.itemId)]), 400);
+    const id = Number(el.closest('[data-item-id]').dataset.itemId);
+    openDetail(id);
   });
 
   // Search
