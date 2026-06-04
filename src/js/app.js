@@ -77,16 +77,19 @@ function track(event, props) {
 let _searchTrackTimer = null;
 
 // Tab-based category lists
-const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'hantverk', 'film', 'kurs', 'kultur'];
+const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'hantverk', 'film', 'kurs', 'kultur', 'litteratur', 'dans', 'poesi'];
 const PLATS_CATS = ['konst', 'plats'];
 const PLATS_SET = new Set(PLATS_CATS);
 
-/** Derive item type from category or from item structure */
+/** Derive item type from collection source or category.
+ *  _source is stamped in loadAndBoot so events with cat='konst' (e.g. Konstrunda)
+ *  are never accidentally routed to the Platser tab. */
 function itemType(item) {
-  // If item has an explicit type field (for aktorer), use it to determine it's a "plats"
+  if (item._source === 'event') return 'event';
+  if (item._source === 'konst' || item._source === 'aktor') return 'plats';
+  // Fallback for items loaded without _source stamp
   if (item.type) return 'plats';
   if (item.cat === 'plats') return 'plats';
-  // Otherwise check if it's in plats categories
   return PLATS_SET.has(item.cat) ? 'plats' : 'event';
 }
 
@@ -1062,6 +1065,7 @@ function loadAndBoot() {
       
       // Transform: events stay mostly as-is, konst and aktorer get prepared for platser tab
       const events = (data.events || []).map(e => ({
+        _source: 'event',
         ...e,
         cat: e.cat || 'event',
         date: e.date || '',
@@ -1079,6 +1083,7 @@ function loadAndBoot() {
       }));
       
       const konst = (data.konst || []).map(k => ({
+        _source: 'konst',
         ...k,
         id: k.id || `konst-${Math.random()}`,
         cat: 'konst',
@@ -1097,6 +1102,7 @@ function loadAndBoot() {
       }));
       
       const aktorer = (data.aktorer || []).map(a => ({
+        _source: 'aktor',
         ...a,
         id: a.id || `aktor-${Math.random()}`,
         cat: 'plats',
