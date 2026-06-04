@@ -393,7 +393,7 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 /* ══ DATE PICKER ══ */
 #dateBg{position:absolute;inset:0;z-index:620;background:rgba(0,0,0,0);transition:background .25s;pointer-events:none}
 #dateSheet{
-  position:absolute;top:50%;left:50%;width:408px;max-width:92vw;
+  position:absolute;top:50%;left:50%;width:469px;max-width:92vw;
   z-index:621;background:#fff;border-radius:20px;
   box-shadow:0 20px 60px rgba(0,0,0,.18);
   transform:translate(-50%,-46%) scale(.97);opacity:0;
@@ -411,15 +411,16 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 .dp-arrow svg{width:18px;height:18px}
 .dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px;margin-bottom:4px}
 .dp-weekday{text-align:center;font-size:14px;font-weight:500;color:rgba(0,0,0,.4);padding:6px 0}
-.dp-days{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px 8px;gap:2px}
+.dp-days{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px 8px;gap:4px}
 .dp-day{
   aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  border-radius:50%;border:none;background:none;cursor:pointer;
+  border-radius:50%;border:1.5px solid rgba(0,0,0,.18);background:none;cursor:pointer;
   font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:500;color:#000;
   position:relative;transition:background .12s;
 }
-.dp-day:disabled{color:rgba(0,0,0,.2);cursor:default}
-.dp-day.selected{background:#068a99;color:#fff}
+.dp-day:disabled{color:rgba(0,0,0,.2);cursor:default;border-color:rgba(0,0,0,.08)}
+.dp-day.empty{pointer-events:none;border:none}
+.dp-day.selected{background:#068a99;color:#fff;border-color:#068a99}
 .dp-day-count{
   position:absolute;top:-3px;right:-3px;
   min-width:17px;height:17px;padding:0 4px;
@@ -429,7 +430,6 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 }
 .dp-day.selected .dp-day-count{background:rgba(255,255,255,.25);color:#fff}
 .dp-day.today{font-weight:700}
-.dp-day.empty{pointer-events:none}
 .dp-clear{display:block;width:calc(100% - 40px);margin:4px 20px 0;padding:14px;border-radius:56px;background:rgba(0,0,0,.07);border:none;font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:600;color:#000;cursor:pointer}
 
 /* ══ ACTION SHEET ══ */
