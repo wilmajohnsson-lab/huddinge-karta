@@ -106,7 +106,7 @@ function itemType(item) {
 }
 
 // ── DATA ──────────────────────────────────────────────────────────
-let ITEMS = [], ORGS_LIST = [], AREAS_LIST = [];
+let ITEMS = [], ORGS_LIST = [], AREAS_LIST = [], AKTOR_LIST = [];
 
 // ── STATE ─────────────────────────────────────────────────────────
 let map, leafMarkers = {}, clusters = [], activeIds = [];
@@ -921,6 +921,56 @@ function onSearch(q) {
 }
 
 // ── DETAIL ────────────────────────────────────────────────────────
+function findAktor(hostName) {
+  if (!hostName) return null;
+  const h = hostName.toLowerCase();
+  return AKTOR_LIST.find(a => h.includes(a.name.toLowerCase()) || a.name.toLowerCase().includes(h)) || null;
+}
+
+function openOrgDetail(item) {
+  const aktor = findAktor(item.host);
+  const name = aktor ? aktor.name : item.host;
+  const addr = aktor ? aktor.addr : (item.addr || '');
+  const area = aktor ? aktor.area : (item.area || '');
+  const url  = aktor ? aktor.url : (item.url || '');
+  const typ  = aktor ? aktor.type : '';
+  const initials = esc(name.split(' ').map(w => w[0] || '').slice(0, 3).join(''));
+  const col = CAT_COLOR[item.cat] || '#068a99';
+
+  document.getElementById('orgInner').innerHTML = `
+    <div class="org-banner" style="background:${col}20">
+      <div class="org-logo" style="background:${col}">${initials}</div>
+    </div>
+    <div class="det-card">
+      <div class="det-center-text">
+        ${typ ? `<div class="det-cat-badge" style="background:${col}20;color:${col}">${typ}</div>` : ''}
+        <div class="det-title">${esc(name)}</div>
+        ${area ? `<div class="det-subtitle">${esc(area)}</div>` : ''}
+      </div>
+      ${addr ? `
+      <div class="det-stats">
+        <div class="det-stat">
+          <div class="det-stat-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 15C6 8.373 11.373 3 18 3s12 5.373 12 12c0 3.711-1.641 7.138-3.554 9.891C24.522 27.66 22.224 29.889 20.688 31.236A1.984 1.984 0 0 1 18 31.236C16.464 29.889 14.165 27.66 12.554 24.891 10.641 22.138 9 18.711 9 15zM17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#47C1CE" fill-opacity="0.4"/><path fill-rule="evenodd" clip-rule="evenodd" d="M17.997 18.75c2.071 0 3.75-1.679 3.75-3.75s-1.679-3.75-3.75-3.75-3.75 1.679-3.75 3.75 1.679 3.75 3.75 3.75z" fill="#068A99"/></svg></div>
+          <div class="det-stat-val">${esc(addr)}</div>
+        </div>
+      </div>` : ''}
+      <div class="det-divider"></div>
+      ${url ? `<a class="org-url-btn" href="${esc(url)}" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Webbplats
+      </a>` : '<p class="org-no-url">Ingen webbplats tillgänglig</p>'}
+    </div>`;
+
+  const os = document.getElementById('orgScreen');
+  os.classList.add('visible');
+  os.scrollTop = 0;
+  setTimeout(() => document.getElementById('orgBackBtn')?.focus(), 80);
+}
+
+function closeOrgDetail() {
+  document.getElementById('orgScreen').classList.remove('visible');
+}
+
 function openDetail(id) {
   const item = ITEMS.find((x) => x.id === id);
   if (!item) return;
@@ -993,9 +1043,10 @@ function openDetail(id) {
     }
   }
   document.getElementById('detBackBtn').onclick = closeDetail;
-  // Org icon → open event/org URL (same as Mer info)
+  document.getElementById('orgBackBtn').addEventListener('click', closeOrgDetail);
+  // Org icon → open org detail page
   document.getElementById('detHostBtn').addEventListener('click', () => {
-    openEventUrl(item);
+    openOrgDetail(item);
   });
   track('Detail View', { category: item.cat, name: item.name });
   document.getElementById('detBottom').classList.add('visible');
@@ -1230,13 +1281,21 @@ function showLoadError(message) {
 
 let _booted = false;
 function loadAndBoot() {
-  return fetch('/data/items-combined.json', { cache: 'no-cache' })
-    .then((r) => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then((data) => {
-      if (!data) throw new Error('Invalid data shape');
+  return Promise.all([
+    fetch('/data/items-combined.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }),
+    fetch('/data/aktorlista_updated.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : []).catch(() => []),
+  ])
+    .then(([data, aktorRaw]) => {
+      // Parse aktorlista — note: Longitud = lat, Bild = lng (columns swapped in source)
+      AKTOR_LIST = aktorRaw.map(a => ({
+        name: (a['Förening'] || a['Plats'] || '').trim(),
+        area: a['Kommundel'] || '',
+        type: a['Typ'] || '',
+        addr: a['Adress'] || '',
+        lat: typeof a['Longitud'] === 'number' ? a['Longitud'] : 0,
+        lng: typeof a['Bild'] === 'number' ? a['Bild'] : 0,
+        url: (a['Länk'] && a['Länk'] !== 'ja') ? a['Länk'] : '',
+      })).filter(a => a.name);
       
       // Transform: events stay mostly as-is, konst and aktorer get prepared for platser tab
       const events = (data.events || []).map(e => ({
