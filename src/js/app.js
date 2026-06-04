@@ -1012,7 +1012,7 @@ function openDetail(id) {
         <div class="det-host-logo cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${initials}</div>
         <div class="det-host-info">
           <div class="det-host-name">${esc(item.host)}</div>
-          <div class="det-host-since">Arrangör i Huddinge &middot; <span class="det-host-cta">Webbplats ↗</span></div>
+          <div class="det-host-since">Arrangör i Huddinge</div>
         </div>
       </button>
     </div>`;

@@ -344,6 +344,8 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   font-family:'Source Sans 3',sans-serif;font-size:17px;font-weight:500;color:#fff;
 }
 .det-back svg{width:18px;height:18px}
+#orgScreen .det-back{color:#000;background:rgba(255,255,255,.85);}
+#orgScreen .det-back svg{stroke:#000}
 .det-card{background:#f6f6f6;border-radius:32px 32px 0 0;margin-top:-40px;position:relative;z-index:1;padding:24px 16px 140px}
 .det-cat-badge{display:flex;align-items:center;gap:5px;padding:5px 14px;border-radius:40px;font-size:15px;font-weight:600;margin:0 auto 10px;width:fit-content}
 .det-title{font-size:26px;font-weight:700;font-family:'Brando Sans',sans-serif;color:#000;text-align:center;line-height:1.2;margin-bottom:8px}
