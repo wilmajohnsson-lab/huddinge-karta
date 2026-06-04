@@ -464,6 +464,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 /* Chip uses the category vars; selected state inverts */
 .chip[data-cat]                       { background: var(--cat-light); color: var(--cat-color); border-color: var(--cat-color); }
 .chip[data-cat].chip-on               { background: var(--cat-color); color: #fff; border-color: var(--cat-color); }
+/* chip-on-all: all categories shown — keep light fill, dark border (same as default but explicit) */
+.chip[data-cat].chip-on-all           { background: var(--cat-light); color: var(--cat-color); border-color: var(--cat-color); }
 
 /* Explicit light-tone backgrounds per colour family (overrides var fallback) */
 .chip[data-cat].cat-konst,
@@ -578,8 +580,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .noscript-msg { padding: 2rem; text-align: center; font-family: sans-serif; }
 
 /* "Alla"-chip — neutral grey, no category color */
-.chip-all { background: #fff; color: #000; border-color: #000; }
-.chip-all.chip-on { background: #1c1c1e; color: #fff; border-color: #1c1c1e; }
+.chip-all { background: rgba(0,0,0,.06); color: rgba(0,0,0,.45); border-color: rgba(0,0,0,.22); }
+.chip-all.chip-on { background: #fff; color: #000; border-color: #000; }
 
 /* "Ingen anmälan krävs"-tagg */
 .ev-tag-noreg { background: rgba(52,199,89,.12); color: #1a7a38; }

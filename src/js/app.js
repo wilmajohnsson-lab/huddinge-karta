@@ -523,14 +523,18 @@ function selectCat(cat) {
 }
 
 function chipHtml(cat) {
-  const isOn = selectedCat === cat;
+  const allShown = selectedCat === null;
   // "Alla"-chippet är aktivt när ingen kategori är vald.
   if (cat === ALL_CAT) {
-    const allOn = selectedCat === null;
-    return `<button class="chip chip-all${allOn ? ' chip-on' : ''}" data-cat="${ALL_CAT}" aria-pressed="${allOn}">Alla</button>`;
+    return `<button class="chip chip-all${allShown ? ' chip-on' : ''}" data-cat="${ALL_CAT}" aria-pressed="${allShown}">Alla</button>`;
   }
-  const isDim = selectedCat !== null && !isOn;
-  return `<button class="chip cat-${esc(cat)}${isOn ? ' chip-on' : ''}${isDim ? ' chip-dim' : ''}" data-cat="${esc(cat)}" aria-pressed="${isOn}">
+  // When no filter active: chips appear in their light colour (chip-on-all).
+  // When a specific filter active: matching chip fills dark (chip-on), others dim.
+  const isAll  = allShown;
+  const isOn   = !allShown && selectedCat === cat;
+  const isDim  = !allShown && selectedCat !== cat;
+  const stateClass = isAll ? ' chip-on-all' : (isOn ? ' chip-on' : (isDim ? ' chip-dim' : ''));
+  return `<button class="chip cat-${esc(cat)}${stateClass}" data-cat="${esc(cat)}" aria-pressed="${isAll || isOn}">
     ${CHIP_SVGS[cat] || ''}${CAT_LABEL[cat]}
   </button>`;
 }
