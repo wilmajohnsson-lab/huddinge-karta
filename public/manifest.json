@@ -1,7 +1,7 @@
 {
   "name": "Huddinge Karta",
   "short_name": "Huddinge",
-  "description": "Interaktiv karta för evenemang, konst, mötesplatser och musik i Huddinge kommun.",
+  "description": "Interaktiv karta för evenemang, konst och mötesplatser i Huddinge kommun.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f6f6f6",
