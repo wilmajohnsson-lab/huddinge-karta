@@ -1,15 +1,21 @@
 // src/js/test-helpers.js
 // Small pure helpers for unit tests (no leaflet/CSS imports)
 
-export const CAT_COLOR = { event: '#bf5917', konst: '#068a99', motes: '#c0136f', musik: '#c3a523' };
+export const CAT_COLOR = { musik: '#8a7515', konst: '#055e69', teater: '#9a0e58', samhalle: '#0066cc', fritid: '#ff6b35', spel: '#6a4c93', hantverk: '#d4a574', film: '#1a1a1a', kurs: '#2ecc71', kultur: '#e74c3c' };
 export const CAT_BG = {
-  event: 'rgba(209,96,23,.14)',
-  konst: 'rgba(71,193,206,.14)',
-  motes: 'rgba(209,66,142,.14)',
-  musik: 'rgba(248,216,75,.22)',
+  musik: 'rgba(138,117,21,.14)',
+  konst: 'rgba(5,94,105,.14)',
+  teater: 'rgba(154,14,88,.14)',
+  samhalle: 'rgba(0,102,204,.14)',
+  fritid: 'rgba(255,107,53,.14)',
+  spel: 'rgba(106,76,147,.14)',
+  hantverk: 'rgba(212,165,116,.14)',
+  film: 'rgba(26,26,26,.14)',
+  kurs: 'rgba(46,204,113,.14)',
+  kultur: 'rgba(231,76,60,.14)',
 };
-export const CAT_LABEL = { event: 'Event', konst: 'Konst', motes: 'Mötesplats', musik: 'Musik' };
-export const CAT_SVG_W = { event: '<svg-event/>', konst: '<svg-whiteboard/>', motes: '<svg-mappin/>', musik: '<svg-audio/>' };
+export const CAT_LABEL = { musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur' };
+export const CAT_SVG_W = { musik: '<svg-audio/>', konst: '<svg-art/>', teater: '<svg-theater/>', samhalle: '<svg-people/>', fritid: '<svg-leisure/>', spel: '<svg-game/>', hantverk: '<svg-tools/>', film: '<svg-film/>', kurs: '<svg-graduation/>', kultur: '<svg-culture/>' };
 
 export function isDesktop() {
   return typeof window !== 'undefined' && window.innerWidth >= 768;
