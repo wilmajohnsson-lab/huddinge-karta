@@ -476,7 +476,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
    --cat-bg    = tinted bg  (detail badges, tags) */
 .cat-event     { --cat-color: #D63D3D; --cat-light: #EFB1B1; --cat-bg: rgba(214,61,61,.10); }
 .cat-musik     { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
-.cat-konst     { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
+.cat-konst     { --cat-color: #D63D3D; --cat-light: #F7D8D8; --cat-bg: rgba(214,61,61,.10); }
 .cat-teater    { --cat-color: #BE5A00; --cat-light: #E5BD99; --cat-bg: rgba(190,90,0,.10); }
 .cat-samhalle  { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
 .cat-fritid    { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
@@ -486,7 +486,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .cat-kurs      { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
 .cat-kultur    { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
 .cat-plats     { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
-.cat-litteratur{ --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
+.cat-litteratur{ --cat-color: #BE5A00; --cat-light: #F2DECC; --cat-bg: rgba(190,90,0,.10); }
 .cat-museum    { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
 .cat-skola     { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
 .cat-dans      { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
@@ -501,13 +501,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .chip[data-cat].chip-on-all           { background: var(--cat-light); color: var(--cat-color); border-color: var(--cat-color); }
 
 /* Explicit light-tone backgrounds per colour family (overrides var fallback) */
-.chip[data-cat].cat-konst,
+.chip[data-cat].cat-konst     { background: #F7D8D8; }
 .chip[data-cat].cat-samhalle,
 .chip[data-cat].cat-museum             { background: #CCE6EA; }
 .chip[data-cat].cat-fritid,
 .chip[data-cat].cat-kurs,
-.chip[data-cat].cat-litteratur,
 .chip[data-cat].cat-skola             { background: #D8E7CC; }
+.chip[data-cat].cat-litteratur         { background: #F2DECC; }
 .chip[data-cat].cat-musik,
 .chip[data-cat].cat-kultur,
 .chip[data-cat].cat-dans,
