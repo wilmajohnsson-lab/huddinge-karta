@@ -284,7 +284,8 @@ function addClusterMarker(cluster) {
   const isActive = cluster.items.some((i) => activeIds.includes(i.id));
   const single = cluster.items.length === 1;
   const item = cluster.items[0];
-  const label = single && itemType(item) === 'plats' ? item.name : null;
+    // Show name label only for aktorer (plats), not for konst artworks
+    const label = single && item._source === 'aktor' ? item.name : null;
   const html = single
     ? mHtml(item.cat, isActive, label)
     : mClusterHtml(cluster, isActive);
@@ -306,7 +307,8 @@ function refreshClusterByItemId(id) {
   const isActive = cluster.items.some((i) => activeIds.includes(i.id));
   const single = cluster.items.length === 1;
   const item0 = cluster.items[0];
-  const label = single && itemType(item0) === 'plats' ? item0.name : null;
+    // Show name label only for aktorer (plats), not for konst artworks
+    const label = single && item0._source === 'aktor' ? item0.name : null;
   const html = single
     ? mHtml(item0.cat, isActive, label)
     : mClusterHtml(cluster, isActive);
