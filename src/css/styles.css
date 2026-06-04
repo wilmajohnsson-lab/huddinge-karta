@@ -95,6 +95,11 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   white-space: nowrap;
 }
 .leaflet-tooltip.pin-tooltip::before { display: none; }
+/* Pin hit area: only visible circle+tail respond — transparent bounding-box corners pass through to map */
+.leaflet-marker-icon { pointer-events: none !important; }
+.mpin { pointer-events: none; }
+.mpin-circle, .mpin-tail { pointer-events: auto; }
+
 .mpin{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
 .mpin:hover{transform:scale(1.08)}
 .pin-label{
@@ -130,10 +135,12 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   transition:transform .38s cubic-bezier(.32,.94,.6,1);
   background:linear-gradient(to top,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 100%);
   padding-top:72px;
+  pointer-events:none;
 }
 #cardPanel.visible{transform:translateY(0)}
 
 #closeCardBtn{
+  pointer-events:auto;
   position:absolute;top:16px;right:16px;
   display:flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;
   background:rgba(255,255,255,.9);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
@@ -144,6 +151,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 #closeCardBtn svg{width:18px;height:18px}
 
 #cardScroll{
+  pointer-events:auto;
   display:flex;gap:12px;overflow-x:auto;
   padding:0 0 calc(env(safe-area-inset-bottom,0px) + 16px) 0;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
