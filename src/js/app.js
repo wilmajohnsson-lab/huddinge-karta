@@ -235,6 +235,8 @@ function initMap() {
   L.marker([59.2195, 17.949], { icon: ui, interactive: false }).addTo(map);
 
   rebuildClusterMarkers();
+  // Ensure tiles render correctly after layout settles (mobile viewport)
+  setTimeout(() => map.invalidateSize(), 200);
 
   map.on('click', () => {
     if (activeIds.length) dismissCards();
