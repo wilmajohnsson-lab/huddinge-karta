@@ -9,8 +9,10 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 #map{position:absolute;inset:0;z-index:0}
 .leaflet-control-zoom,.leaflet-control-attribution{display:none!important}
 
-/* ══ HEADER IMAGE ══ */
-#headerImage{display:none;position:absolute;top:0;left:0;right:0;z-index:10;width:100%;object-fit:cover}
+/* ══ HEADER CONTAINER ══ */
+#headerContainer{display:none;position:absolute;top:0;left:0;right:0;width:100%;height:0;z-index:5}
+#headerBg{width:100%;height:100%;object-fit:cover;display:block}
+#headerLogo{display:none;position:absolute;top:0;left:0;z-index:10;max-width:200px;height:auto;object-fit:contain;padding:16px}
 
 /* ══ TOP BAR ══ */
 #topBar{
@@ -552,15 +554,23 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
 /* ══ B.7 DESKTOP CARD PANEL ══ */
 @media (min-width: 720px) {
-  /* Show header image on desktop */
-  #headerImage { display: block; height: 200px; }
+  /* Show header on desktop */
+  #headerContainer { display: block; height: 180px; }
+  #headerLogo { display: block; max-width: 140px; }
+  
+  /* Move topBar below header */
+  #topBar {
+    top: 180px;
+    background: #f6f6f6;
+    padding: 12px 20px;
+  }
 
   /* Slide in from right instead of up */
   #cardPanel {
     left: auto;
     right: 20px;
     bottom: 20px;
-    top: 80px;
+    top: 240px;
     width: 400px;
     padding-top: 0;
     background: none;

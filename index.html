@@ -38,10 +38,13 @@
 <a class="skip-link" href="#map">Hoppa till kartan</a>
 <div id="app">
   <div id="mapWrap">
-    <img id="headerImage" src="/images/huddinge_header.png" alt="Huddinge header">
-    <div id="map" role="application" aria-label="Interaktiv karta över Huddinge"></div>
+    <!-- Header with background image and logo -->
+    <div id="headerContainer">
+      <img id="headerBg" src="/images/header.png" alt="Header background">
+      <img id="headerLogo" src="/images/huddinge_header3.png" alt="Huddinge logo">
+    </div>
 
-    <!-- Top bar: chips + filter pill -->
+    <!-- Top bar: chips + filter pill (moved below header) -->
     <div id="topBar">
       <div id="topChips" aria-label="Kategorier"></div>
       <button class="filter-pill" id="filterBtn" aria-label="Filtrera" aria-expanded="false" aria-controls="filterPanel">
@@ -49,6 +52,8 @@
         Filter
       </button>
     </div>
+
+    <div id="map" role="application" aria-label="Interaktiv karta över Huddinge"></div>
 
     <!-- Back button (shown when card panel open) -->
     <button id="backBtn" aria-label="Tillbaka till listan">
