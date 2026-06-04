@@ -229,9 +229,9 @@ function initMap() {
   });
   window.addEventListener('resize', () => map.invalidateSize());
 
-  // Show place name labels at zoom >= 16 (B.10)
+  // Show place name labels at zoom >= 17
   function updateLabelVisibility() {
-    document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 16);
+    document.getElementById('map').classList.toggle('labels-visible', map.getZoom() >= 17);
   }
   map.on('zoomend', () => { updateLabelVisibility(); });
   updateLabelVisibility();
