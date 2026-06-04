@@ -36,11 +36,11 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 /* ══ CHIPS ══ */
 .chip{
   display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 10px 0 8px;
-  border-radius:40px;border:none;flex-shrink:0;
+  border-radius:40px;border:1.5px solid rgba(0,0,0,.15);flex-shrink:0;
+  background:transparent;
   font-family:'Inter',sans-serif;font-size:14px;font-weight:500;white-space:nowrap;
-  backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
-  box-shadow:0 8px 25px rgba(0,0,0,.10);cursor:pointer;
-  transition:background .15s,opacity .15s;
+  cursor:pointer;
+  transition:background .15s,opacity .15s,border-color .15s;
 }
 .chip svg{width:16px;height:16px;flex-shrink:0}
 .chip.chip-dim{opacity:.38}
@@ -439,31 +439,32 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 #loadErrorBanner .load-err-btn:hover{background:#057280}
 
 /* ── Per-category color tokens (consumed via CSS custom properties) ── */
-/* Note: keep --cat-color in sync with CAT_COLOR in src/js/app.js (used to */
-/* recolor SVG strokes for the detail badge). */
-.cat-event     { --cat-color: #D63D3D; --cat-bg: rgba(214,61,61,.14); }
-.cat-musik     { --cat-color: #C94091; --cat-bg: rgba(201,64,145,.14); }
-.cat-konst     { --cat-color: #008296; --cat-bg: rgba(0,130,150,.14); }
-.cat-teater    { --cat-color: #BE5A00; --cat-bg: rgba(190,90,0,.14); }
-.cat-samhalle  { --cat-color: #99CDD5; --cat-bg: rgba(153,205,213,.14); }
-.cat-fritid    { --cat-color: #3D8700; --cat-bg: rgba(61,135,0,.14); }
-.cat-spel      { --cat-color: #BE5A00; --cat-bg: rgba(190,90,0,.14); }
-.cat-hantverk  { --cat-color: #E5BD99; --cat-bg: rgba(229,189,153,.14); }
-.cat-film      { --cat-color: #D63D3D; --cat-bg: rgba(214,61,61,.14); }
-.cat-kurs      { --cat-color: #B1CF99; --cat-bg: rgba(177,207,153,.14); }
-.cat-kultur    { --cat-color: #C94091; --cat-bg: rgba(201,64,145,.14); }
-.cat-plats     { --cat-color: #99CDD5; --cat-bg: rgba(153,205,213,.14); }
-.cat-litteratur{ --cat-color: #3D8700; --cat-bg: rgba(61,135,0,.14); }
-.cat-museum    { --cat-color: #008296; --cat-bg: rgba(0,130,150,.14); }
-.cat-skola     { --cat-color: #B1CF99; --cat-bg: rgba(177,207,153,.14); }
-.cat-dans      { --cat-color: #C94091; --cat-bg: rgba(201,64,145,.14); }
-.cat-poesi     { --cat-color: #E9B3D3; --cat-bg: rgba(233,179,211,.14); }
-.cat-bradspel  { --cat-color: #BE5A00; --cat-bg: rgba(190,90,0,.14); }
-.cat-lokal     { --cat-color: #EFB1B1; --cat-bg: rgba(239,177,177,.14); }
+/* --cat-color = dark tone  (pins, selected chip bg, text)
+   --cat-light = light tone (chip border, unselected chip accent)
+   --cat-bg    = tinted bg  (detail badges, tags) */
+.cat-event     { --cat-color: #D63D3D; --cat-light: #EFB1B1; --cat-bg: rgba(214,61,61,.10); }
+.cat-musik     { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
+.cat-konst     { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
+.cat-teater    { --cat-color: #BE5A00; --cat-light: #E5BD99; --cat-bg: rgba(190,90,0,.10); }
+.cat-samhalle  { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
+.cat-fritid    { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
+.cat-spel      { --cat-color: #BE5A00; --cat-light: #E5BD99; --cat-bg: rgba(190,90,0,.10); }
+.cat-hantverk  { --cat-color: #BE5A00; --cat-light: #E5BD99; --cat-bg: rgba(190,90,0,.10); }
+.cat-film      { --cat-color: #D63D3D; --cat-light: #EFB1B1; --cat-bg: rgba(214,61,61,.10); }
+.cat-kurs      { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
+.cat-kultur    { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
+.cat-plats     { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
+.cat-litteratur{ --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
+.cat-museum    { --cat-color: #008296; --cat-light: #99CDD5; --cat-bg: rgba(0,130,150,.10); }
+.cat-skola     { --cat-color: #3D8700; --cat-light: #B1CF99; --cat-bg: rgba(61,135,0,.10); }
+.cat-dans      { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
+.cat-poesi     { --cat-color: #C94091; --cat-light: #E9B3D3; --cat-bg: rgba(201,64,145,.10); }
+.cat-bradspel  { --cat-color: #BE5A00; --cat-light: #E5BD99; --cat-bg: rgba(190,90,0,.10); }
+.cat-lokal     { --cat-color: #D63D3D; --cat-light: #EFB1B1; --cat-bg: rgba(214,61,61,.10); }
 
 /* Chip uses the category vars; selected state inverts */
-.chip[data-cat]                       { background: var(--cat-bg); color: var(--cat-color); }
-.chip[data-cat].chip-on               { background: var(--cat-color); color: #fff; }
+.chip[data-cat]                       { background: transparent; color: var(--cat-color); border-color: var(--cat-light); }
+.chip[data-cat].chip-on               { background: var(--cat-color); color: #fff; border-color: var(--cat-color); }
 
 /* Tags / badges that take the category color */
 .ev-tag-cat,
@@ -571,13 +572,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 /* ══ B.7 DESKTOP CARD PANEL ══ */
 @media (min-width: 720px) {
   /* Show header on desktop */
-  #headerContainer { display: block; height: 120px; }
+  #headerContainer { display: block; height: 120px; overflow: hidden; background: #008296; z-index: 110; }
   #headerLogo { display: block; max-width: 350px; }
   
   /* Move topBar below header */
   #topBar {
     top: 120px;
     background: #f6f6f6;
+    box-shadow: none;
     padding: 12px 20px;
   }
 
