@@ -18,6 +18,7 @@ const TILE_ATTRIBUTION =
 
 // ── SVGs (white stroke for map pins) ─────────────────────────────
 const CAT_SVG_W = {
+  event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
   konst: `<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke="white" stroke-width="2"/><path d="M21 15l-5-5L5 21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
   teater: `<svg viewBox="0 0 24 24" fill="none"><path d="M2 6h20M2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6M6 14l6-4 6 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -28,10 +29,12 @@ const CAT_SVG_W = {
   film: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="2" stroke="white" stroke-width="2"/><path d="M2 8h20M2 16h20M7 2v20M17 2v20" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
   kurs: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 15c3.314 0 6-1.343 6-3v-2c0 1.657-2.686 3-6 3s-6-1.343-6-3v2c0 1.657 2.686 3 6 3z M6 10c0 1.657 2.686 3 6 3s6-1.343 6-3M6 10v6c0 1.657 2.686 3 6 3s6-1.343 6-3v-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   kultur: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2c5.5 0 10 3.6 10 8 0 .5-.1 1-.2 1.5-1.6 3.5-6 6.5-9.8 6.5-4.4 0-8-2.5-8-5.5 0-1.2.4-2.3 1.1-3.3 1-1.4 2.4-2.5 4.1-3.2M8 17s2 1.5 4 1.5 4-1.5 4-1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  plats: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`,
 };
 
 // SVGs with currentColor stroke (for chips)
 const CHIP_SVGS = {
+  event: `<svg viewBox="0 0 24 24" fill="none"><path d="M2.757 10.164L3.8 16.073c.192 1.088 1.229 1.814 2.317 1.622l3.979-.701M2.757 10.164l-.347-1.97C2.218 7.106 2.944 6.069 4.032 5.877L12.896 4.314c1.088-.192 2.125.534 2.317 1.622l.173.985c.096.544-.267 1.063-.811 1.159L2.757 10.164ZM16 12v2l1.667 1.667M22 14c0 3.314-2.686 6-6 6s-6-2.686-6-6 2.686-6 6-6 6 2.686 6 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   musik: `<svg viewBox="0 0 24 24" fill="none"><path d="M9.998 18.5c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Zm0 0V7.488c0-.884.579-1.663 1.425-1.916l6-1.8c1.283-.385 2.575.576 2.575 1.916V15.5m0 0c0 1.38-1.343 2.5-3 2.5s-3-1.12-3-2.5 1.343-2.5 3-2.5 3 1.12 3 2.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
   konst: `<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="2"/><path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
   teater: `<svg viewBox="0 0 24 24" fill="none"><path d="M2 6h20M2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6M6 14l6-4 6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -42,10 +45,11 @@ const CHIP_SVGS = {
   film: `<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M2 8h20M2 16h20M7 2v20M17 2v20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
   kurs: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 15c3.314 0 6-1.343 6-3v-2c0 1.657-2.686 3-6 3s-6-1.343-6-3v2c0 1.657 2.686 3 6 3z M6 10c0 1.657 2.686 3 6 3s6-1.343 6-3M6 10v6c0 1.657 2.686 3 6 3s6-1.343 6-3v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   kultur: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2c5.5 0 10 3.6 10 8 0 .5-.1 1-.2 1.5-1.6 3.5-6 6.5-9.8 6.5-4.4 0-8-2.5-8-5.5 0-1.2.4-2.3 1.1-3.3 1-1.4 2.4-2.5 4.1-3.2M8 17s2 1.5 4 1.5 4-1.5 4-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  plats: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
 };
 
-const CAT_COLOR = { musik: '#8a7515', konst: '#055e69', teater: '#9a0e58', samhalle: '#0066cc', fritid: '#ff6b35', spel: '#6a4c93', hantverk: '#d4a574', film: '#1a1a1a', kurs: '#2ecc71', kultur: '#e74c3c' };
-const CAT_LABEL = { musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur' };
+const CAT_COLOR = { event: '#a04612', musik: '#8a7515', konst: '#055e69', teater: '#9a0e58', samhalle: '#0066cc', fritid: '#ff6b35', spel: '#6a4c93', hantverk: '#d4a574', film: '#1a1a1a', kurs: '#2ecc71', kultur: '#e74c3c', plats: '#9a0e58' };
+const CAT_LABEL = { event: 'Event', musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur', plats: 'Platser' };
 const CTA_LABEL = { buy: 'Köp biljett', apply: 'Anmäl mig', info: 'Mer info' };
 const ALL_CAT = '__all__';
 
@@ -60,11 +64,15 @@ let _searchTrackTimer = null;
 
 // Tab-based category lists
 const EVENT_CATS = ['musik', 'konst', 'teater', 'samhalle', 'fritid', 'spel', 'hantverk', 'film', 'kurs', 'kultur'];
-const PLATS_CATS = [];
+const PLATS_CATS = ['konst', 'plats'];
 const PLATS_SET = new Set(PLATS_CATS);
 
-/** Derive item type from category */
+/** Derive item type from category or from item structure */
 function itemType(item) {
+  // If item has an explicit type field (for aktorer), use it to determine it's a "plats"
+  if (item.type) return 'plats';
+  if (item.cat === 'plats') return 'plats';
+  // Otherwise check if it's in plats categories
   return PLATS_SET.has(item.cat) ? 'plats' : 'event';
 }
 
@@ -1030,16 +1038,89 @@ function showLoadError(message) {
 
 let _booted = false;
 function loadAndBoot() {
-  return fetch('/data/items.json', { cache: 'no-cache' })
+  return fetch('/data/items-combined.json', { cache: 'no-cache' })
     .then((r) => {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
     .then((data) => {
-      if (!data || !Array.isArray(data.items)) throw new Error('Invalid data shape');
-      ITEMS = data.items;
-      ORGS_LIST = data.orgs || [];
-      AREAS_LIST = data.areas || [];
+      if (!data) throw new Error('Invalid data shape');
+      
+      // Transform: events stay mostly as-is, konst and aktorer get prepared for platser tab
+      const events = (data.events || []).map(e => ({
+        ...e,
+        cat: e.cat || 'event',
+        date: e.date || '',
+        time: e.time || '',
+        host: e.host || '',
+        loc: e.loc || '',
+        desc: e.desc || '',
+        free: e.free !== false,
+        area: e.area || '',
+        img: e.img || '',
+        lat: e.lat || 0,
+        lng: e.lng || 0,
+        longDesc: e.desc || '',
+        url: e.url || '',
+      }));
+      
+      const konst = (data.konst || []).map(k => ({
+        ...k,
+        id: k.id || `konst-${Math.random()}`,
+        cat: 'konst',
+        date: k.year || '',
+        time: '',
+        host: k.artist || '',
+        loc: k.loc || '',
+        desc: k.artist || '',
+        free: true,
+        area: k.area || '',
+        img: k.img || '',
+        lat: k.lat || 0,
+        lng: k.lng || 0,
+        longDesc: k.longDesc || k.desc || '',
+        url: '',
+      }));
+      
+      const aktorer = (data.aktorer || []).map(a => ({
+        ...a,
+        id: a.id || `aktor-${Math.random()}`,
+        cat: 'plats',
+        date: '',
+        time: '',
+        host: a.org || '',
+        loc: a.name || '',
+        desc: a.type || '',
+        free: true,
+        area: a.area || '',
+        img: a.img || '',
+        lat: a.lat || 0,
+        lng: a.lng || 0,
+        longDesc: '',
+        url: a.url || '',
+        type: a.type || '', // Preserve type for filtering on Platser tab
+      }));
+      
+      // Combine all items
+      ITEMS = [...events, ...konst, ...aktorer];
+      
+      // Extract unique orgs and areas
+      ORGS_LIST = [
+        ...new Set([
+          ...events.map(e => e.host).filter(Boolean),
+          ...konst.map(k => k.host).filter(Boolean),
+          ...aktorer.map(a => a.host).filter(Boolean),
+        ]),
+      ].sort();
+      
+      AREAS_LIST = [
+        ...new Set([
+          ...events.map(e => e.area).filter(Boolean),
+          ...konst.map(k => k.area).filter(Boolean),
+          ...aktorer.map(a => a.area).filter(Boolean),
+        ]),
+      ].map(name => ({ id: name.toLowerCase().replace(/\s+/g, '-'), name })).sort((a, b) => a.name.localeCompare(b.name));
+      
       if (!_booted) {
         initDom();
         initMap();
@@ -1053,7 +1134,7 @@ function loadAndBoot() {
       renderCalendar();
     })
     .catch((err) => {
-      console.error('Failed to load /data/items.json:', err);
+      console.error('Failed to load /data/items-combined.json:', err);
       showLoadError(err && err.message ? err.message : 'okänt fel');
     });
 }

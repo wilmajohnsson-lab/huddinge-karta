@@ -1,0 +1,362 @@
+[
+ {
+   "A": "Förening",
+   "B": "Plats",
+   "C": "Kommundel",
+   "D": "Typ",
+   "E": "Adress",
+   "F": "Latitud",
+   "G": "Longitud",
+   "H": "Bild"
+ },
+ {
+   "A": "Huddinge Filmstudio",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Film",
+   "E": "Sjödalstorget 1, 141 47 Huddinge",
+   "F": "59.2354058487614",
+   "G": "17.981356044215",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Huddinge Konstnärsklubb",
+   "C": "Sjödalen-Fullersta",
+   "D": "Konst",
+   "E": "Fullersta Gårdsväg 18, 141 35 Huddinge",
+   "F": "59.238991713133345",
+   "G": "17.974581288920202",
+   "H": ""
+ },
+ {
+   "A": "Huddinge Estradpoesi",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Poesi",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Litografklubbens Arkiv",
+   "C": "Gladö-Lissma",
+   "D": "Museum",
+   "E": "Sundby Gårdsväg 6, 141 91 Huddinge",
+   "F": "59.20071187700149",
+   "G": "18.019682354002",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Teater Sláva",
+   "C": "Sjödalen-Fullersta",
+   "D": "Teater",
+   "E": "Kyrkogårdsvägen 6, 141 62 Huddinge",
+   "F": "59.23853131085184",
+   "G": "17.98631597927111",
+   "H": ""
+ },
+ {
+   "A": "Huddinge Jazzförening",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Musik",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "Huddinge Square Swingers",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Dans",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Operan",
+   "C": "Flemingsberg",
+   "D": "Musik",
+   "E": "Elektronvägen 32, 141 49 Huddinge",
+   "F": "59.22355938346997",
+   "G": "17.956582887151114",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Dramaten",
+   "C": "Flemingsberg",
+   "D": "Teater",
+   "E": "Elektronvägen 32, 141 49 Huddinge",
+   "F": "59.22355938346997",
+   "G": "17.956582887151114",
+   "H": "ja"
+ },
+ {
+   "A": "Huddinge Riksteaterförening",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Teater",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Folkes",
+   "C": "Sjödalen-Fullersta",
+   "D": "Lokal",
+   "E": "Sjödalstorget 1, 141 47 Huddinge",
+   "F": "59.2354058487614",
+   "G": "17.981356044215",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Kultopia",
+   "C": "Sjödalen-Fullersta",
+   "D": "Musik",
+   "E": "Sjödalsvägen 46, 141 46 Huddinge",
+   "F": "59.23115478949628",
+   "G": "17.993211565992734",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "SMI",
+   "C": "Flemingsberg",
+   "D": "Skola",
+   "E": "Alfred Nobels Allé 15, 141 52 Huddinge",
+   "F": "59.21829457026206",
+   "G": "17.941884486359264",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Innovation station ",
+   "C": "Flemingsberg",
+   "D": "",
+   "E": "Alfred Nobels Allé 7, 141 89 Huddinge",
+   "F": "59.219375854350595",
+   "G": "17.942032327439122",
+   "H": "ja"
+ },
+ {
+   "A": "AI-TV Network",
+   "B": "",
+   "C": "",
+   "D": "",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "Huddinge Konstnärsklubbs vänner",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Huddinge Hembygdsförening",
+   "C": "Sjödalen-Fullersta",
+   "D": "Museum",
+   "E": "Kommunalvägen 16, 141 61 Huddinge",
+   "F": "59.23606429197597",
+   "G": "17.97950412513124",
+   "H": ""
+ },
+ {
+   "A": "Huddinge Kulturhus",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Kultur",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "Karin Boye Sällskapet",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Litteratur",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Konstförening Bellis",
+   "C": "Trångsund",
+   "D": "",
+   "E": "Spelvägen 14, 142 62 Trångsund",
+   "F": "59.229079201590764",
+   "G": "18.135227007340227",
+   "H": "ja"
+ },
+ {
+   "A": "Kulturföreningen Almen",
+   "B": "",
+   "C": "",
+   "D": "",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Kulturföreningen Lyktan",
+   "C": "Skogås",
+   "D": "Konst",
+   "E": "Skogåstorget 7-9, 142 30 Skogås",
+   "F": "59.21761871106343",
+   "G": "18.153130926528156",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Segeltorps Kulturförening",
+   "C": "Segeltorp",
+   "D": "Kultur",
+   "E": "Mäster Lorentz väg 3, 141 70 Segeltorp",
+   "F": "59.272416096685824",
+   "G": "17.929181379306804",
+   "H": ""
+ },
+ {
+   "A": "SMASH",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Brädspel",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "Ögla Kulturförening",
+   "B": "",
+   "C": "Sjödalen-Fullersta",
+   "D": "Musik",
+   "E": "",
+   "F": "",
+   "G": "",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Kulturskolan Huddinge",
+   "C": "Skogås",
+   "D": "Skola",
+   "E": "Storvretsvägen 60, 142 34 Skogås",
+   "F": "59.21862947066096",
+   "G": "18.15360634951018",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Kulturskolan Huddinge",
+   "C": "Vårby",
+   "D": "Skola",
+   "E": "Vårby allé 16, 143 40 Vårby",
+   "F": "59.2607394",
+   "G": "17.8788639",
+   "H": ""
+ },
+ {
+   "A": "",
+   "B": "Kulturskolan Huddinge",
+   "C": "Sjödalen-Fullersta",
+   "D": "Skola",
+   "E": "Paradistoget 16, 141 47 Huddinge",
+   "F": "59.235086591521636",
+   "G": "17.980911015298922",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Idun Lovén",
+   "C": "Flemingsberg",
+   "D": "Skola",
+   "E": "Alfred Nobels Allé 9, 141 52 Huddinge",
+   "F": "59.2187170243163",
+   "G": "17.943600621662526",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "ABF",
+   "C": "Flemingsberg",
+   "D": "Samhälle",
+   "E": "Röntgenvägen 15, 141 52 Huddinge",
+   "F": "59.22336134687826",
+   "G": "17.939249761529155",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Fritidsbanken",
+   "C": "Flemingsberg",
+   "D": "Fritid",
+   "E": "Ebba bååts torg 20, 141 51 Huddinge",
+   "F": "59.21870605778967",
+   "G": "17.94933435276088",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Flemingsbergs biblioteket",
+   "C": "Flemingsberg",
+   "D": "Litteratur",
+   "E": "Ebba bååts torg 20, 141 51 Huddinge",
+   "F": "59.21870605778967",
+   "G": "17.94933435276088",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "SHs bibliotek",
+   "C": "Flemingsberg",
+   "D": "Litteratur",
+   "E": "Alfred Nobels Allé 11, 141 52 Huddinge",
+   "F": "59.219165585648064",
+   "G": "17.941741612066664",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "Huddinge kommun",
+   "C": "Sjödalen-Fullersta",
+   "D": "Samhälle",
+   "E": "Kommunalvägen 28A, 141 61 Huddinge",
+   "F": "59.238816558827914",
+   "G": "17.98762857913971",
+   "H": "ja"
+ },
+ {
+   "A": "",
+   "B": "ABF Huddinge",
+   "C": "Sjödalen-Fullersta",
+   "D": "Samhälle",
+   "E": "Kommunalvägen 26, 141 61 Huddinge",
+   "F": "59.23858341991627",
+   "G": "17.98625294735926",
+   "H": "ja"
+ }
+]

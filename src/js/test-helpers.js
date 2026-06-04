@@ -1,8 +1,9 @@
 // src/js/test-helpers.js
 // Small pure helpers for unit tests (no leaflet/CSS imports)
 
-export const CAT_COLOR = { musik: '#8a7515', konst: '#055e69', teater: '#9a0e58', samhalle: '#0066cc', fritid: '#ff6b35', spel: '#6a4c93', hantverk: '#d4a574', film: '#1a1a1a', kurs: '#2ecc71', kultur: '#e74c3c' };
+export const CAT_COLOR = { event: '#a04612', musik: '#8a7515', konst: '#055e69', teater: '#9a0e58', samhalle: '#0066cc', fritid: '#ff6b35', spel: '#6a4c93', hantverk: '#d4a574', film: '#1a1a1a', kurs: '#2ecc71', kultur: '#e74c3c', plats: '#9a0e58' };
 export const CAT_BG = {
+  event: 'rgba(160,70,18,.14)',
   musik: 'rgba(138,117,21,.14)',
   konst: 'rgba(5,94,105,.14)',
   teater: 'rgba(154,14,88,.14)',
@@ -13,9 +14,10 @@ export const CAT_BG = {
   film: 'rgba(26,26,26,.14)',
   kurs: 'rgba(46,204,113,.14)',
   kultur: 'rgba(231,76,60,.14)',
+  plats: 'rgba(154,14,88,.14)',
 };
-export const CAT_LABEL = { musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur' };
-export const CAT_SVG_W = { musik: '<svg-audio/>', konst: '<svg-art/>', teater: '<svg-theater/>', samhalle: '<svg-people/>', fritid: '<svg-leisure/>', spel: '<svg-game/>', hantverk: '<svg-tools/>', film: '<svg-film/>', kurs: '<svg-graduation/>', kultur: '<svg-culture/>' };
+export const CAT_LABEL = { event: 'Event', musik: 'Musik', konst: 'Konst', teater: 'Teater', samhalle: 'Samhälle', fritid: 'Fritid', spel: 'Spel', hantverk: 'Hantverk', film: 'Film', kurs: 'Kurs', kultur: 'Kultur', plats: 'Platser' };
+export const CAT_SVG_W = { event: '<svg-event/>', musik: '<svg-audio/>', konst: '<svg-whiteboard/>', teater: '<svg-theater/>', samhalle: '<svg-people/>', fritid: '<svg-game/>', spel: '<svg-joystick/>', hantverk: '<svg-tools/>', film: '<svg-film/>', kurs: '<svg-graduation/>', kultur: '<svg-palette/>', plats: '<svg-mappin/>' };
 
 export function isDesktop() {
   return typeof window !== 'undefined' && window.innerWidth >= 768;
