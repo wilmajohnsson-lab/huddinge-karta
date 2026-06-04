@@ -128,11 +128,11 @@ function validateAktor(item, idx) {
     checkHtml(errors, label, f, item[f]);
   }
 
-  // Aktorer ARE places — coordinates required and must be in Huddinge
+  // Aktorer are places — coordinates strongly recommended; warn if missing
   if (!hasCoords(item))
-    errors.push({ field: 'lat/lng', msg: 'aktör must have coordinates (both are 0)' });
+    warnings.push({ field: 'lat/lng', msg: 'aktör has no coordinates — will not appear on map' });
   else if (!withinBounds(item.lat, item.lng))
-    errors.push({ field: 'lat/lng', msg: `(${item.lat},${item.lng}) outside Huddinge bounds` });
+    warnings.push({ field: 'lat/lng', msg: `(${item.lat},${item.lng}) outside Huddinge bounds` });
 
   return { label, errors, warnings };
 }
