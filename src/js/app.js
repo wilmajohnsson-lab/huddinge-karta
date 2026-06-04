@@ -921,6 +921,23 @@ function onSearch(q) {
 }
 
 // ── DETAIL ────────────────────────────────────────────────────────
+function orgFaviconUrl(url) {
+  try {
+    const domain = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+  } catch { return null; }
+}
+
+function orgLogoHtml(name, url, col, cssClass = 'org-logo', extraStyle = '') {
+  const initials = esc(name.split(' ').map(w => w[0] || '').slice(0, 3).join(''));
+  const favicon = url ? orgFaviconUrl(url) : null;
+  const base = `<div class="${cssClass}" style="background:${col};${extraStyle}">${initials}</div>`;
+  if (!favicon) return base;
+  return `<img class="${cssClass} org-favicon" src="${favicon}" alt="${esc(name)} logotyp"
+    onerror="this.style.display='none';this.nextElementSibling.style.removeProperty('display')">
+  <div class="${cssClass}" style="background:${col};display:none;${extraStyle}">${initials}</div>`;
+}
+
 function findAktor(hostName) {
   if (!hostName) return null;
   const h = hostName.toLowerCase();
@@ -934,12 +951,11 @@ function openOrgDetail(item) {
   const area = aktor ? aktor.area : (item.area || '');
   const url  = aktor ? aktor.url : (item.url || '');
   const typ  = aktor ? aktor.type : '';
-  const initials = esc(name.split(' ').map(w => w[0] || '').slice(0, 3).join(''));
   const col = CAT_COLOR[item.cat] || '#068a99';
 
   document.getElementById('orgInner').innerHTML = `
     <div class="org-banner" style="background:${col}20">
-      <div class="org-logo" style="background:${col}">${initials}</div>
+      ${orgLogoHtml(name, url, col, 'org-logo')}
     </div>
     <div class="det-card">
       <div class="det-center-text">
@@ -977,7 +993,6 @@ function openDetail(id) {
   const col = CAT_COLOR[item.cat];
   const lbl = CAT_LABEL[item.cat];
   const icoForColor = (c) => (CAT_SVG_W[item.cat] || '').replace(/stroke="white"/g, `stroke="${c}"`);
-  const initials = esc(item.host.split(' ').map((w) => w[0] || '').slice(0, 3).join(''));
   const isPlats = itemType(item) === 'plats';
 
   document.getElementById('detInner').innerHTML = `
@@ -1008,8 +1023,8 @@ function openDetail(id) {
       <div class="det-addr-name">${esc(item.loc)}</div>
       <div class="det-addr-street">${esc(item.addr)}</div>
       <div class="det-divider"></div>
-      <button class="det-host" id="detHostBtn" aria-label="Gå till ${esc(item.host)}s webbplats">
-        <div class="det-host-logo cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${initials}</div>
+      <button class="det-host" id="detHostBtn" aria-label="Visa information om ${esc(item.host)}">
+        ${orgLogoHtml(item.host, findAktor(item.host)?.url || '', col || '#068a99', 'det-host-logo', ``)}
         <div class="det-host-info">
           <div class="det-host-name">${esc(item.host)}</div>
           <div class="det-host-since">Arrangör i Huddinge</div>
