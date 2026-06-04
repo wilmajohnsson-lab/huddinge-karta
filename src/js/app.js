@@ -1193,9 +1193,12 @@ function initDom() {
   });
 
   // Card scroll — detail and join buttons
-  delegate(document.getElementById('cardScroll'), '[data-action="detail"]', (_e, el) =>
-    openDetail(Number(el.dataset.itemId))
-  );
+  delegate(document.getElementById('cardScroll'), '[data-action="detail"]', (_e, el) => {
+    const id = Number(el.dataset.itemId);
+    const item = ITEMS.find((x) => x.id === id);
+    if (item && item._source === 'aktor') { openOrgDetail(item); }
+    else { openDetail(id); }
+  });
   delegate(document.getElementById('cardScroll'), '[data-action="join"]', (_e, el) => {
     const item = ITEMS.find((x) => x.id === Number(el.dataset.itemId));
     if (item) openEventUrl(item);
