@@ -84,7 +84,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .pin-label{
   position:absolute;left:50%;top:calc(100% + 2px);
   transform:translateX(-50%);
-  background:#fff;color:#000;
+  background:#fff;color:var(--cat-color,#C94091);
   padding:4px 10px;border-radius:12px;
   font-family:'Source Sans 3',sans-serif;font-size:13px;font-weight:600;
   white-space:normal;text-align:center;line-height:1.3;
