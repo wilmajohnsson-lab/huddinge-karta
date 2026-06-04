@@ -683,7 +683,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
   /* Close button: restore mobile position on desktop */
 
   /* Nav arrows — hidden on mobile, shown on desktop */
-  #cardPrevBtn, #cardNextBtn {
+  #cardPrevBtn:not([hidden]), #cardNextBtn:not([hidden]) {
     display: flex; align-items: center; justify-content: center;
     position: absolute; bottom: calc(50% - 24px);
     width: 44px; height: 44px; border-radius: 50%;
