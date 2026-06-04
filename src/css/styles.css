@@ -646,24 +646,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
     padding: 12px 20px;
   }
 
-  /* Slide in from right instead of up */
-  #cardPanel {
-    left: auto;
-    right: 20px;
-    bottom: 20px;
-    top: 160px;
-    width: 400px;
-    padding-top: 0;
-    background: none;
-    transform: translateX(calc(100% + 40px));
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  #cardPanel.visible { transform: translateX(0); }
-
-  /* Close button floats to top-right of column */
-  #closeCardBtn { position: static; margin: 0 0 0 auto; }
+  /* Close button: restore mobile position on desktop */
 
   /* Cards stack vertically, scrollable */
   #cardScroll {
