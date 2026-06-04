@@ -469,22 +469,22 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 .chip[data-cat].cat-konst,
 .chip[data-cat].cat-samhalle,
 .chip[data-cat].cat-museum,
-.chip[data-cat].cat-plats             { background: #99CDD5; }
+.chip[data-cat].cat-plats             { background: #CCE6EA; }
 .chip[data-cat].cat-fritid,
 .chip[data-cat].cat-kurs,
 .chip[data-cat].cat-litteratur,
-.chip[data-cat].cat-skola             { background: #B1CF99; }
+.chip[data-cat].cat-skola             { background: #D8E7CC; }
 .chip[data-cat].cat-musik,
 .chip[data-cat].cat-kultur,
 .chip[data-cat].cat-dans,
-.chip[data-cat].cat-poesi             { background: #E9B3D3; }
+.chip[data-cat].cat-poesi             { background: #F4D9E9; }
 .chip[data-cat].cat-teater,
 .chip[data-cat].cat-spel,
 .chip[data-cat].cat-hantverk,
-.chip[data-cat].cat-bradspel          { background: #E5BD99; }
+.chip[data-cat].cat-bradspel          { background: #F2DECC; }
 .chip[data-cat].cat-event,
 .chip[data-cat].cat-film,
-.chip[data-cat].cat-lokal             { background: #EFB1B1; }
+.chip[data-cat].cat-lokal             { background: #F7D8D8; }
 /* Selected state always uses the dark tone regardless of group */
 .chip[data-cat].chip-on.cat-konst,
 .chip[data-cat].chip-on.cat-samhalle,
