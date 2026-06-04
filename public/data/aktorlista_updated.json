@@ -8,7 +8,8 @@
     "Latitud": "141 47 Huddinge",
     "Longitud": 59.2354058487614,
     "Bild": 17.981356044215,
-    "Länk": "https://huddinge.filmstudio.se/"
+    "Länk": "https://huddinge.filmstudio.se/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -19,7 +20,8 @@
     "Latitud": "141 35 Huddinge",
     "Longitud": 59.238991713133345,
     "Bild": 17.974581288920202,
-    "Länk": "https://huddinge.filmstudio.se/"
+    "Länk": "https://huddinge.filmstudio.se/",
+    "img": ""
   },
   {
     "Förening": "Huddinge Estradpoesi",
@@ -30,7 +32,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://www.facebook.com/groups/533180276707311/"
+    "Länk": "https://www.facebook.com/groups/533180276707311/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -41,7 +44,8 @@
     "Latitud": "141 91 Huddinge",
     "Longitud": 59.20071187700149,
     "Bild": 18.019682354002,
-    "Länk": "https://www.litografiskamuseet.se/"
+    "Länk": "https://www.litografiskamuseet.se/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -52,7 +56,8 @@
     "Latitud": "141 62 Huddinge",
     "Longitud": 59.23853131085184,
     "Bild": 17.98631597927111,
-    "Länk": "https://www.teaterslava.org/programmet"
+    "Länk": "https://www.teaterslava.org/programmet",
+    "img": "/images/bilder_aktorer/teater_slava.jpg"
   },
   {
     "Förening": "Huddinge Jazzförening",
@@ -63,7 +68,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://huddingejazz.com/"
+    "Länk": "https://huddingejazz.com/",
+    "img": ""
   },
   {
     "Förening": "Huddinge Square Swingers",
@@ -74,7 +80,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://husq.se/"
+    "Länk": "https://husq.se/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -85,7 +92,8 @@
     "Latitud": "141 49 Huddinge",
     "Longitud": 59.22355938346997,
     "Bild": 17.956582887151114,
-    "Länk": "https://www.operan.se/"
+    "Länk": "https://www.operan.se/",
+    "img": "/images/bilder_aktorer/operan.jpg"
   },
   {
     "Förening": "",
@@ -96,7 +104,8 @@
     "Latitud": "141 49 Huddinge",
     "Longitud": 59.22355938346997,
     "Bild": 17.956582887151114,
-    "Länk": "https://www.dramaten.se/"
+    "Länk": "https://www.dramaten.se/",
+    "img": "/images/bilder_aktorer/dramaten.jpg"
   },
   {
     "Förening": "Huddinge Riksteaterförening",
@@ -107,7 +116,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://www.riksteatern.se/forening/huddinge-riksteaterforening/kontakt/"
+    "Länk": "https://www.riksteatern.se/forening/huddinge-riksteaterforening/kontakt/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -118,7 +128,8 @@
     "Latitud": "141 47 Huddinge",
     "Longitud": 59.2354058487614,
     "Bild": 17.981356044215,
-    "Länk": "https://www.folkesevent.se/"
+    "Länk": "https://www.folkesevent.se/",
+    "img": "/images/bilder_aktorer/folkes.jpg"
   },
   {
     "Förening": "",
@@ -129,7 +140,8 @@
     "Latitud": "141 46 Huddinge",
     "Longitud": 59.23115478949628,
     "Bild": 17.993211565992734,
-    "Länk": "https://husethuddinge.se/hph/kultopia.php"
+    "Länk": "https://husethuddinge.se/hph/kultopia.php",
+    "img": ""
   },
   {
     "Förening": "",
@@ -140,7 +152,8 @@
     "Latitud": "141 52 Huddinge",
     "Longitud": 59.21829457026206,
     "Bild": 17.941884486359264,
-    "Länk": "https://smi.se/"
+    "Länk": "https://smi.se/",
+    "img": "/images/bilder_aktorer/SMI.jpeg"
   },
   {
     "Förening": "",
@@ -151,7 +164,8 @@
     "Latitud": "141 89 Huddinge",
     "Longitud": 59.219375854350595,
     "Bild": 17.942032327439122,
-    "Länk": "https://innovationstation.se/"
+    "Länk": "https://innovationstation.se/",
+    "img": "/images/bilder_aktorer/innovation_station.jpeg"
   },
   {
     "Förening": "AI-TV Network",
@@ -162,7 +176,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://www.facebook.com/people/AI-TV-Network/100063562027920/"
+    "Länk": "https://www.facebook.com/people/AI-TV-Network/100063562027920/",
+    "img": ""
   },
   {
     "Förening": "Huddinge Konstnärsklubbs vänner",
@@ -173,7 +188,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://www.hkkvanner.se/"
+    "Länk": "https://www.hkkvanner.se/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -184,7 +200,8 @@
     "Latitud": "141 61 Huddinge",
     "Longitud": 59.23606429197597,
     "Bild": 17.97950412513124,
-    "Länk": "https://www.hembygdhuddinge.se/"
+    "Länk": "https://www.hembygdhuddinge.se/",
+    "img": ""
   },
   {
     "Förening": "Huddinge Kulturhus",
@@ -195,7 +212,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://huddingekulturhus.se/"
+    "Länk": "https://huddingekulturhus.se/",
+    "img": ""
   },
   {
     "Förening": "Karin Boye Sällskapet",
@@ -206,7 +224,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://www.karinboye.se/"
+    "Länk": "https://www.karinboye.se/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -217,7 +236,8 @@
     "Latitud": "142 62 Trångsund",
     "Longitud": 59.229079201590764,
     "Bild": 18.135227007340227,
-    "Länk": "https://www.facebook.com/belliskonst/"
+    "Länk": "https://www.facebook.com/belliskonst/",
+    "img": "/images/bilder_aktorer/konstforeningen_bellis.jpg"
   },
   {
     "Förening": "Kulturföreningen Almen",
@@ -228,7 +248,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": ""
+    "Länk": "",
+    "img": ""
   },
   {
     "Förening": "",
@@ -239,7 +260,8 @@
     "Latitud": "142 30 Skogås",
     "Longitud": 59.21761871106343,
     "Bild": 18.153130926528156,
-    "Länk": "https://www.lyktan.net/"
+    "Länk": "https://www.lyktan.net/",
+    "img": "/images/bilder_aktorer/galleri_lyktan.jpg"
   },
   {
     "Förening": "",
@@ -250,7 +272,8 @@
     "Latitud": "141 70 Segeltorp",
     "Longitud": 59.272416096685824,
     "Bild": 17.929181379306804,
-    "Länk": "https://www.segeltorpkultur.se/hem"
+    "Länk": "https://www.segeltorpkultur.se/hem",
+    "img": ""
   },
   {
     "Förening": "SMASH",
@@ -261,7 +284,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://www.facebook.com/SpelforeningenSMASH/"
+    "Länk": "https://www.facebook.com/SpelforeningenSMASH/",
+    "img": ""
   },
   {
     "Förening": "Ögla Kulturförening",
@@ -272,7 +296,8 @@
     "Latitud": "",
     "Longitud": "",
     "Bild": "",
-    "Länk": "https://www.ogla.se/"
+    "Länk": "https://www.ogla.se/",
+    "img": ""
   },
   {
     "Förening": "",
@@ -283,7 +308,8 @@
     "Latitud": "142 34 Skogås",
     "Longitud": 59.21862947066096,
     "Bild": 18.15360634951018,
-    "Länk": "https://webb.huddinge.se/kulturskolanhuddinge"
+    "Länk": "https://webb.huddinge.se/kulturskolanhuddinge",
+    "img": "/images/bilder_aktorer/kulturskolan_skogas.jpg"
   },
   {
     "Förening": "",
@@ -294,7 +320,8 @@
     "Latitud": "143 40 Vårby",
     "Longitud": 59.2607394,
     "Bild": 17.8788639,
-    "Länk": "https://webb.huddinge.se/kulturskolanhuddinge"
+    "Länk": "https://webb.huddinge.se/kulturskolanhuddinge",
+    "img": "/images/bilder_aktorer/kulturskolan.jpg"
   },
   {
     "Förening": "",
@@ -305,7 +332,8 @@
     "Latitud": "141 47 Huddinge",
     "Longitud": 59.235086591521636,
     "Bild": 17.980911015298922,
-    "Länk": "https://webb.huddinge.se/kulturskolanhuddinge"
+    "Länk": "https://webb.huddinge.se/kulturskolanhuddinge",
+    "img": "/images/bilder_aktorer/kulturskolan_huddinge.jpg"
   },
   {
     "Förening": "",
@@ -316,7 +344,8 @@
     "Latitud": "141 52 Huddinge",
     "Longitud": 59.2187170243163,
     "Bild": 17.943600621662526,
-    "Länk": "https://www.idunloven.se/"
+    "Länk": "https://www.idunloven.se/",
+    "img": "/images/bilder_aktorer/idun_loven.jpeg"
   },
   {
     "Förening": "",
@@ -327,7 +356,8 @@
     "Latitud": "141 52 Huddinge",
     "Longitud": 59.22336134687826,
     "Bild": 17.939249761529155,
-    "Länk": "https://www.abf.se/huddinge/om-abf-huddinge/"
+    "Länk": "https://www.abf.se/huddinge/om-abf-huddinge/",
+    "img": "/images/bilder_aktorer/abf_flemingsberg.jpg"
   },
   {
     "Förening": "",
@@ -338,7 +368,8 @@
     "Latitud": "141 51 Huddinge",
     "Longitud": 59.21870605778967,
     "Bild": 17.94933435276088,
-    "Länk": "https://www.fritidsbanken.se/"
+    "Länk": "https://www.fritidsbanken.se/",
+    "img": "/images/bilder_aktorer/fritidsbanken.jpeg"
   },
   {
     "Förening": "",
@@ -349,7 +380,8 @@
     "Latitud": "141 51 Huddinge",
     "Longitud": 59.21870605778967,
     "Bild": 17.94933435276088,
-    "Länk": "https://bibliotek.huddinge.se/-/flemingsbergs-bibliotek"
+    "Länk": "https://bibliotek.huddinge.se/-/flemingsbergs-bibliotek",
+    "img": "/images/bilder_aktorer/flemingsbergs_bibliotek2.jpeg"
   },
   {
     "Förening": "",
@@ -360,7 +392,8 @@
     "Latitud": "141 52 Huddinge",
     "Longitud": 59.219165585648064,
     "Bild": 17.941741612066664,
-    "Länk": "https://www.sh.se/bibliotek"
+    "Länk": "https://www.sh.se/bibliotek",
+    "img": "/images/bilder_aktorer/sh_bibliotek.jpeg"
   },
   {
     "Förening": "",
@@ -371,7 +404,8 @@
     "Latitud": "141 61 Huddinge",
     "Longitud": 59.238816558827914,
     "Bild": 17.98762857913971,
-    "Länk": "https://www.huddinge.se/"
+    "Länk": "https://www.huddinge.se/",
+    "img": "/images/bilder_aktorer/huddinge_kommun.jpg"
   },
   {
     "Förening": "",
@@ -382,6 +416,7 @@
     "Latitud": "141 61 Huddinge",
     "Longitud": 59.23858341991627,
     "Bild": 17.98625294735926,
-    "Länk": "https://www.abf.se/huddinge/om-abf-huddinge/"
+    "Länk": "https://www.abf.se/huddinge/om-abf-huddinge/",
+    "img": "/images/bilder_aktorer/abf_huddinge.jpg"
   }
 ]

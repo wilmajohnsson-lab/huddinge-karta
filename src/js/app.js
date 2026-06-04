@@ -952,10 +952,16 @@ function orgLogoHtml(name, _url, _col, cssClass = 'org-logo', catKey = '') {
   <div class="${cssClass}${catCls}" data-cat="${catKey}" hidden>${initials}</div>`;
 }
 
-function findAktor(hostName) {
+function findAktor(hostName, area = '') {
   if (!hostName) return null;
   const h = hostName.toLowerCase();
-  return AKTOR_LIST.find(a => h.includes(a.name.toLowerCase()) || a.name.toLowerCase().includes(h)) || null;
+  const a = area.toLowerCase();
+  // Try exact name + area match first
+  if (a) {
+    const exact = AKTOR_LIST.find(al => al.name.toLowerCase() === h && al.area.toLowerCase() === a);
+    if (exact) return exact;
+  }
+  return AKTOR_LIST.find(al => h.includes(al.name.toLowerCase()) || al.name.toLowerCase().includes(h)) || null;
 }
 
 function openOrgDetail(item) {
@@ -965,11 +971,13 @@ function openOrgDetail(item) {
   const area = aktor ? aktor.area : (item.area || '');
   const url  = aktor ? aktor.url : (item.url || '');
   const typ  = aktor ? aktor.type : '';
+  const img  = (aktor && aktor.img) || item.img || '';
 
   document.getElementById('orgInner').innerHTML = `
-    <div class="org-banner cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">
-      ${orgLogoHtml(name, url, '', 'org-logo', item.cat)}
-    </div>
+    ${img
+      ? `<img class="det-hero" src="${esc(img)}" alt="${esc(name)}" loading="lazy">`
+      : `<div class="org-banner cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${orgLogoHtml(name, url, '', 'org-logo', item.cat)}</div>`
+    }
     <div class="det-card">
       <div class="det-center-text">
         ${typ ? `<div class="det-cat-badge cat-${esc(item.cat)}" data-cat="${esc(item.cat)}">${typ}</div>` : ''}
@@ -1338,6 +1346,7 @@ function loadAndBoot() {
         lat: typeof a['Longitud'] === 'number' ? a['Longitud'] : 0,
         lng: typeof a['Bild'] === 'number' ? a['Bild'] : 0,
         url: (a['Länk'] && a['Länk'] !== 'ja') ? a['Länk'] : '',
+        img: a['img'] || '',
       })).filter(a => a.name);
       
       // Transform: events stay mostly as-is, konst and aktorer get prepared for platser tab
@@ -1379,25 +1388,28 @@ function loadAndBoot() {
         utomhus: !!(k.utomhus === true || k.utomhus === 'ja' || k.utomhus === 'Ja'),
       }));
       
-      const aktorer = (data.aktorer || []).map(a => ({
-        _source: 'aktor',
-        ...a,
-        id: a.id || `aktor-${Math.random()}`,
-        cat: 'plats',
-        date: '',
-        time: '',
-        host: a.org || a.name || '',
-        loc: a.name || '',
-        desc: a.type || '',
-        free: true,
-        area: a.area || '',
-        img: a.img || '',
-        lat: a.lat || 0,
-        lng: a.lng || 0,
-        longDesc: '',
-        url: a.url || '',
-        type: a.type || '', // Preserve type for filtering on Platser tab
-      }));
+      const aktorer = (data.aktorer || []).map(a => {
+        const aktorInfo = findAktor(a.name || a.org, a.area);
+        return {
+          _source: 'aktor',
+          ...a,
+          id: a.id || `aktor-${Math.random()}`,
+          cat: 'plats',
+          date: '',
+          time: '',
+          host: a.org || a.name || '',
+          loc: a.name || '',
+          desc: a.type || '',
+          free: true,
+          area: a.area || '',
+          img: (aktorInfo && aktorInfo.img) || a.img || '',
+          lat: a.lat || 0,
+          lng: a.lng || 0,
+          longDesc: '',
+          url: (aktorInfo && aktorInfo.url) || a.url || '',
+          type: a.type || '',
+        };
+      });
       
       // Combine all items
       ITEMS = [...events, ...konst, ...aktorer];
