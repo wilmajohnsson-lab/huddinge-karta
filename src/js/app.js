@@ -98,7 +98,7 @@ let ITEMS = [], ORGS_LIST = [], AREAS_LIST = [];
 
 // ── STATE ─────────────────────────────────────────────────────────
 let map, leafMarkers = {}, clusters = [], activeIds = [];
-let selectedCat = null, activeTab = 'event', detailMapInstance = null;
+let selectedCats = new Set(), activeTab = 'event', detailMapInstance = null;
 const filterState = { free: false, orgs: new Set(), areas: new Set() };
 let selectedDate = null;
 let dpYear = new Date().getFullYear(), dpMonth = new Date().getMonth();
@@ -399,7 +399,7 @@ function evCardHtml(item) {
 function setTab(tab) {
   track('Tab', { tab });
   activeTab = tab;
-  selectedCat = null;
+  selectedCats = new Set();
   document.querySelectorAll('.tab-btn').forEach((b) => {
     const active = b.dataset.tab === tab;
     b.classList.toggle('active', active);
@@ -424,7 +424,7 @@ function getVisible() {
     if (activeTab === 'event' && type !== 'event') return false;
     if (activeTab === 'platser' && type !== 'plats') return false;
     if (activeTab === 'kalender' && type !== 'event') return false;
-    if (selectedCat && i.cat !== selectedCat) return false;
+    if (selectedCats.size > 0 && !selectedCats.has(i.cat)) return false;
     if (filterState.free && !i.free) return false;
     if (filterState.orgs.size > 0 && !filterState.orgs.has(i.host)) return false;
     if (filterState.areas.size > 0 && !filterState.areas.has(i.area)) return false;
@@ -514,16 +514,20 @@ function closeFilter() {
 // ── CATEGORY CHIPS ────────────────────────────────────────────────
 function selectCat(cat) {
   if (cat === ALL_CAT) {
-    selectedCat = null;
+    selectedCats = new Set();
   } else {
-    selectedCat = selectedCat === cat ? null : cat;
+    if (selectedCats.has(cat)) {
+      selectedCats.delete(cat);
+    } else {
+      selectedCats.add(cat);
+    }
   }
   renderChips();
   applyFilters();
 }
 
 function chipHtml(cat) {
-  const allShown = selectedCat === null;
+  const allShown = selectedCats.size === 0;
   // "Alla"-chippet är aktivt när ingen kategori är vald.
   if (cat === ALL_CAT) {
     return `<button class="chip chip-all${allShown ? ' chip-on' : ''}" data-cat="${ALL_CAT}" aria-pressed="${allShown}">Alla</button>`;
@@ -531,8 +535,8 @@ function chipHtml(cat) {
   // When no filter active: chips appear in their light colour (chip-on-all).
   // When a specific filter active: matching chip fills dark (chip-on), others dim.
   const isAll  = allShown;
-  const isOn   = !allShown && selectedCat === cat;
-  const isDim  = !allShown && selectedCat !== cat;
+  const isOn   = !allShown && selectedCats.has(cat);
+  const isDim  = !allShown && !selectedCats.has(cat);
   const stateClass = isAll ? ' chip-on-all' : (isOn ? ' chip-on' : (isDim ? ' chip-dim' : ''));
   return `<button class="chip cat-${esc(cat)}${stateClass}" data-cat="${esc(cat)}" aria-pressed="${isAll || isOn}">
     ${CHIP_SVGS[cat] || ''}${CAT_LABEL[cat]}
