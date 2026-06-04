@@ -73,7 +73,7 @@ function ctaInfo(item) {
   const reg  = item.registration; // true=ja, false=nej, null/undefined=ingen info
   const pris = (typeof item.pris === 'number') ? item.pris : 0;
   if (reg === false) return { label: 'Ingen anmälan krävs', disabled: true };
-  if (reg == null)   return { label: 'Ingen info finns',        disabled: true };
+  if (reg == null)   return null; // no info — hide button entirely
   // reg === true
   return { label: pris > 0 ? 'Köp biljett' : 'Anmäl mig', disabled: false };
 }
@@ -388,7 +388,7 @@ function evCardHtml(item) {
       </div>
       <div class="ev-card-btns">
         <button class="btn-ghost" data-action="detail" data-item-id="${Number(item.id)}">Mer info</button>
-        ${item._source !== 'konst' ? (() => { const c = ctaInfo(item); return `<button class="${c.disabled ? 'btn-ghost btn-cta-disabled' : 'btn-dark'}" ${c.disabled ? 'disabled' : `data-action="join" data-item-id="${Number(item.id)}"`}>${c.label}</button>`; })() : ''}
+        ${item._source !== 'konst' ? (() => { const c = ctaInfo(item); return c ? `<button class="${c.disabled ? 'btn-ghost btn-cta-disabled' : 'btn-dark'}" ${c.disabled ? 'disabled' : `data-action="join" data-item-id="${Number(item.id)}"`}>${c.label}</button>` : ''; })() : ''}
       </div>
     </div>
   </div>`;
@@ -848,16 +848,21 @@ function openDetail(id) {
     detJoin.onclick = null;
   } else {
     const cta = ctaInfo(item);
-    detJoin.textContent = cta.label;
-    detJoin.hidden = false;
-    if (cta.disabled) {
-      detJoin.disabled = true;
-      detJoin.classList.add('btn-cta-disabled');
+    if (!cta) {
+      detJoin.hidden = true;
       detJoin.onclick = null;
     } else {
-      detJoin.disabled = false;
-      detJoin.classList.remove('btn-cta-disabled');
-      detJoin.onclick = () => openEventUrl(item);
+      detJoin.textContent = cta.label;
+      detJoin.hidden = false;
+      if (cta.disabled) {
+        detJoin.disabled = true;
+        detJoin.classList.add('btn-cta-disabled');
+        detJoin.onclick = null;
+      } else {
+        detJoin.disabled = false;
+        detJoin.classList.remove('btn-cta-disabled');
+        detJoin.onclick = () => openEventUrl(item);
+      }
     }
   }
   document.getElementById('detBackBtn').onclick = closeDetail;
