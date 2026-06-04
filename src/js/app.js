@@ -112,7 +112,7 @@ let ITEMS = [], ORGS_LIST = [], AREAS_LIST = [];
 let map, leafMarkers = {}, clusters = [], activeIds = [];
 let selectedCats = new Set(), activeTab = 'event', detailMapInstance = null;
 const filterState = { free: false, orgs: new Set(), areas: new Set() };
-let selectedDate = null;
+let dateStart = null, dateEnd = null;
 let dpYear = new Date().getFullYear(), dpMonth = new Date().getMonth();
 
 // ── HELPERS ───────────────────────────────────────────────────────
@@ -626,10 +626,12 @@ function parseEventDate(str) {
   return null;
 }
 
-function eventMatchesDate(item, date) {
+function eventMatchesDateRange(item) {
+  if (!dateStart) return true;
+  const end = dateEnd || dateStart;
   const p = parseEventDate(item.date);
-  if (!p) return true; // ongoing/permanent — always show
-  return date >= p.start && date <= p.end;
+  if (!p) return true; // permanent — always show
+  return p.end >= dateStart && p.start <= end;
 }
 
 function openDatePicker() {
@@ -663,7 +665,8 @@ function dpNextMonth() {
 }
 
 function clearDateFilter() {
-  selectedDate = null;
+  dateStart = null;
+  dateEnd = null;
   document.getElementById('dpClearBtn').style.display = 'none';
   document.getElementById('calDatumBtn').classList.remove('active');
   document.getElementById('calIdag')?.classList.remove('active');
@@ -674,12 +677,13 @@ function clearDateFilter() {
 function setTodayFilter() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  // Toggle off if already active
-  if (selectedDate && selectedDate.getTime() === today.getTime()) {
+  // Toggle off if already active on today
+  if (dateStart && dateEnd && dateStart.getTime() === today.getTime() && dateEnd.getTime() === today.getTime()) {
     clearDateFilter();
     return;
   }
-  selectedDate = today;
+  dateStart = today;
+  dateEnd = today;
   dpYear = today.getFullYear();
   dpMonth = today.getMonth();
   document.getElementById('dpClearBtn').style.display = 'block';
@@ -689,15 +693,35 @@ function setTodayFilter() {
 }
 
 function selectDay(year, month, day) {
-  selectedDate = new Date(year, month, day);
-  document.getElementById('dpClearBtn').style.display = 'block';
-  document.getElementById('calDatumBtn').classList.add('active');
-  renderDpCalendar();
-  renderCalendar();
-  setTimeout(closeDatePicker, 180);
+  const d = new Date(year, month, day);
+  if (!dateStart || (dateStart && dateEnd)) {
+    // Start fresh selection
+    dateStart = d;
+    dateEnd = null;
+    document.getElementById('calDatumBtn').classList.add('active');
+    renderDpCalendar();
+    renderCalendar();
+  } else {
+    // Second click — set end
+    if (d < dateStart) { dateEnd = dateStart; dateStart = d; }
+    else { dateEnd = d; } // same date = single day
+    document.getElementById('dpClearBtn').style.display = 'block';
+    renderDpCalendar();
+    renderCalendar();
+    setTimeout(closeDatePicker, 220);
+  }
 }
 
 function renderDpCalendar() {
+  // Update title hint
+  const title = document.getElementById('dpTitle');
+  if (!dateStart) title.textContent = 'Välj startdatum';
+  else if (!dateEnd) title.textContent = 'Välj slutdatum';
+  else {
+    const fmt = (d) => d.getDate() + ' ' + SMONTH_NAMES[d.getMonth()].substring(0,3).toLowerCase();
+    title.textContent = dateStart.getTime() === dateEnd.getTime() ? fmt(dateStart) : fmt(dateStart) + ' – ' + fmt(dateEnd);
+  }
+
   document.getElementById('dpMonthLabel').textContent = SMONTH_NAMES[dpMonth] + ' ' + dpYear;
   const firstDay = new Date(dpYear, dpMonth, 1).getDay();
   const offset = (firstDay + 6) % 7; // Mon=0
@@ -721,14 +745,22 @@ function renderDpCalendar() {
   let html = '';
   for (let i = 0; i < offset; i++) html += `<div class="dp-day empty"></div>`;
   for (let d = 1; d <= daysInMonth; d++) {
-    const isSel = selectedDate && selectedDate.getFullYear() === dpYear && selectedDate.getMonth() === dpMonth && selectedDate.getDate() === d;
+    const date = new Date(dpYear, dpMonth, d);
+    const isStart = dateStart && date.getTime() === dateStart.getTime();
+    const isEnd = dateEnd && date.getTime() === dateEnd.getTime();
+    const inRange = dateStart && dateEnd && date > dateStart && date < dateEnd;
     const cnt = eventCount[d] || 0;
     const isToday = isThisMonth && today.getDate() === d;
     const badge = cnt > 0 ? `<span class="dp-day-count">${cnt}</span>` : '';
-    html += `<button class="dp-day${isSel ? ' selected' : ''}${isToday ? ' today' : ''}" data-dp-day="${d}" data-dp-year="${dpYear}" data-dp-month="${dpMonth}">${d}${badge}</button>`;
+    let cls = 'dp-day';
+    if (isStart) cls += ' range-start';
+    if (isEnd) cls += ' range-end';
+    if (inRange) cls += ' in-range';
+    if (isToday) cls += ' today';
+    html += `<button class="${cls}" data-dp-day="${d}" data-dp-year="${dpYear}" data-dp-month="${dpMonth}">${d}${badge}</button>`;
   }
   document.getElementById('dpDays').innerHTML = html;
-  document.getElementById('dpClearBtn').style.display = selectedDate ? 'block' : 'none';
+  document.getElementById('dpClearBtn').style.display = (dateStart || dateEnd) ? 'block' : 'none';
 }
 
 // ── CALENDAR VIEW ─────────────────────────────────────────────────
@@ -752,7 +784,7 @@ function calCardHtml(item) {
 
 function renderCalendar() {
   let vis = getVisible();
-  if (selectedDate) vis = vis.filter((i) => eventMatchesDate(i, selectedDate));
+  if (dateStart) vis = vis.filter((i) => eventMatchesDateRange(i));
 
   // Group by month keyword in date string
   const groups = [

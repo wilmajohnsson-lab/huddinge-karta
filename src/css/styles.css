@@ -429,6 +429,9 @@ input:checked+.toggle-track::after{transform:translateX(20px)}
 .dp-day:nth-child(7n){border-right:none}
 .dp-day:disabled{color:rgba(0,0,0,.2);cursor:default;border-color:rgba(0,0,0,.08)}
 .dp-day.empty{pointer-events:none;border:none;border-right:1px solid rgba(0,0,0,.15);border-bottom:1px solid rgba(0,0,0,.15)}
+.dp-day.range-start,.dp-day.range-end{background:#068a99;color:#fff;border-color:#068a99}
+.dp-day.range-start .dp-day-count,.dp-day.range-end .dp-day-count{background:rgba(255,255,255,.25);color:#fff}
+.dp-day.in-range{background:rgba(6,138,153,.13);color:#000}
 .dp-day.selected{background:#068a99;color:#fff;border-color:#068a99}
 .dp-day-count{
   position:absolute;top:-3px;right:-3px;
