@@ -355,7 +355,6 @@ function showCards(ids) {
   document.getElementById('cardPanel').classList.toggle('multi-cards', activeIds.length > 1);
   document.getElementById('cardPanel').classList.add('visible');
   document.getElementById('tabBar').classList.add('hidden');
-  document.getElementById('backBtn').classList.add('visible');
   document.getElementById('topBar').style.opacity = '0';
   document.getElementById('topBar').style.pointerEvents = 'none';
   scroll.scrollLeft = 0;
@@ -375,7 +374,6 @@ function dismissCards() {
   document.getElementById('cardPanel').classList.remove('visible', 'multi-cards');
   document.getElementById('cardScroll').classList.remove('single-card');
   document.getElementById('tabBar').classList.remove('hidden');
-  document.getElementById('backBtn').classList.remove('visible');
   document.getElementById('topBar').style.opacity = '';
   document.getElementById('topBar').style.pointerEvents = '';
 }
