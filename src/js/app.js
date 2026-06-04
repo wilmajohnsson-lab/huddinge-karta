@@ -112,7 +112,7 @@ let ITEMS = [], ORGS_LIST = [], AREAS_LIST = [];
 let map, leafMarkers = {}, clusters = [], activeIds = [];
 let selectedCats = new Set(), activeTab = 'event', detailMapInstance = null;
 const filterState = { free: false, orgs: new Set(), areas: new Set() };
-let dateStart = null, dateEnd = null;
+let dateStart = null, dateEnd = null, showHistorik = false;
 let dpYear = new Date().getFullYear(), dpMonth = new Date().getMonth();
 
 // ── HELPERS ───────────────────────────────────────────────────────
@@ -763,10 +763,15 @@ function renderDpCalendar() {
   document.getElementById('dpClearBtn').style.display = (dateStart || dateEnd) ? 'block' : 'none';
 }
 
+function toggleHistorik() {
+  showHistorik = !showHistorik;
+  document.getElementById('calHistorikBtn').classList.toggle('active', showHistorik);
+  renderCalendar();
+}
+
 // ── CALENDAR VIEW ─────────────────────────────────────────────────
-function calCardHtml(item) {
-  return `<div class="cal-card" data-item-id="${Number(item.id)}">
-    <img class="cal-card-img" ${imgSrc(item.img, 600)} width="600" height="320" alt="${esc(item.name)}" loading="lazy" decoding="async">
+function calCardInner(item) {
+  return `<img class="cal-card-img" ${imgSrc(item.img, 600)} width="600" height="320" alt="${esc(item.name)}" loading="lazy" decoding="async">
     <div class="cal-card-body">
       <div class="cal-card-name">${esc(item.name)}</div>
       <div class="cal-card-desc">${esc(item.desc)}</div>
@@ -776,29 +781,75 @@ function calCardHtml(item) {
           ${esc(item.date)}
         </span>
         <span class="cal-tag cal-tag-cat cat-${esc(item.cat)}">${CAT_LABEL[item.cat]}</span>
-        ${item.free ? '<span class="cal-tag cal-tag-free">Gratis</span>' : ''}
       </div>
-    </div>
-  </div>`;
+    </div>`;
+}
+
+function calCardHtml(item) {
+  return `<div class="cal-card" data-item-id="${Number(item.id)}">${calCardInner(item)}</div>`;
 }
 
 function renderCalendar() {
-  let vis = getVisible();
-  if (dateStart) vis = vis.filter((i) => eventMatchesDateRange(i));
+  const today = new Date(); today.setHours(0,0,0,0);
+  let vis = getVisible().filter(i => itemType(i) === 'event');
 
-  // Group by month keyword in date string
-  const groups = [
-    { label: 'Juni', items: vis.filter((i) => i.date.toLowerCase().includes('jun')) },
-    { label: 'Juli', items: vis.filter((i) => i.date.toLowerCase().includes('jul')) },
-    { label: 'Maj', items: vis.filter((i) => i.date.toLowerCase().includes('maj')) },
-    { label: 'Övrigt', items: vis.filter((i) => !['jun', 'jul', 'maj'].some((m) => i.date.toLowerCase().includes(m))) },
-  ].filter((g) => g.items.length);
+  const getRange = (item) => parseEventDate(item.date);
+  const isPast = (item) => { const p = getRange(item); return p ? p.end < today : false; };
+
+  if (showHistorik) {
+    // Show past events grouped by month (most recent first)
+    const past = vis.filter(isPast);
+    const buckets = {};
+    past.forEach(item => {
+      const p = getRange(item);
+      const d = p ? p.end : today;
+      const key = d.getFullYear() * 100 + d.getMonth();
+      if (!buckets[key]) buckets[key] = { year: d.getFullYear(), month: d.getMonth(), items: [] };
+      buckets[key].items.push(item);
+    });
+    const groups = Object.values(buckets).sort((a,b) => (b.year*100+b.month)-(a.year*100+a.month));
+    const el = document.getElementById('calContent');
+    el.innerHTML = groups.length
+      ? groups.map(g => `
+        <div class="cal-section">
+          <div class="cal-section-title">${SMONTH_NAMES[g.month]} ${g.year}</div>
+          <div class="cal-h-scroll">${g.items.map(i => `<div class="cal-card cal-card-past">${calCardInner(i)}</div>`).join('')}</div>
+        </div>`).join('')
+      : '<div class="cal-empty">Inga tidigare event</div>';
+    return;
+  }
+
+  // Current + future events
+  let current = vis.filter(i => !isPast(i));
+  if (dateStart) current = current.filter(i => eventMatchesDateRange(i));
+
+  // Build month buckets: current month up to 6 months forward
+  const buckets = {};
+  for (let i = 0; i < 6; i++) {
+    const y = today.getFullYear(), m = today.getMonth() + i;
+    const yr = y + Math.floor(m / 12), mo = m % 12;
+    const key = yr * 100 + mo;
+    buckets[key] = { year: yr, month: mo, items: [] };
+  }
+  current.forEach(item => {
+    const p = getRange(item);
+    const start = p ? p.start : today;
+    // If event started before current month, put in current month
+    const yr = start < today ? today.getFullYear() : start.getFullYear();
+    const mo = start < today ? today.getMonth() : start.getMonth();
+    const key = yr * 100 + mo;
+    if (buckets[key]) buckets[key].items.push(item);
+  });
+
+  const groups = Object.values(buckets)
+    .sort((a,b) => (a.year*100+a.month)-(b.year*100+b.month))
+    .filter(g => g.items.length);
 
   const el = document.getElementById('calContent');
   el.innerHTML = groups.length
-    ? groups.map((g) => `
+    ? groups.map(g => `
       <div class="cal-section">
-        <div class="cal-section-title">${g.label}</div>
+        <div class="cal-section-title">${SMONTH_NAMES[g.month]} ${g.year !== today.getFullYear() ? g.year : ''}</div>
         <div class="cal-h-scroll">${g.items.map(calCardHtml).join('')}</div>
       </div>`).join('')
     : '<div class="cal-empty">Inga events på valt datum</div>';
@@ -1073,6 +1124,7 @@ function initDom() {
 
   // Calendar cards
   delegate(document.getElementById('calContent'), '[data-item-id]', (_e, el) => {
+    if (el.closest('.cal-card-past')) return; // historik cards not clickable
     setTab('event');
     setTimeout(() => showCards([Number(el.dataset.itemId)]), 400);
   });
@@ -1088,6 +1140,7 @@ function initDom() {
   });
 
   // Date picker
+  document.getElementById('calHistorikBtn').addEventListener('click', toggleHistorik);
   document.getElementById('calDatumBtn').addEventListener('click', () => {
     if (dateStart) { clearDateFilter(); } else { openDatePicker(); }
   });
