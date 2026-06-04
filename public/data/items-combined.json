@@ -2,7 +2,7 @@
   "events": [
     {
       "id": 1,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Huddinge Filmstudio",
       "desc": "Film",
       "longDesc": "Huddinge Filmstudio är en kulturplats i Sjödalen-Fullersta. Typ: Film. Adress: Sjödalstorget 1, 141 47 Huddinge.",
@@ -24,7 +24,7 @@
     },
     {
       "id": 2,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Huddinge Konstnärsklubb",
       "desc": "Konst(galleri)",
       "longDesc": "Huddinge Konstnärsklubb är en kulturplats i Sjödalen-Fullersta. Typ: Konst(galleri). Adress: Fullersta Gårdsväg 18, 141 35 Huddinge.",
@@ -46,7 +46,7 @@
     },
     {
       "id": 3,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Litografklubbens Arkiv",
       "desc": "Museum",
       "longDesc": "Litografklubbens Arkiv är en kulturplats i Gladö-Lissma. Typ: Museum. Adress: Sundby Gårdsväg 6, 141 91 Huddinge.",
@@ -68,7 +68,7 @@
     },
     {
       "id": 4,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Teater Sláva",
       "desc": "Teater",
       "longDesc": "Teater Sláva är en kulturplats i Sjödalen-Fullersta. Typ: Teater. Adress: Kyrkogårdsvägen 6, 141 62 Huddinge.",
@@ -90,7 +90,7 @@
     },
     {
       "id": 5,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Operan",
       "desc": "Opera/musik",
       "longDesc": "Operan är en kulturplats i Flemingsberg. Typ: Opera/musik. Adress: Elektronvägen 32, 141 49 Huddinge.",
@@ -112,7 +112,7 @@
     },
     {
       "id": 6,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Dramaten",
       "desc": "Teater",
       "longDesc": "Dramaten är en kulturplats i Flemingsberg. Typ: Teater. Adress: Elektronvägen 32, 141 49 Huddinge.",
@@ -134,7 +134,7 @@
     },
     {
       "id": 7,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Folkes",
       "desc": "Restaurang/lokal",
       "longDesc": "Folkes är en kulturplats i Sjödalen-Fullersta. Typ: Restaurang/lokal. Adress: Sjödalstorget 1, 141 47 Huddinge.",
@@ -156,7 +156,7 @@
     },
     {
       "id": 8,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Kultopia",
       "desc": "Musik",
       "longDesc": "Kultopia är en kulturplats i Sjödalen-Fullersta. Typ: Musik. Adress: Sjödalsvägen 46, 141 46 Huddinge.",
@@ -178,7 +178,7 @@
     },
     {
       "id": 9,
-      "cat": "motes",
+      "cat": "plats",
       "name": "SMI",
       "desc": "Skola",
       "longDesc": "SMI är en kulturplats i Flemingsberg. Typ: Skola. Adress: Alfred Nobels Allé 15, 141 52 Huddinge.",
@@ -200,7 +200,7 @@
     },
     {
       "id": 10,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Innovation station",
       "desc": "Kulturplats i Huddinge",
       "longDesc": "Innovation station är en kulturplats i Flemingsberg. Adress: Alfred Nobels Allé 7, 141 89 Huddinge.",
@@ -222,7 +222,7 @@
     },
     {
       "id": 11,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Huddinge Hembygdsförening",
       "desc": "Allmän kultur/Museum",
       "longDesc": "Huddinge Hembygdsförening är en kulturplats i Sjödalen-Fullersta. Typ: Allmän kultur/Museum. Adress: Kommunalvägen 16, 141 61 Huddinge.",
@@ -244,7 +244,7 @@
     },
     {
       "id": 12,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Konstförening Bellis",
       "desc": "Kulturplats i Huddinge",
       "longDesc": "Konstförening Bellis är en kulturplats i Trångsund. Adress: Spelvägen 14, 142 62 Trångsund.",
@@ -266,7 +266,7 @@
     },
     {
       "id": 13,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Kulturföreningen Lyktan",
       "desc": "Konst(galleri)",
       "longDesc": "Kulturföreningen Lyktan är en kulturplats i Skogås. Typ: Konst(galleri). Adress: Skogåstorget 7-9, 142 30 Skogås.",
@@ -288,7 +288,7 @@
     },
     {
       "id": 14,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Segeltorps Kulturförening",
       "desc": "Allmän kultur",
       "longDesc": "Segeltorps Kulturförening är en kulturplats i Segeltorp. Typ: Allmän kultur. Adress: Mäster Lorentz väg 3, 141 70 Segeltorp.",
@@ -310,7 +310,7 @@
     },
     {
       "id": 15,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Kulturskolan Huddinge",
       "desc": "Skola",
       "longDesc": "Kulturskolan Huddinge är en kulturplats i Skogås. Typ: Skola. Adress: Storvretsvägen 60, 142 34 Skogås.",
@@ -332,7 +332,7 @@
     },
     {
       "id": 16,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Kulturskolan Huddinge",
       "desc": "Skola",
       "longDesc": "Kulturskolan Huddinge är en kulturplats i Vårby. Typ: Skola. Adress: Vårby allé 16, 143 40 Vårby.",
@@ -354,7 +354,7 @@
     },
     {
       "id": 17,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Kulturskolan Huddinge",
       "desc": "Skola",
       "longDesc": "Kulturskolan Huddinge är en kulturplats i Sjödalen-Fullersta. Typ: Skola. Adress: Paradistoget 16, 141 47 Huddinge.",
@@ -376,7 +376,7 @@
     },
     {
       "id": 18,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Idun Lovén",
       "desc": "Skola",
       "longDesc": "Idun Lovén är en kulturplats i Flemingsberg. Typ: Skola. Adress: Alfred Nobels Allé 9, 141 52 Huddinge.",
@@ -398,7 +398,7 @@
     },
     {
       "id": 19,
-      "cat": "motes",
+      "cat": "plats",
       "name": "ABF",
       "desc": "Skola/allmän kultur",
       "longDesc": "ABF är en kulturplats i Flemingsberg. Typ: Skola/allmän kultur. Adress: Röntgenvägen 15, 141 52 Huddinge.",
@@ -420,7 +420,7 @@
     },
     {
       "id": 20,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Fritidsbanken",
       "desc": "Fritid",
       "longDesc": "Fritidsbanken är en kulturplats i Flemingsberg. Typ: Fritid. Adress: Ebba bååts torg 20, 141 51 Huddinge.",
@@ -442,7 +442,7 @@
     },
     {
       "id": 21,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Flemingsbergs biblioteket",
       "desc": "Litteratur",
       "longDesc": "Flemingsbergs biblioteket är en kulturplats i Flemingsberg. Typ: Litteratur. Adress: Ebba bååts torg 20, 141 51 Huddinge.",
@@ -464,7 +464,7 @@
     },
     {
       "id": 22,
-      "cat": "motes",
+      "cat": "plats",
       "name": "SHs bibliotek",
       "desc": "Litteratur",
       "longDesc": "SHs bibliotek är en kulturplats i Flemingsberg. Typ: Litteratur. Adress: Alfred Nobels Allé 11, 141 52 Huddinge.",
@@ -486,7 +486,7 @@
     },
     {
       "id": 23,
-      "cat": "motes",
+      "cat": "plats",
       "name": "Huddinge kommun",
       "desc": "Kulturplats i Huddinge",
       "longDesc": "Huddinge kommun är en kulturplats i Sjödalen-Fullersta. Adress: Kommunalvägen 28A, 141 61 Huddinge.",
@@ -508,7 +508,7 @@
     },
     {
       "id": 24,
-      "cat": "motes",
+      "cat": "plats",
       "name": "ABF Huddinge",
       "desc": "Skola/allmän kultur",
       "longDesc": "ABF Huddinge är en kulturplats i Sjödalen-Fullersta. Typ: Skola/allmän kultur. Adress: Kommunalvägen 26, 141 61 Huddinge.",
@@ -3414,8 +3414,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -3554,8 +3554,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.21803,
+      "lng": 17.96697,
       "longDesc": ""
     },
     {
@@ -3610,8 +3610,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -3666,8 +3666,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2425975,
+      "lng": 17.9965854,
       "longDesc": ""
     },
     {
@@ -3694,8 +3694,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -3722,8 +3722,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -3736,8 +3736,8 @@
       "desc": "",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -3820,8 +3820,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2223899,
+      "lng": 17.9398948,
       "longDesc": ""
     },
     {
@@ -3862,8 +3862,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -3890,8 +3890,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2345059,
+      "lng": 17.9826306,
       "longDesc": ""
     },
     {
@@ -3974,8 +3974,8 @@
       "desc": "",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4030,8 +4030,8 @@
       "desc": "En grå bas med en ritad form, med blåa och fita streck som täcker tavlan",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "En grå bas med en ritad form, med blåa och fita streck som täcker tavlan"
     },
     {
@@ -4044,8 +4044,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2230223,
+      "lng": 18.1493477,
       "longDesc": ""
     },
     {
@@ -4058,8 +4058,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.21803,
+      "lng": 17.96697,
       "longDesc": ""
     },
     {
@@ -4100,8 +4100,8 @@
       "desc": "Överst i bild en svart hanske, understa i bild en lila ruta",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "Överst i bild en svart hanske, understa i bild en lila ruta"
     },
     {
@@ -4184,8 +4184,8 @@
       "desc": "En stor hästskulptur i brons",
       "area": "",
       "img": "Ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2154386,
+      "lng": 18.1621236,
       "longDesc": "En stor hästskulptur i brons"
     },
     {
@@ -4212,8 +4212,8 @@
       "desc": "En vit bas med en form ritad med smal spets, samt 6 stycken kryss i blått och rött som täcker tavlan",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "En vit bas med en form ritad med smal spets, samt 6 stycken kryss i blått och rött som täcker tavlan"
     },
     {
@@ -4240,8 +4240,8 @@
       "desc": "Målade klinker",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.23544,
+      "lng": 17.9814,
       "longDesc": "Målade klinker"
     },
     {
@@ -4268,8 +4268,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4296,8 +4296,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2268,
+      "lng": 18.076,
       "longDesc": ""
     },
     {
@@ -4310,8 +4310,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2412018,
+      "lng": 17.994895,
       "longDesc": ""
     },
     {
@@ -4338,8 +4338,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4380,8 +4380,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2231412,
+      "lng": 18.1527025,
       "longDesc": ""
     },
     {
@@ -4394,8 +4394,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2494285,
+      "lng": 17.9613636,
       "longDesc": ""
     },
     {
@@ -4408,8 +4408,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.235,
+      "lng": 17.979,
       "longDesc": ""
     },
     {
@@ -4450,8 +4450,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.236,
+      "lng": 17.982,
       "longDesc": ""
     },
     {
@@ -4464,8 +4464,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4478,8 +4478,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4590,8 +4590,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4604,8 +4604,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4618,8 +4618,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2230223,
+      "lng": 18.1493477,
       "longDesc": ""
     },
     {
@@ -4632,8 +4632,8 @@
       "desc": "En målning av ett gult fält nere och mörka berg eller himmel bakom fältet",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2249808,
+      "lng": 17.9304739,
       "longDesc": "En målning av ett gult fält nere och mörka berg eller himmel bakom fältet"
     },
     {
@@ -4772,8 +4772,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4828,8 +4828,8 @@
       "desc": "En mörk tavla med många nyanser av svart",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "En mörk tavla med många nyanser av svart"
     },
     {
@@ -4856,8 +4856,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2230223,
+      "lng": 18.1493477,
       "longDesc": ""
     },
     {
@@ -4884,8 +4884,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.185,
+      "lng": 17.832,
       "longDesc": ""
     },
     {
@@ -4926,8 +4926,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.232,
+      "lng": 17.975,
       "longDesc": ""
     },
     {
@@ -4940,8 +4940,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4954,8 +4954,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4968,8 +4968,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -4996,8 +4996,8 @@
       "desc": "Målning som visar en person som pratar i en mobiltelefon, i glada färger, på plan 5",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "Målning som visar en person som pratar i en mobiltelefon, i glada färger, på plan 5"
     },
     {
@@ -5010,8 +5010,8 @@
       "desc": "Målning som visar händer som håller i en mobiltelefon, i glada färger",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "Målning som visar händer som håller i en mobiltelefon, i glada färger"
     },
     {
@@ -5024,8 +5024,8 @@
       "desc": "En naken kvinna som sitter på huk och tittar på sniglar",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "En naken kvinna som sitter på huk och tittar på sniglar"
     },
     {
@@ -5038,8 +5038,8 @@
       "desc": "En mus som hänger från en gren och tittar ner på ett äppelskrutt",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "En mus som hänger från en gren och tittar ner på ett äppelskrutt"
     },
     {
@@ -5136,8 +5136,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5150,8 +5150,8 @@
       "desc": "",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5164,8 +5164,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5206,8 +5206,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5248,8 +5248,8 @@
       "desc": "En röd virkad figur som påminner om en naken man",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "En röd virkad figur som påminner om en naken man"
     },
     {
@@ -5262,8 +5262,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.220454,
+      "lng": 18.0068479,
       "longDesc": ""
     },
     {
@@ -5276,8 +5276,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5290,8 +5290,8 @@
       "desc": "Utsmyckning på två ventilationsskorstenar",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2374,
+      "lng": 17.989,
       "longDesc": "Utsmyckning på två ventilationsskorstenar"
     },
     {
@@ -5304,8 +5304,8 @@
       "desc": "Svarta streck och grå skuggor",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "Svarta streck och grå skuggor"
     },
     {
@@ -5332,8 +5332,8 @@
       "desc": "En smal pelare med en skulptur på toppen, hela påminner om ljussättnings utrustning",
       "area": "",
       "img": "Ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.21803,
+      "lng": 17.96697,
       "longDesc": "En smal pelare med en skulptur på toppen, hela påminner om ljussättnings utrustning"
     },
     {
@@ -5374,8 +5374,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5430,8 +5430,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5500,8 +5500,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.242,
+      "lng": 17.978,
       "longDesc": ""
     },
     {
@@ -5514,8 +5514,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5556,8 +5556,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5584,8 +5584,8 @@
       "desc": "En person ligger tvärs över en utsällbar stol och försöker hälla upp kaffe",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": "En person ligger tvärs över en utsällbar stol och försöker hälla upp kaffe"
     },
     {
@@ -5612,8 +5612,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5640,8 +5640,8 @@
       "desc": "",
       "area": "",
       "img": "ja",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5710,8 +5710,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5738,8 +5738,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.236335,
+      "lng": 17.9829899,
       "longDesc": ""
     },
     {
@@ -5752,8 +5752,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5766,8 +5766,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.237,
+      "lng": 17.982,
       "longDesc": ""
     },
     {
@@ -5780,8 +5780,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2419188,
+      "lng": 17.9974429,
       "longDesc": ""
     },
     {
@@ -5878,8 +5878,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5920,8 +5920,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
@@ -5934,8 +5934,8 @@
       "desc": "",
       "area": "",
       "img": "",
-      "lat": 0,
-      "lng": 0,
+      "lat": 59.2295,
+      "lng": 17.94393,
       "longDesc": ""
     },
     {
