@@ -235,8 +235,12 @@ function initMap() {
   L.marker([59.2195, 17.949], { icon: ui, interactive: false }).addTo(map);
 
   rebuildClusterMarkers();
-  // Ensure tiles render correctly after layout settles (mobile viewport)
-  setTimeout(() => map.invalidateSize(), 200);
+
+  // Ensure tiles render correctly after layout settles (mobile viewport).
+  // A single timeout is fragile on mobile (address bar collapse, slow paint),
+  // so install a small set of retries + lifecycle listeners. Guarded so it
+  // installs only once even if initMap() is called again.
+  installInvalidateSizeHandlers(map);
 
   map.on('click', () => {
     if (activeIds.length) dismissCards();
@@ -250,6 +254,27 @@ function initMap() {
   map.on('zoomend', () => { updateLabelVisibility(); });
   updateLabelVisibility();
 }
+
+const installInvalidateSizeHandlers = (() => {
+  let installed = false;
+  return (mapInstance) => {
+    if (installed || !mapInstance) return;
+    installed = true;
+    const invalidate = () => {
+      try { mapInstance.invalidateSize(); } catch { /* noop */ }
+    };
+    // After paint, then short and longer retries to cover varied mobile timings.
+    requestAnimationFrame(invalidate);
+    setTimeout(invalidate, 200);
+    setTimeout(invalidate, 800);
+    // Mobile-specific lifecycle events that change the visual viewport.
+    window.addEventListener('orientationchange', () => setTimeout(invalidate, 250));
+    window.addEventListener('pageshow', () => setTimeout(invalidate, 50));
+    if (window.visualViewport && window.visualViewport.addEventListener) {
+      window.visualViewport.addEventListener('resize', invalidate);
+    }
+  };
+})();
 
 function mHtml(cat, big, label = null) {
   const sz = big ? 'mpin-lg' : 'mpin-sm';
