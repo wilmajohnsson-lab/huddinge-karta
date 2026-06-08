@@ -30,9 +30,9 @@ export default defineConfig({
               cacheableResponse: { statuses: [0, 200] },
             },
           },
-          // items.json — NetworkFirst (5-second timeout, then cached copy)
+          // items-combined.json — NetworkFirst (5-second timeout, then cached copy)
           {
-            urlPattern: /\/data\/items\.json$/,
+            urlPattern: /\/data\/items-combined\.json$/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'data-cache',
