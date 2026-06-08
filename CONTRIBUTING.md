@@ -1,6 +1,6 @@
 # Contributing to Huddinge Karta
 
-Thank you for contributing! Huddinge Karta is a small single-page app (Vanilla ES modules + Vite) that shows events, culture and meeting places in Huddinge municipality on an interactive Leaflet map. Data is stored as JSON in public/data/items.json and this guide explains how to run the app locally and contribute content or code.
+Thank you for contributing! Huddinge Karta is a small single-page app (Vanilla ES modules + Vite) that shows events, culture and meeting places in Huddinge municipality on an interactive Leaflet map. Data is stored as JSON in `public/data/items-combined.json` and this guide explains how to run the app locally and contribute content or code.
 
 ---
 
@@ -29,9 +29,15 @@ http://localhost:5173
 
 ## Adding or editing map items
 
-The canonical data file is `public/data/items.json`.
+The canonical data file is `public/data/items-combined.json`. It contains five
+top-level arrays: `events`, `konst`, `aktorer`, `orgs`, and `areas`.
 
-- Edit `public/data/items.json` to add or update organisations, areas or items.
+In the normal workflow content is managed through the PocketBase admin UI
+(`https://huddinge-admin.mreh.site`) and the publish hook writes
+`items-combined.json` automatically. You can also edit the JSON directly for
+quick fixes.
+
+- Edit `public/data/items-combined.json` to add or update events, art, or organisations.
 - Run the validator before committing your changes:
 
 ```bash
@@ -42,33 +48,71 @@ node scripts/validate-items.mjs
 
 The validator checks structure and common mistakes (missing fields, wrong types, coordinates out of range, missing hosts/areas etc.) and will exit non-zero when there are errors.
 
-### Field reference
+### Field reference — events
 
-| Field     | Type     | Required | Description |
-|-----------|----------|----------|-------------|
-| id        | integer  | yes      | Unique numeric id for the item |
-| cat       | string   | yes      | Category (one of the valid cat values) |
-| name      | string   | yes      | Short title shown on the map |
-| desc      | string   | yes      | Short description used in popups/list |
-| longDesc  | string   | yes      | Longer description for detail view |
-| date      | string   | yes      | Human readable date or date range |
-| time      | string   | yes      | Human readable time (e.g. "17:00–19:00") |
-| loc       | string   | yes      | Name of the location (used in popups) |
-| addr      | string   | yes      | Street address / place description |
-| lat       | number   | yes      | Latitude (must be between 59.0 and 59.5) |
-| lng       | number   | yes      | Longitude (must be between 17.5 and 18.5) |
-| img       | string   | yes      | Absolute image URL (must start with `https://`) |
-| url       | string   | yes      | Link to event/organisation (must start with `https://`) |
-| host      | string   | yes      | Hosting organisation — must exist in top-level `orgs` array |
-| area      | string   | yes      | Area id — must match one of the `areas` ids |
-| free      | boolean  | yes      | true if the event/place is free of charge |
+| Field        | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| id           | string  | yes      | Unique string id (e.g. `ev_14`) |
+| cat          | string  | yes      | Category (see valid values below) |
+| name         | string  | yes      | Short title shown on the map |
+| desc         | string  | yes      | Short description for popups/list |
+| longDesc     | string  | yes      | Longer description for detail view |
+| date         | string  | yes      | Human readable date or date range |
+| time         | string  | yes      | Human readable time (e.g. `"17:00–19:00"`) |
+| loc          | string  | yes      | Name of the location |
+| addr         | string  | yes      | Street address / place description |
+| lat          | number  | yes      | Latitude (59.08–59.34 for Huddinge) |
+| lng          | number  | yes      | Longitude (17.73–18.24 for Huddinge) |
+| img          | string  | yes      | Image URL or local path (e.g. `/images/bilder_aktorer/foo.jpg`) |
+| url          | string  | yes      | Link to event/organisation (start with `https://`) |
+| host         | string  | yes      | Hosting organisation — must exist in top-level `orgs` array |
+| area         | string  | yes      | Area id — must match one of the `areas` ids |
+| free         | boolean | yes      | `true` if the event is free of charge |
+| pris         | number  | no       | Ticket price in SEK (0 = free) |
+| registration | boolean | no       | `true` = sign-up required, `false` = no sign-up needed, `null` = unknown |
+
+### Field reference — konst
+
+| Field    | Type    | Required | Description |
+|----------|---------|----------|-------------|
+| id       | string  | yes      | Unique string id (e.g. `k_7`) |
+| cat      | string  | yes      | Always `"konst"` |
+| name     | string  | yes      | Artwork title |
+| artist   | string  | yes      | Artist name |
+| year     | number  | no       | Year created |
+| loc      | string  | yes      | Location name |
+| desc     | string  | yes      | Short description |
+| longDesc | string  | no       | Extended description |
+| area     | string  | yes      | Area id |
+| img      | string  | yes      | Image path (local or `https://`) |
+| utomhus  | boolean | no       | `true` if the artwork is outdoors |
+| lat      | number  | yes      | Latitude |
+| lng      | number  | yes      | Longitude |
+
+### Field reference — aktorer
+
+| Field | Type   | Required | Description |
+|-------|--------|----------|-------------|
+| id    | string | yes      | Unique string id (e.g. `a_3`) |
+| cat   | string | yes      | Always `"plats"` |
+| type  | string | no       | Venue type (e.g. `bibliotek`, `galleri`) |
+| name  | string | yes      | Display name |
+| org   | string | no       | Organisation id (matches `orgs`) |
+| area  | string | yes      | Area id |
+| addr  | string | yes      | Street address |
+| img   | string | yes      | Image path (local or `https://`) |
+| url   | string | yes      | Website URL |
+| lat   | number | yes      | Latitude |
+| lng   | number | yes      | Longitude |
 
 ### Valid cat values
 
-- `event`
-- `konst`
-- `motes`
-- `musik`
+**Events** (`events[]`):
+`musik` · `samhalle` · `konst` · `fritid` · `litteratur` · `kultur` · `teater` · `film` · `dans` · `poesi` · `kurs` · `hantverk` · `spel` · `bradspel` · `museum` · `skola` · `lokal`
+
+**Konst** (`konst[]`): `konst`
+
+**Aktorer** (`aktorer[]`): `plats`
 
 ### Area ids
 
@@ -132,7 +176,7 @@ git checkout -b fix/short-description
 
 - `index.html` — app entry
 - `src/` — application source (JS, CSS)
-- `public/data/items.json` — canonical content file for organisations, areas and items
+- `public/data/items-combined.json` — canonical data file (events, konst, aktorer, orgs, areas)
 - `scripts/` — utility scripts (contains `scripts/validate-items.mjs`)
 - `dist/` — production build output (generated)
 

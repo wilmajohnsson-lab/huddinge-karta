@@ -74,11 +74,15 @@ systemctl enable --now caddy
 ```
 
 ## Automated deployment (GitHub Actions)
-There is an example workflow at `.github/workflows/deploy.yml` (not included here). It requires these GitHub secrets:
-- DEPLOY_HOST: server IP or hostname
-- DEPLOY_USER: SSH username
-- DEPLOY_PATH: absolute path on server (e.g. /var/www/huddinge-karta)
-- DEPLOY_SSH_KEY: private SSH key (generate a dedicated deploy keypair)
+There is an example workflow at `.github/workflows/deploy.yml`. It requires the following GitHub repository secrets and variables:
+
+| Kind | Name | Description |
+|------|------|-------------|
+| Secret | `DEPLOY_SSH_KEY` | Private SSH key for the deploy user on the server |
+| Secret | `DEPLOY_PATH` | Absolute path on server (e.g. `/var/www/huddinge-karta`) |
+| Secret | `CF_ACCESS_CLIENT_ID` | Cloudflare Access service token ID (for SSH tunnel) |
+| Secret | `CF_ACCESS_CLIENT_SECRET` | Cloudflare Access service token secret |
+| Variable | `DEPLOY_TUNNEL_HOST` | Cloudflare Access SSH tunnel hostname |
 
 To create a deploy keypair:
 

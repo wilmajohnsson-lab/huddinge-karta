@@ -10,14 +10,14 @@
 ## Technical
 - [x] `npm run build` completes without errors or warnings
 - [x] `npm run lint` passes with 0 errors
-- [x] `npm run validate` passes (items.json schema valid)
-- [x] `dist/` contains: index.html, assets/index.js, assets/index.css, data/items.json, favicon.svg, manifest.json, _headers, robots.txt
+- [x] `npm run validate` passes (items-combined.json schema valid)
+- [x] `dist/` contains: index.html, assets/index.js, assets/index.css, data/items-combined.json, favicon.svg, manifest.json, _headers, robots.txt
 - [x] No CDN dependencies except Google Fonts (Leaflet fully bundled)
 - [x] No inline script handlers in HTML (`script-src 'self'` CSP enforced)
 - [x] `VITE_TILE_URL` documented in `.env.example`
 
 ## Content
-- [x] All 13 items have valid lat/lng coordinates
+- [ ] All items have valid lat/lng coordinates
 - [x] All image URLs are reachable (check Unsplash links)
 - [x] All event URLs are valid (check host websites)
 - [x] Photographer credits filled in CREDITS.md
@@ -50,7 +50,7 @@
 ## CI/CD
 - [x] GitHub Actions CI passes on `dev/prepare-deploy` branch
 - [x] `deploy.yml` configured for correct branch (`main`)
-- [ ] GitHub Secrets set: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_PATH`, `DEPLOY_SSH_KEY`
+- [ ] GitHub Secrets set: `DEPLOY_SSH_KEY`, `DEPLOY_PATH`, `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET`; Variable: `DEPLOY_TUNNEL_HOST`
 - [ ] Manual deploy tested: `DEPLOY_HOST=... ./scripts/deploy.sh --dry-run`
 
 ---
