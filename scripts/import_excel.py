@@ -244,6 +244,97 @@ def pick_img(cat):
     _img_idx[cat] += 1
     return img
 
+# ── Konst image resolution ────────────────────────────────────────────────
+KONST_IMG_BASE = '/images/bilder_konst'
+KONST_IMG_DIR  = 'public/images/bilder_konst'  # filesystem path for existence checks
+
+
+def slugify(name: str) -> str:
+    """Normalise a Swedish art name to a filename slug."""
+    s = name.lower()
+    for src, dst in [('å','a'),('ä','a'),('ö','o'),('é','e'),('è','e'),('ü','u')]:
+        s = s.replace(src, dst)
+    s = re.sub(r'[^\w\s]', '', s)
+    s = re.sub(r'\s+', '_', s.strip())
+    return s
+
+
+# Manual overrides: normalised art name → filename (or list for multi-instance names).
+# Used when slugify() doesn't produce the correct filename (typos, word-order
+# differences, spaces in filenames, etc.).
+IMG_OVERRIDES: dict = {
+    'Porträtt av Lizzie Olsson Arle':       'portratt_av_lizzie_arle.jpg',
+    'Hej patient':                          ['hej_patient_1.jpg', 'hej_patient_2.jpg'],
+    'Vassbåtskungens dröm':                 'vassbatskungens_ drom.jpg',
+    'Basunerskans bön':                     'basunerskans_ bon.jpg',
+    'Moas stenar':                          'moas_stanar.jpg',
+    'Vattenkonst':                          'vattenlek.jpg',
+    'Natt och dag':                         'dag_och_natt.jpg',
+    'Asmund Arle skulpterar':               'asmund_arle_skulpturerar.jpg',
+    'Tango vertikal/horisontal':            'tango_ vertikal_horisontal.jpg',
+    'Gyllne koljor och glittrande vågor 1': 'gyllene_koljor1.jpg',
+    'Gyllne koljor och glittrande vågor':   'gyllene_koljor2.jpg',
+    'Den 12 november 1973':                 'den_12_november.jpg',
+    'Mitt Huddinge 2':                      'mitt_huddinge2.jpg',
+    'Porträtt av D. Inganni':               'portratt_av_domenico_inganni.jpg',
+    'Signora Canedotto VII:s sortering i XXVI:e uppordningen av all världens ting och företeelser':
+                                            'Signora_canedotto.jpg',
+    '5 x 5':                                '5x5.jpg',
+    'Stad och land - syncro':               'stad_och_land.jpg',
+    'Hjälphund. Här vaktas den ståndaktiga Osäkerheten och andra Eviga värden.':
+                                            'hjalphund.jpg',
+    # Excel cell contains a literal newline; normalised form collapses it to a space
+    'Flytande blått. Vera, Sigrid och jag.': 'flytande_blatt.jpg',
+    'En dam från Odenplan':                 'en_dam_fran_odenplanjpeg.jpeg',
+    'Färgglada polygonfomar':               'fargglada_polygonformar.jpg',
+    'Organism':                             'organismen.jpg',
+    'Utsmyckning av entre/tunnel':          'utsmyckning_av_entrehall_tunnel.jpg',
+    'Karin Boye':                           'karin_boye_acke.jpg',
+    'Vaktande hundar':                      'vaktande_hund.jpg',
+    # Capital filename — slug auto-match is case-sensitive on Linux
+    'EWK':                                  'EWK.jpg',
+}
+_override_idx: dict = {}
+
+
+def resolve_konst_img(name: str, bild_flag) -> str:
+    """Return a web-path image URL for a konst item.
+
+    Resolution order:
+      1. bild_flag != 'ja'  → Unsplash fallback (no photo assigned)
+      2. IMG_OVERRIDES       → local path  (manual map for mismatched filenames)
+      3. slug auto-match     → local path  (slugify name → filesystem check)
+      4. fallback            → Unsplash
+    """
+    bild_s = str(bild_flag).strip().lower() if bild_flag else ''
+    if bild_s != 'ja':
+        return pick_img('konst')
+
+    # Normalise: strip + collapse internal whitespace (handles Excel cell newlines)
+    norm = re.sub(r'\s+', ' ', name.strip())
+
+    # 1. Manual override
+    if norm in IMG_OVERRIDES:
+        val = IMG_OVERRIDES[norm]
+        if isinstance(val, list):
+            idx = _override_idx.get(norm, 0)
+            filename = val[idx % len(val)]
+            _override_idx[norm] = idx + 1
+        else:
+            filename = val
+        return f'{KONST_IMG_BASE}/{filename}'
+
+    # 2. Slug auto-match against filesystem
+    slug = slugify(norm)
+    for ext in ('.jpg', '.jpeg', '.png', '.webp'):
+        candidate = slug + ext
+        if os.path.exists(os.path.join(KONST_IMG_DIR, candidate)):
+            return f'{KONST_IMG_BASE}/{candidate}'
+
+    # 3. Unsplash fallback
+    return pick_img('konst')
+
+
 # ── Coordinate lookup ─────────────────────────────────────────────────────
 # Static table for well-known Huddinge addresses / landmarks
 STATIC_COORDS = {
@@ -379,6 +470,7 @@ def load_motes(id_start: int) -> list[dict]:
             'loc':      name,
             'addr':     addr,
             'host':     host,
+            'type':     kat.lower() if kat else '',
             'area':     area,
             'free':     True,
             'img':      pick_img('motes'),
@@ -394,13 +486,13 @@ def load_motes(id_start: int) -> list[dict]:
 def load_konst(id_start: int) -> list[dict]:
     """konstlista → konst (permanent public art with coordinates)."""
     items = []
-    wb = openpyxl.load_workbook('Source/konstlista.xlsx')
+    wb = openpyxl.load_workbook('public/konstlista.xlsx')
     ws = wb.active
     iid = id_start
 
     for r in range(2, ws.max_row + 1):
-        row = [ws.cell(r, c).value for c in range(1, 13)]
-        check, namn, konstnär, år, plats, form, utomhus, bild, latitude, longitud, beskrivning, bild2 = row
+        row = [ws.cell(r, c).value for c in range(1, 12)]
+        check, namn, artist, år, plats, form, utomhus, bild, latitude, longitud, beskrivning = row
 
         if not (namn and latitude and longitud):
             continue
@@ -413,7 +505,7 @@ def load_konst(id_start: int) -> list[dict]:
             continue
 
         name    = str(namn).strip()
-        artist  = str(konstnär).strip() if konstnär else 'Okänd konstnär'
+        artist  = str(artist).strip() if artist else 'Okänd konstnär'
         year    = str(int(år)) if isinstance(år, (int, float)) and år and int(år) > 0 else ''
         place   = str(plats).strip() if plats else ''
         form_s  = str(form).strip() if form else ''
@@ -453,8 +545,9 @@ def load_konst(id_start: int) -> list[dict]:
             'host':     artist,
             'area':     area,
             'free':     True,
-            'img':      pick_img('konst'),
+            'img':      resolve_konst_img(name, bild),
             'url':      'https://www.huddinge.se/uppleva-och-gora/konst-och-kultur/',
+            'year':     year,
             'utomhus':  str(utomhus).strip().lower() == 'ja' if utomhus else False,
             'lat':      lat_f,
             'lng':      lng_f,
@@ -620,12 +713,12 @@ def pb_auth(pb_url: str, email: str, password: str) -> str:
                 body={'identity': email, 'password': password})
     return res['token']
 
-def pb_list_items(pb_url: str, token: str) -> list[dict]:
+def pb_list(pb_url: str, token: str, coll: str = 'items') -> list[dict]:
     out = []
     page = 1
     while True:
         res = _http('GET',
-                    f'{pb_url}/api/collections/items/records?perPage=200&page={page}',
+                    f'{pb_url}/api/collections/{coll}/records?perPage=200&page={page}',
                     token=token)
         out.extend(res.get('items', []))
         if page >= res.get('totalPages', 1):
@@ -633,16 +726,17 @@ def pb_list_items(pb_url: str, token: str) -> list[dict]:
         page += 1
     return out
 
-def pb_create(pb_url: str, token: str, payload: dict) -> dict:
-    return _http('POST', f'{pb_url}/api/collections/items/records',
+def pb_create(pb_url: str, token: str, payload: dict, coll: str = 'items') -> dict:
+    return _http('POST', f'{pb_url}/api/collections/{coll}/records',
                  token=token, body=payload)
 
-def pb_update(pb_url: str, token: str, record_id: str, payload: dict) -> dict:
-    return _http('PATCH', f'{pb_url}/api/collections/items/records/{record_id}',
+def pb_update(pb_url: str, token: str, record_id: str, payload: dict,
+             coll: str = 'items') -> dict:
+    return _http('PATCH', f'{pb_url}/api/collections/{coll}/records/{record_id}',
                  token=token, body=payload)
 
-def pb_delete(pb_url: str, token: str, record_id: str) -> None:
-    _http('DELETE', f'{pb_url}/api/collections/items/records/{record_id}',
+def pb_delete(pb_url: str, token: str, record_id: str, coll: str = 'items') -> None:
+    _http('DELETE', f'{pb_url}/api/collections/{coll}/records/{record_id}',
           token=token)
 
 # ── Item ↔ PB payload mapping ─────────────────────────────────────────────
@@ -661,6 +755,145 @@ def _reg_to_pb(v) -> str:
 
 def _reg_from_pb(v) -> bool | None:
     return {'yes': True, 'no': False}.get(v, None)
+
+def to_konst_payload(item: dict) -> dict:
+    """Map a parsed konst item → PocketBase `konst` collection payload."""
+    return {
+        'name':     item['name'],
+        'artist':   item.get('host') or 'Okänd konstnär',
+        'year':     item.get('year') or '',
+        'loc':      item.get('loc')  or '',
+        'desc':     item.get('desc') or '',
+        'longDesc': item.get('longDesc') or '',
+        'area':     item.get('area') or '',
+        'img':      item.get('img')  or '',
+        'lat':      item['lat'],
+        'lng':      item['lng'],
+        'utomhus':  bool(item.get('utomhus', False)),
+    }
+
+
+def to_aktor_payload(item: dict) -> dict:
+    """Map a parsed motes item → PocketBase `aktorer` collection payload.
+
+    img is intentionally excluded when not explicitly set as a real path,
+    so existing PB image assignments are preserved across re-imports.
+    """
+    p = {
+        'name': item['name'],
+        'org':  item.get('host') or '',
+        'type': item.get('type') or '',
+        'addr': item.get('addr') or '',
+        'area': item.get('area') or '',
+        'lat':  item['lat'],
+        'lng':  item['lng'],
+        'url':  item.get('url')  or '',
+    }
+    # Only carry img if it's a real path (never 'ja' / 'nej' / Unsplash)
+    img = item.get('img') or ''
+    if img and img.startswith('/images/'):
+        p['img'] = img
+    return p
+
+
+def process_collection(
+    label: str,
+    coll: str,
+    parsed_items: list,
+    pb_url: str,
+    token: str,
+    sig_fn,
+    payload_fn,
+    apply: bool,
+    prune: bool,
+) -> tuple:
+    """Diff parsed_items against a PB collection; print report; apply if requested.
+    Returns (n_creates, n_updates, n_unchanged, n_orphans).
+    """
+    print(f'  Fetching {coll}…', end=' ', flush=True)
+    try:
+        existing = pb_list(pb_url, token, coll)
+    except PBError as e:
+        print('FAIL'); print(f'  ✗ {e}', file=sys.stderr); return (0, 0, 0, 0)
+    print(f'{len(existing)} found')
+
+    by_sig = {sig_fn(r): r for r in existing}
+
+    parsed_by_sig: dict = {}
+    for item in parsed_items:
+        parsed_by_sig[sig_fn(item)] = item   # last row wins on dup
+
+    creates: list = []
+    updates: list = []   # (record, payload, diff)
+    unchanged = 0
+    for s, item in parsed_by_sig.items():
+        payload = payload_fn(item)
+        if s in by_sig:
+            d = diff_payload(payload, by_sig[s])
+            if d:
+                updates.append((by_sig[s], payload, d))
+            else:
+                unchanged += 1
+        else:
+            creates.append(payload)
+    orphans = [r for s, r in by_sig.items() if s not in parsed_by_sig]
+
+    print(f'\n  [{label}]')
+    print(f'    create:    {len(creates):>4}')
+    print(f'    update:    {len(updates):>4}')
+    print(f'    unchanged: {unchanged:>4}')
+    print(f'    orphan:    {len(orphans):>4}  '
+          '(in PB but not in Excel — deleted with --prune)')
+
+    def _name(r): return r.get('name', '?')
+
+    if creates:
+        print('    create samples:')
+        for p in creates[:4]: print(f'      + {_name(p)}')
+        if len(creates) > 4: print(f'      … and {len(creates)-4} more')
+    if updates:
+        print('    update samples:')
+        for r, p, d in updates[:4]:
+            keys = ', '.join(sorted(d.keys()))
+            print(f'      ~ {_name(r)}  ({keys})')
+        if len(updates) > 4: print(f'      … and {len(updates)-4} more')
+    if orphans:
+        print('    orphan samples:')
+        for r in orphans[:4]: print(f'      - {_name(r)}')
+        if len(orphans) > 4: print(f'      … and {len(orphans)-4} more')
+
+    if not apply:
+        return (len(creates), len(updates), unchanged, len(orphans))
+
+    ok = err = 0
+    for p in creates:
+        try:
+            pb_create(pb_url, token, p, coll); ok += 1
+        except PBError as e:
+            err += 1; print(f'  ✗ create {_name(p)}: {e}', file=sys.stderr)
+    if creates: print(f'    created:  {ok}/{len(creates)}')
+
+    ok = err = 0
+    for r, p, d in updates:
+        try:
+            pb_update(pb_url, token, r['id'], d, coll); ok += 1
+        except PBError as e:
+            err += 1; print(f'  ✗ update {_name(r)}: {e}', file=sys.stderr)
+    if updates: print(f'    updated:  {ok}/{len(updates)}')
+
+    if prune and orphans:
+        ok = err = 0
+        for r in orphans:
+            try:
+                pb_delete(pb_url, token, r['id'], coll); ok += 1
+            except PBError as e:
+                err += 1; print(f'  ✗ delete {_name(r)}: {e}', file=sys.stderr)
+        print(f'    deleted:  {ok}/{len(orphans)}')
+    elif orphans:
+        print(f'    orphans:  {len(orphans)} kept (no --prune flag)')
+
+    return (len(creates), len(updates), unchanged, len(orphans))
+
 
 def to_pb_payload(item: dict) -> dict:
     """Translate a parsed Excel item into a PB record payload."""
@@ -688,13 +921,32 @@ def to_pb_payload(item: dict) -> dict:
     return p
 
 def sig(item_or_record: dict) -> tuple:
-    """Stable identifier for matching Excel items to PB records."""
+    """Stable identifier for items/events (cat + name + host + addr)."""
     return (
         (item_or_record.get('cat')  or '').strip(),
         (item_or_record.get('name') or '').strip(),
         (item_or_record.get('host') or '').strip(),
         (item_or_record.get('addr') or '').strip(),
     )
+
+def sig_konst(item_or_record: dict) -> tuple:
+    """Stable identifier for konst records.
+    Excel items use 'host' for artist; PB records use 'artist'.
+    """
+    artist = (
+        item_or_record.get('artist') or
+        item_or_record.get('host')   or ''
+    ).strip()
+    return (
+        (item_or_record.get('name') or '').strip(),
+        artist,
+    )
+
+def sig_aktor(item_or_record: dict) -> tuple:
+    """Stable identifier for aktorer records.
+    Keyed on name only — `org` is not reliably populated in existing PB records.
+    """
+    return ((item_or_record.get('name') or '').strip(),)
 
 def diff_payload(payload: dict, record: dict) -> dict:
     """Return only the fields where payload differs from record."""
@@ -783,7 +1035,6 @@ def main() -> int:
         print('  ✗ --apply requires PB_PASSWORD env var', file=sys.stderr)
         return 2
 
-    # Always authenticate so we can dry-run a real diff
     if not pb_pw:
         print('  (no PB_PASSWORD set — cannot fetch existing PB state)')
         print('  Set PB_PASSWORD to see a real diff, or pass --apply to write.')
@@ -796,105 +1047,28 @@ def main() -> int:
         print('FAIL'); print(f'  ✗ {e}', file=sys.stderr); return 2
     print('ok')
 
-    print('  Fetching existing items…', end=' ', flush=True)
-    try:
-        existing = pb_list_items(pb_url, token)
-    except PBError as e:
-        print('FAIL'); print(f'  ✗ {e}', file=sys.stderr); return 2
-    print(f'{len(existing)} found')
+    # Split parsed items by destination collection
+    motes_items  = [i for i in parsed if i.get('cat') == 'motes']
+    konst_items  = [i for i in parsed if i.get('cat') == 'konst']
+    event_items  = [i for i in parsed if i.get('cat') not in ('motes', 'konst')]
 
-    by_sig: dict[tuple, dict] = {}
-    for r in existing:
-        by_sig[sig(r)] = r
+    print(f'\n  {len(konst_items):>3} konst  → konst collection')
+    print(f'  {len(motes_items):>3} motes  → aktorer collection')
+    print(f'  {len(event_items):>3} events → items collection')
 
-    # Dedup parsed list by signature (last row wins, matches the warning above)
-    parsed_by_sig: dict[tuple, dict] = {}
-    for item in parsed:
-        parsed_by_sig[sig(item)] = item
-
-    creates: list[dict] = []
-    updates: list[tuple[dict, dict, dict]] = []   # (record, payload, diff)
-    unchanged = 0
-    for s, item in parsed_by_sig.items():
-        payload = to_pb_payload(item)
-        if s in by_sig:
-            d = diff_payload(payload, by_sig[s])
-            if d:
-                updates.append((by_sig[s], payload, d))
-            else:
-                unchanged += 1
-        else:
-            creates.append(payload)
-
-    orphans = [r for s, r in by_sig.items() if s not in parsed_by_sig]
-
-    print()
-    print('=== Diff ===')
-    print(f'  create:    {len(creates):>4}')
-    print(f'  update:    {len(updates):>4}')
-    print(f'  unchanged: {unchanged:>4}')
-    print(f'  orphan:    {len(orphans):>4}  '
-          '(in PB but not in Excel — would be deleted with --prune)')
-
-    # Show samples
-    if creates:
-        print('\n  create samples:')
-        for p in creates[:5]:
-            print(f'    + [{p["cat"]}] {p["name"]}  ({p["host"]})')
-        if len(creates) > 5: print(f'    … and {len(creates) - 5} more')
-    if updates:
-        print('\n  update samples:')
-        for r, p, d in updates[:5]:
-            keys = ', '.join(sorted(d.keys()))
-            print(f'    ~ [{r["cat"]}] {r["name"]}  ({keys})')
-        if len(updates) > 5: print(f'    … and {len(updates) - 5} more')
-    if orphans:
-        print('\n  orphan samples:')
-        for r in orphans[:5]:
-            print(f'    - [{r["cat"]}] {r["name"]}  ({r["host"]})')
-        if len(orphans) > 5: print(f'    … and {len(orphans) - 5} more')
+    print('\n=== Diff ===')
+    process_collection('konst',   'konst',   konst_items,  pb_url, token,
+                       sig_konst, to_konst_payload,  args.apply, args.prune)
+    process_collection('aktorer', 'aktorer', motes_items,  pb_url, token,
+                       sig_aktor, to_aktor_payload,  args.apply, args.prune)
+    process_collection('items',   'items',   event_items,  pb_url, token,
+                       sig,       to_pb_payload,      args.apply, args.prune)
 
     if not args.apply:
         print('\n(dry-run — re-run with --apply to write)')
-        return 0
-
-    # ── Apply ─────────────────────────────────────────────────────────────
-    print('\n=== Applying ===')
-    ok = err = 0
-    for p in creates:
-        try:
-            pb_create(pb_url, token, p)
-            ok += 1
-        except PBError as e:
-            err += 1
-            print(f'  ✗ create [{p["cat"]}] {p["name"]}: {e}', file=sys.stderr)
-    print(f'  created:  {ok}/{len(creates)}')
-
-    ok = err = 0
-    for r, p, d in updates:
-        try:
-            pb_update(pb_url, token, r['id'], d)
-            ok += 1
-        except PBError as e:
-            err += 1
-            print(f'  ✗ update [{r["cat"]}] {r["name"]}: {e}', file=sys.stderr)
-    print(f'  updated:  {ok}/{len(updates)}')
-
-    if args.prune and orphans:
-        ok = err = 0
-        for r in orphans:
-            try:
-                pb_delete(pb_url, token, r['id'])
-                ok += 1
-            except PBError as e:
-                err += 1
-                print(f'  ✗ delete [{r["cat"]}] {r["name"]}: {e}', file=sys.stderr)
-        print(f'  deleted:  {ok}/{len(orphans)}')
-    elif orphans:
-        print(f'  orphans:  {len(orphans)} kept (no --prune flag)')
-
-    print('\nDone. Open https://huddinge-admin.mreh.site/publicera.html '
-          'to publish to the live site.')
+    else:
+        print('\nDone. Open https://huddinge-admin.mreh.site/publicera.html '
+              'to publish to the live site.')
     return 0
 
 if __name__ == '__main__':
