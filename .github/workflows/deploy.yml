@@ -32,7 +32,14 @@ jobs:
         run: npm run validate
 
       - name: Build
-        run: npm run build
+        env:
+          VITE_TILE_URL: ${{ secrets.VITE_TILE_URL }}
+        run: |
+          if [ -z "$VITE_TILE_URL" ]; then
+            echo "::error::Set the VITE_TILE_URL repository secret before deploying."
+            exit 1
+          fi
+          npm run build
 
       - name: Install cloudflared
         run: |

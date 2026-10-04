@@ -32,6 +32,25 @@ npm run preview
 
 Then open http://localhost:5173 in your browser.
 
+### CARTO basemap configuration
+
+Copy `.env.example` to `.env.local` (gitignored) and set `VITE_TILE_URL` to the
+CARTO `light_all` URL with this project's key:
+
+```dotenv
+VITE_TILE_URL=https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=YOUR_CARTO_KEY
+```
+
+Restart the dev server or rebuild after changing it. The main map and detail maps
+share this URL. For production, set the same full URL as the GitHub repository
+secret `VITE_TILE_URL`; the deployment workflow fails before deployment if it is
+missing. Do not commit the real key. `VITE_*` values are embedded in the browser
+bundle and visible in tile requests, so restrict the key to this project's domains
+in the [CARTO dashboard](https://carto.com/basemaps/apikey).
+
+If old watermarked tiles linger after deployment, reload the page to pick up the
+new app bundle. Authenticated tile URLs have distinct cache entries from unkeyed URLs.
+
 ## Project Structure
 
 ```
@@ -167,6 +186,7 @@ Set the following in your GitHub repository settings:
 |------|------|-------------|
 | Secret | `DEPLOY_SSH_KEY` | Private SSH key for the deploy user on the server |
 | Secret | `DEPLOY_PATH` | Absolute path on the server (e.g. `/var/www/huddinge-karta`) |
+| Secret | `VITE_TILE_URL` | Full map tile URL including the project-specific CARTO key (build-time, browser-visible) |
 | Secret | `CF_ACCESS_CLIENT_ID` | Cloudflare Access service token ID (for SSH tunnel) |
 | Secret | `CF_ACCESS_CLIENT_SECRET` | Cloudflare Access service token secret |
 | Variable | `DEPLOY_TUNNEL_HOST` | Cloudflare Access SSH tunnel hostname |

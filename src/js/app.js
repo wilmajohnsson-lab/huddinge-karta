@@ -219,8 +219,10 @@ function initMap() {
     maxBounds: BOUNDS,
     maxBoundsViscosity: 1,
     zoomControl: false,
-    attributionControl: false,
+    attributionControl: true,
   });
+  // Keep provider credits above the card panel and clear of the category bar.
+  map.attributionControl.setPosition('topright').setPrefix(false);
   L.tileLayer(TILE_URL, {
     subdomains: 'abcd',
     maxZoom: 19,
@@ -1153,11 +1155,15 @@ function openDetail(itemOrId) {
       center: [item.lat, item.lng],
       zoom: 15,
       zoomControl: false,
-      attributionControl: false,
+      attributionControl: true,
       interactive: false,
       dragging: false,
     });
-    L.tileLayer(TILE_URL, { subdomains: 'abcd' }).addTo(detailMapInstance);
+    detailMapInstance.attributionControl.setPrefix(false);
+    L.tileLayer(TILE_URL, {
+      subdomains: 'abcd',
+      attribution: TILE_ATTRIBUTION,
+    }).addTo(detailMapInstance);
     const pi = L.divIcon({
       html: `<div class="det-pin-dot cat-${esc(item.cat)}"></div>`,
       className: '',

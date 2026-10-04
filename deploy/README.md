@@ -80,9 +80,14 @@ There is an example workflow at `.github/workflows/deploy.yml`. It requires the 
 |------|------|-------------|
 | Secret | `DEPLOY_SSH_KEY` | Private SSH key for the deploy user on the server |
 | Secret | `DEPLOY_PATH` | Absolute path on server (e.g. `/var/www/huddinge-karta`) |
+| Secret | `VITE_TILE_URL` | Full CARTO tile URL with the project API key; required at build time and visible to browsers |
 | Secret | `CF_ACCESS_CLIENT_ID` | Cloudflare Access service token ID (for SSH tunnel) |
 | Secret | `CF_ACCESS_CLIENT_SECRET` | Cloudflare Access service token secret |
 | Variable | `DEPLOY_TUNNEL_HOST` | Cloudflare Access SSH tunnel hostname |
+
+The `Build` step reads `VITE_TILE_URL` from the repository secret and refuses to
+deploy if it is unset. See [basemap configuration](../README.md#carto-basemap-configuration).
+Only the deploy workflow needs the real key; PR CI can build without it.
 
 To create a deploy keypair:
 
