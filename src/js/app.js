@@ -325,6 +325,12 @@ function addClusterMarker(cluster) {
     m.closeTooltip();
     showCards(cluster.items.map((i) => i.id));
   });
+  // Leaflet's focusable marker divs do not activate custom click handlers natively.
+  m.on('keydown', (e) => {
+    if (e.originalEvent.key !== 'Enter' && e.originalEvent.key !== ' ') return;
+    L.DomEvent.stop(e.originalEvent);
+    if (!e.originalEvent.repeat) m.fire('click', { originalEvent: e.originalEvent });
+  });
   leafMarkers[cluster.key] = m;
 }
 
@@ -353,6 +359,8 @@ function rebuildClusterMarkers() {
 }
 
 // ── CARD PANEL ────────────────────────────────────────────────────
+let cardReturnFocus = null;
+let cardReturnItemId = null;
 function updateCardArrows() {
   const isDesktop = window.innerWidth >= 720;
   const prev = document.getElementById('cardPrevBtn');
@@ -367,6 +375,8 @@ function updateCardArrows() {
 }
 
 function showCards(ids) {
+  if (!activeIds.length) cardReturnFocus = document.activeElement;
+  cardReturnItemId = ids[0];
   const prevIds = [...activeIds];
   activeIds = ids;
   prevIds.forEach((id) => { if (!activeIds.includes(id)) refreshClusterByItemId(id); });
@@ -382,7 +392,13 @@ function showCards(ids) {
 
   scroll.classList.toggle('single-card', activeIds.length === 1);
   document.getElementById('cardPanel').classList.toggle('multi-cards', activeIds.length > 1);
-  document.getElementById('cardPanel').classList.add('visible');
+  const panel = document.getElementById('cardPanel');
+  panel.inert = false;
+  panel.setAttribute('aria-hidden', 'false');
+  panel.classList.add('visible');
+  document.getElementById('closeCardBtn').focus({ preventScroll: true });
+  document.getElementById('tabBar').inert = true;
+  document.getElementById('topBar').inert = true;
   document.getElementById('tabBar').classList.add('hidden');
   document.getElementById('topBar').style.opacity = '0';
   document.getElementById('topBar').style.pointerEvents = 'none';
@@ -400,11 +416,28 @@ function dismissCards() {
   const prevIds = [...activeIds];
   activeIds = [];
   prevIds.forEach(refreshClusterByItemId);
-  document.getElementById('cardPanel').classList.remove('visible', 'multi-cards');
+  const panel = document.getElementById('cardPanel');
+  const restoreFocus = panel.contains(document.activeElement);
+  panel.classList.remove('visible', 'multi-cards');
+  document.getElementById('tabBar').inert = false;
+  document.getElementById('topBar').inert = false;
   document.getElementById('cardScroll').classList.remove('single-card');
   document.getElementById('tabBar').classList.remove('hidden');
   document.getElementById('topBar').style.opacity = '';
   document.getElementById('topBar').style.pointerEvents = '';
+  if (restoreFocus) {
+    // Leaflet replaces marker elements when their active icon changes.
+    const cluster = clusters.find((c) => c.items.some((i) => i.id === cardReturnItemId));
+    const marker = cluster && leafMarkers[cluster.key]?.getElement();
+    const target = cardReturnFocus?.isConnected && cardReturnFocus !== document.body
+      ? cardReturnFocus : marker || document.getElementById('searchTabBtn');
+    target.focus({ preventScroll: true });
+  }
+  panel.inert = true;
+  panel.setAttribute('aria-hidden', 'true');
+  updateCardArrows();
+  cardReturnFocus = null;
+  cardReturnItemId = null;
 }
 
 // ── CARD HTML ─────────────────────────────────────────────────────
@@ -1266,6 +1299,7 @@ function initDom() {
   // Card panel
   document.getElementById('backBtn').addEventListener('click', dismissCards);
   document.getElementById('closeCardBtn').addEventListener('click', dismissCards);
+  window.addEventListener('resize', updateCardArrows);
   document.getElementById('cardPrevBtn').addEventListener('click', () => {
     const s = document.getElementById('cardScroll');
     const cardW = s.querySelector('.ev-card')?.offsetWidth || 340;
