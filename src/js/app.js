@@ -223,6 +223,13 @@ function initMap() {
   });
   // Keep provider credits above the card panel and clear of the category bar.
   map.attributionControl.setPosition('topright').setPrefix(false);
+  // Only credit-size changes need measuring (wrapping/text size), not map movement.
+  const creditSizeObserver = new ResizeObserver(([entry]) => {
+    const height = entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height;
+    document.getElementById('app').style.setProperty('--map-attribution-height', `${Math.ceil(height)}px`);
+  });
+  creditSizeObserver.observe(map.attributionControl.getContainer());
+  map.once('unload', () => creditSizeObserver.disconnect());
   L.tileLayer(TILE_URL, {
     subdomains: 'abcd',
     maxZoom: 19,
