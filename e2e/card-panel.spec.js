@@ -1,11 +1,7 @@
-import { test, expect } from './support/fixtures.js';
+import { test, expect, selectors } from './support/fixtures.js';
 
-const singleMarker = (page) => page.locator('.leaflet-marker-icon').filter({
-  hasNot: page.locator('.mpin-cluster-num'),
-}).first();
-const clusteredMarker = (page) => page.locator('.leaflet-marker-icon').filter({
-  has: page.locator('.mpin-cluster-num'),
-}).first();
+const singleMarker = (page) => page.locator(selectors.singleMarker).first();
+const clusteredMarker = (page) => page.locator(selectors.clusterMarker).first();
 
 async function expectClosed(page) {
   await expect(page.locator('#cardPanel')).toHaveAttribute('aria-hidden', 'true');
@@ -47,6 +43,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 800 
     await page.keyboard.press('Enter');
     await expectOpen(page);
     await expect(page.locator('#cardScroll .ev-card')).toHaveCount(1);
+    await expect(page.locator('#cardScroll')).toContainText('Fixture Solo Concert');
     await expect(page.locator('#closeCardBtn')).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(page.locator('.leaflet-marker-icon:focus')).toHaveCount(1);
