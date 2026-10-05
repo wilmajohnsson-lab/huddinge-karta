@@ -151,14 +151,22 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   transform:translateY(100%);
   transition:transform .38s cubic-bezier(.32,.94,.6,1);
   background:linear-gradient(to top,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 100%);
-  padding-top:72px;
+  display:flex;flex-direction:column;
+  max-height:calc(100dvh - env(safe-area-inset-top,0px) - 16px);
+  visibility:hidden;
   pointer-events:none;
 }
-#cardPanel.visible{transform:translateY(0)}
+#cardPanel.visible{transform:translateY(0);visibility:visible}
+#cardPanel:not(.visible) *{pointer-events:none}
+.card-controls{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-shrink:0;padding:10px 16px}
+#cardPrevBtn,#cardNextBtn{display:none}
+@media (prefers-reduced-motion:reduce){
+  #cardPanel{transition:none}
+}
 
 #closeCardBtn{
   pointer-events:auto;
-  position:absolute;top:16px;right:16px;
+  min-height:44px;
   display:flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;
   background:rgba(255,255,255,.92);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
   border-radius:40px;border:none;cursor:pointer;
@@ -169,7 +177,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 
 #cardScroll{
   pointer-events:auto;
-  display:flex;gap:12px;overflow-x:auto;
+  display:flex;gap:12px;overflow:auto;min-height:0;
   padding:0 0 calc(env(safe-area-inset-bottom,0px) + 16px) 0;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
   align-items:stretch;
@@ -719,12 +727,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
 
   #cardPanel { background: none; padding-top: 0; }
   #cardPanel.multi-cards { width: 520px; }
-  /* Stäng button floats above the panel on desktop */
-  #closeCardBtn { top: auto; bottom: calc(100% + 10px); right: 16px; }
+  #closeCardBtn { margin-left: auto; order: 1; }
   /* Nav arrows — hidden on mobile, shown on desktop */
   #cardPrevBtn:not([hidden]), #cardNextBtn:not([hidden]) {
     display: flex; align-items: center; justify-content: center;
-    position: absolute; bottom: calc(50% - 24px);
     width: 44px; height: 44px; border-radius: 50%;
     background: rgba(50,50,50,.82); backdrop-filter: blur(8px);
     border: none; cursor: pointer; color: #fff;
@@ -732,8 +738,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
     pointer-events: auto; z-index: 10;
     transition: opacity .15s, transform .12s;
   }
-  #cardPrevBtn { right: calc(100% + 10px); }
-  #cardNextBtn { left: calc(100% + 10px); }
   #cardPrevBtn:hover, #cardNextBtn:hover { transform: scale(1.08); }
   #cardPrevBtn svg, #cardNextBtn svg { width: 22px; height: 22px; }
 
@@ -741,13 +745,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2.5px solid #06
   #cardScroll {
     flex-direction: row;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     scroll-snap-type: x mandatory;
     max-height: none;
     padding: 0 0 calc(env(safe-area-inset-bottom,0px) + 16px) 0 !important;
   }
   #cardScroll::before, #cardScroll::after { display: block !important; min-width: 8px; width: 8px; }
-  #cardScroll.single-card { padding: 0 !important; overflow-x: hidden; }
+  #cardScroll.single-card { overflow-x: hidden; }
   .ev-card { width: 340px !important; flex-shrink: 0; scroll-snap-align: start; }
   #cardScroll.single-card .ev-card { width: calc(100% - 16px) !important; margin: 0 8px; }
 }
