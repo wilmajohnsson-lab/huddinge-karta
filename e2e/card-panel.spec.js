@@ -71,7 +71,9 @@ test('resize and short landscape keep controls reachable; rapid close/reopen is 
   await page.locator('#cardNextBtn').click();
   await expect(page.locator('#cardPrevBtn')).toBeVisible();
   await page.locator('#closeCardBtn').evaluate((button) => button.click());
-  await clusteredMarker(page).click();
+  // Resizing can place this fixed map coordinate behind the header; use keyboard activation.
+  await clusteredMarker(page).focus();
+  await page.keyboard.press('Space');
   await expectOpen(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 390, height: 320 });
