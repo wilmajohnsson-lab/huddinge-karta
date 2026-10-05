@@ -17,6 +17,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   --map-controls-height:40px;
   --map-controls-padding:12px;
   --map-controls-bottom:calc(var(--map-safe-top) + var(--map-header-height) + var(--map-controls-height) + 2 * var(--map-controls-padding));
+  --map-attribution-top:calc(var(--map-controls-bottom) + 4px);
   position:fixed;inset:0;background:#f6f6f6;
 }
 #mapWrap{position:absolute;inset:0}
@@ -26,7 +27,7 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
 .leaflet-control-zoom{display:none!important}
 /* Provider credits must remain visible, clear of the category bar and cards. */
 #map .leaflet-top.leaflet-right .leaflet-control-attribution{
-  margin-top:calc(var(--map-controls-bottom) + 4px);
+  margin-top:var(--map-attribution-top);
   margin-right:calc(env(safe-area-inset-right,0px) + 10px);
   max-width:calc(100vw - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px) - 20px);
   white-space:normal;
@@ -152,7 +153,8 @@ html,body{height:100%;overflow:hidden;background:#111;overscroll-behavior:none;f
   transition:transform .38s cubic-bezier(.32,.94,.6,1);
   background:linear-gradient(to top,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 100%);
   display:flex;flex-direction:column;
-  max-height:calc(100dvh - env(safe-area-inset-top,0px) - 16px);
+  /* Leave the provider links above cards, including wrapped credits on short screens. */
+  max-height:calc(100dvh - var(--map-attribution-top) - var(--map-attribution-height,36px) - 8px);
   visibility:hidden;
   pointer-events:none;
 }

@@ -53,6 +53,27 @@ for (const width of [280, 320, 390, 719, 720, 721, 1280]) {
   });
 }
 
+test('short landscapes keep wrapped credits above open clustered cards', async ({ page }) => {
+  await page.setViewportSize({ width: 720, height: 900 });
+  await page.goto('/');
+  await page.locator('#map .leaflet-marker-icon:has(.mpin-cluster-num) .mpin-circle').click();
+  for (const width of [720, 900, 390, 200]) {
+    await page.setViewportSize({ width, height: 320 });
+    await expectUsableCredits(page);
+    await expect.poll(async () => {
+      const credits = await page.locator(creditsSelector).boundingBox();
+      const panel = await page.locator('#cardPanel').boundingBox();
+      return panel.y >= credits.y + credits.height + 7;
+    }).toBe(true);
+    await expect(page.locator('#closeCardBtn')).toBeInViewport({ ratio: 1 });
+  }
+  // A larger credit font changes wrapping without a window resize.
+  await page.locator(creditsSelector).evaluate((el) => { el.style.fontSize = '16px'; });
+  await expectUsableCredits(page);
+  await page.locator('#closeCardBtn').click();
+  await expectUsableCredits(page);
+});
+
 test('credits wrap within a very narrow viewport', async ({ page }) => {
   await page.setViewportSize({ width: 200, height: 900 });
   await page.goto('/');
