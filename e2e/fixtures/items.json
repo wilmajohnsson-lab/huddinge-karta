@@ -1,0 +1,75 @@
+{
+  "events": [
+    {
+      "id": "fixture-solo",
+      "name": "Fixture Solo Concert",
+      "cat": "musik",
+      "lat": 59.218,
+      "lng": 17.975,
+      "desc": "A deterministic local event for layout testing.",
+      "longDesc": "A deterministic local event for layout testing.",
+      "date": "15 juni",
+      "time": "17:00–19:00",
+      "loc": "Fixture Hall",
+      "addr": "Fixture Street 1",
+      "img": "/e2e-fixture.svg",
+      "url": "https://example.invalid/event",
+      "host": "Fixture Organisation",
+      "area": "huddinge",
+      "free": true,
+      "pris": 0,
+      "registration": false
+    },
+    {
+      "id": "fixture-cluster-theatre",
+      "name": "Fixture Cluster Theatre",
+      "cat": "teater",
+      "lat": 59.218,
+      "lng": 17.981,
+      "desc": "A deterministic local event for layout testing.",
+      "longDesc": "A deterministic local event for layout testing.",
+      "date": "15 juni",
+      "time": "17:00–19:00",
+      "loc": "Fixture Hall",
+      "addr": "Fixture Street 1",
+      "img": "/e2e-fixture.svg",
+      "url": "https://example.invalid/event",
+      "host": "Fixture Organisation",
+      "area": "huddinge",
+      "free": true,
+      "pris": 0,
+      "registration": false
+    },
+    {
+      "id": "fixture-cluster-workshop",
+      "name": "Fixture Cluster Workshop",
+      "cat": "kultur",
+      "lat": 59.218,
+      "lng": 17.981,
+      "desc": "A deterministic local event for layout testing.",
+      "longDesc": "A deterministic local event for layout testing.",
+      "date": "15 juni",
+      "time": "17:00–19:00",
+      "loc": "Fixture Hall",
+      "addr": "Fixture Street 1",
+      "img": "/e2e-fixture.svg",
+      "url": "https://example.invalid/event",
+      "host": "Fixture Organisation",
+      "area": "huddinge",
+      "free": true,
+      "pris": 0,
+      "registration": false
+    }
+  ],
+  "konst": [],
+  "aktorer": [],
+  "orgs": [
+    "Fixture Organisation"
+  ],
+  "areas": [
+    {
+      "id": "huddinge",
+      "name": "Huddinge"
+    }
+  ]
+}
