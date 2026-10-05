@@ -6,16 +6,22 @@ Thank you for contributing! Huddinge Karta is a small single-page app (Vanilla E
 
 ## Prerequisites
 
-- Node.js 22+ and npm
-- A terminal / command line
+- Latest patched Node.js 22 (`.node-version`) and npm
+- Git and a terminal / command line
+
+For new machines, Pi instructions/skills, tile configuration and browser libraries,
+see [portable development setup](docs/development-setup.md).
 
 ## Local development
 
 1. Install dependencies:
 
 ```bash
-npm install
+npm ci --ignore-scripts
 ```
+
+Optional tracked Git hooks can be enabled with `npm run prepare` on a dedicated
+clone. See the setup guide before changing shared-worktree Git configuration.
 
 2. Run the dev server:
 
