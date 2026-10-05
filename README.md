@@ -16,9 +16,13 @@ Built with [Leaflet.js](https://leafletjs.com/) + vanilla JavaScript. Map tiles 
 
 ## Quick Start
 
+Use the latest patched **Node.js 22** release (`.node-version`) and npm.
+For a fresh machine or Pi harness, follow [portable development setup](docs/development-setup.md).
+Agent instructions live in [AGENTS.md](AGENTS.md); optional portable skills are in `.pi/skills/`.
+
 ```bash
-# Install dependencies
-npm install
+# Install the locked dependencies without lifecycle scripts
+npm ci --ignore-scripts
 
 # Start local dev server (hot-reload)
 npm run dev
@@ -157,7 +161,11 @@ Run `npm run validate` after editing to catch schema errors.
 
 ## Deployment
 
-The site builds to `dist/` — copy that directory to any web server.
+The site builds to `dist/`. **Existing production releases must use
+[the deployment workflow](.github/workflows/deploy.yml), triggered by a push to `main`.**
+Obtain approval before merging/pushing to `main`; do not bypass it with manual
+copies or deploy scripts. Moving development to another machine does not require
+moving production or copying GitHub Actions deployment credentials.
 
 ### Self-hosted: nginx or Caddy (primary)
 
@@ -171,7 +179,8 @@ deploy/
   README.md    # Step-by-step server setup + Proxmox LXC notes
 ```
 
-Manual deploy from your machine:
+Manual helper for separately approved infrastructure work (not the existing
+production release path; not required for local development):
 
 ```bash
 DEPLOY_HOST=your-server.se ./scripts/deploy.sh
@@ -180,7 +189,8 @@ DEPLOY_HOST=your-server.se DEPLOY_USER=www-data DEPLOY_SSH_KEY=~/.ssh/deploy_key
 ```
 
 Automated deploy via GitHub Actions (push to `main`):
-Set the following in your GitHub repository settings:
+The existing repository settings below stay in GitHub when development moves.
+Changing them requires separate approval:
 
 | Kind | Name | Description |
 |------|------|-------------|
