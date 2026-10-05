@@ -36,6 +36,9 @@ These are layout tests, not cartographic or remote-service tests.
 
 All dates are `15 juni`; clustered events have identical coordinates. Art and
 venue collections and the secondary actor list are intentionally empty.
+`art-card.spec.js` overrides only the primary data route with local artwork records
+(single/clustered, outdoor/indoor and long text) to check badge placement and the
+unclipped, pointer/keyboard-reachable detail button without changing this baseline.
 
 - `selectors.singleMarker`: `.leaflet-marker-icon:has(.mpin):not(:has(.mpin-cluster-num))`
 - `selectors.clusterMarker`: `.leaflet-marker-icon:has(.mpin-cluster-num)`
