@@ -332,6 +332,12 @@ function addClusterMarker(cluster) {
     m.closeTooltip();
     showCards(cluster.items.map((i) => i.id));
   });
+  // Leaflet's focusable marker divs do not activate custom click handlers natively.
+  m.on('keydown', (e) => {
+    if (e.originalEvent.key !== 'Enter' && e.originalEvent.key !== ' ') return;
+    L.DomEvent.stop(e.originalEvent);
+    if (!e.originalEvent.repeat) m.fire('click', { originalEvent: e.originalEvent });
+  });
   leafMarkers[cluster.key] = m;
 }
 
