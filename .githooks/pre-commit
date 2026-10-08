@@ -14,7 +14,8 @@ run_tests=0
 
 if echo "$staged" | grep -qE '^src/js/.*\.js$'; then run_lint=1; run_tests=1; fi
 if echo "$staged" | grep -qE '^test/.*\.js$|^src/js/.*\.js$'; then run_tests=1; fi
-if echo "$staged" | grep -qE '^public/data/items\.json$|^scripts/validate-items\.mjs$'; then run_validate=1; fi
+# Canonical published data. Legacy public/data/items.json is not read by the app or the validator.
+if echo "$staged" | grep -qE '^public/data/items-combined\.json$|^scripts/validate-items\.mjs$'; then run_validate=1; fi
 
 if [ "$run_lint" = "1" ]; then
   echo "[pre-commit] npm run lint"
